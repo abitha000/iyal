@@ -69,7 +69,7 @@
         .nav-link-style {
             transition: color 0.5s ease; 
             text-decoration: none;
-            font-weight: 500;
+            /* The font-weight/size are now controlled by Tailwind classes in HTML */
             display: inline-block; 
         }
         
@@ -120,7 +120,8 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+            /* Slower transition for a more dramatic, less jarring effect */
+            transition: opacity 1.0s ease-out, visibility 1.0s ease-out; 
         }
 
         .hidden-load {
@@ -157,15 +158,33 @@
             filter: invert(100%);
         }
 
+        /* NEW: Styles for the individual characters in the IYAL intro */
+        .intro-char {
+            display: inline-block;
+            opacity: 0;
+            /* Start slightly below for a nice "rise-up" effect */
+            transform: translateY(10px); 
+            /* Match the slower pace with a 0.5s transition */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .intro-char.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
     </style>
 </head>
 <body class="overflow-x-hidden">
 
     <!-- Loading Overlay -->
     <div id="loading-overlay">
-        <!-- UPDATED: Text changed to IYAL -->
-        <div class="text-2xl font-semibold tracking-wide text-[#4A352D] animate-pulse">
-            IYAL
+        <!-- UPDATED: Text container for IYAL -->
+        <div id="iyal-intro-text" class="text-6xl md:text-8xl font-black tracking-widest text-[#4A352D]">
+            <!-- Each letter is now a span for the staggered animation -->
+            <span class="intro-char">I</span>
+            <span class="intro-char">Y</span>
+            <span class="intro-char">A</span>
+            <span class="intro-char">L</span>
         </div>
     </div>
 
@@ -185,9 +204,8 @@
                 <div id="logo-text" class="text-2xl md:text-3xl font-black text-white transition-colors duration-500 text-logo">IYAL</div>
             </div>
 
-            <!-- Navigation Links Container - UPDATED to use onclick for custom smooth scroll -->
-            <div class="flex space-x-6">
-                <!-- Added cursor-pointer class for visual feedback -->
+            <!-- Navigation Links Container - UPDATED: Bolder and slightly larger text classes -->
+            <div class="flex space-x-6 md:space-x-10 text-lg font-extrabold">
                 <a onclick="scrollToSection(0)" class="nav-link-style text-white cursor-pointer">Home</a>
                 <a onclick="scrollToSection(1)" class="nav-link-style text-white cursor-pointer">Products</a>
                 <a onclick="scrollToSection(2)" class="nav-link-style text-white cursor-pointer">Contact</a>
@@ -350,7 +368,6 @@
         let startTime = performance.now(); // Used for time-based floating animation
         
         // --- WAVE EFFECT VARIABLES ---
-        // UPDATED: Delay kept at 100ms for a slower, smoother wave effect.
         const DELAY = 100; // Delay in ms between character color changes (controls speed of the wave)
         let waveTimeouts = []; // Array to store all timeouts for clearing
         
@@ -457,7 +474,7 @@
 
             const charSpans = linkElement.querySelectorAll('.char-span');
 
-            // The base color is ALWAYS white, as fixed in handleScroll
+            // The base color is ALWAYS white
             const baseColor = 'white'; 
             // The accent color will be the light cream/tan
             const hoverColor = '#D4C1B0'; 
@@ -665,22 +682,35 @@
         window.onload = () => {
             // Define loadingOverlay element
             const loadingOverlay = document.getElementById('loading-overlay');
+            const iyalTextContainer = document.getElementById('iyal-intro-text');
+            const chars = iyalTextContainer.querySelectorAll('.intro-char');
+            const staggerDelay = 200; // ms between each character reveal
+            let totalRevealTime = chars.length * staggerDelay; // 4 * 200 = 800ms
             
-            // 1. Initial Load Animation Fade-out
+            // 1. Staggered Character Reveal (The "Text Transition In")
+            chars.forEach((char, index) => {
+                setTimeout(() => {
+                    char.classList.add('visible');
+                }, index * staggerDelay);
+            });
+            
+            // 2. Initial Load Animation Fade-out (The "Text Transition Out" via screen fade)
+            // Wait for the characters to be revealed + a small buffer (200ms) before 
+            // triggering the main 1.0s screen fade.
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden-load');
-            }, 500); 
+            }, totalRevealTime + 200); 
             
-            // 2. Prepare Nav Links for Wave Effect (MUST be called before listeners)
+            // 3. Prepare Nav Links for Wave Effect (MUST be called before listeners)
             prepareNavLinks();
 
-            // 3. Initialize Three.js
+            // 4. Initialize Three.js
             initThreeJS();
 
-            // 4. Start Animation Loop
+            // 5. Start Animation Loop
             animate();
 
-            // 5. Attach Listeners
+            // 6. Attach Listeners
             window.addEventListener('resize', onWindowResize);
             window.addEventListener('scroll', handleScroll);
             
