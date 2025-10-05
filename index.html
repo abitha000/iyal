@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iyal | Dynamic Product Sales</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Three.js for 3D bottle animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        /* Custom font import for a clean aesthetic */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAF0E6; /* Linen Cream Background */
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+
+            /* --- CRITICAL: Implement Scroll Snap for the "Flip" Effect --- */
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+        }
+
+        /* Generic class for scroll snap alignment */
+        .snap-section {
+            position: relative;
+            scroll-snap-align: start;
+            /* CRITICAL FIX: AGGRESSIVELY INCREASED scroll-margin-top to 200px 
+               to ensure the fixed header cannot hide the title on snap. */
+            scroll-margin-top: 200px; 
+        }
+
+        /* Explicitly set height for Hero and Contact sections */
+        #hero-section, #contact-section {
+            height: 100vh;
+        }
+
+        /* FIX: Allow Product section to extend past 100vh if content is long, 
+           and add large padding to ensure the last item is visible before snapping. */
+        #product-slides {
+            min-height: 100vh; /* Ensures it's at least one screen height */
+            height: auto; /* Allows it to grow if content is taller */
+            padding-bottom: 15vh; /* Massive extra padding to stop the footer from obscuring content */
+        }
+        
+        /* Hero specific styling (Deep Espresso Coffee Brown) */
+        #hero-section {
+            background-color: #4A352D; /* Deep Espresso */
+        }
+
+        /* The canvas container needs to be fixed relative to the viewport while scrolling */
+        #canvas-container {
+            position: absolute; /* Absolute within the full-snap-section */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 10;
+            transition: opacity 0.3s ease; /* Ensure the fade is smooth */
+        }
+
+        /* Base style for navigation links in the transparent header */
+        .nav-link-style {
+            transition: color 0.5s ease; 
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block; 
+        }
+        
+        /* Spans must be inline-block to accept color transition */
+        .char-span {
+            display: inline-block;
+            transition: color 0.5s ease; 
+        }
+
+        /* Style for the buy button message box */
+        #message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 2px solid #4A352D;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: none;
+            text-align: center;
+        }
+
+        /* Removed cursor-pointer from card since we are clicking the button now */
+        .product-card {
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom style for loading overlay transition */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FAF0E6; /* Match new body background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        .hidden-load {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        /* Custom styles for the logo image and its container */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-img {
+            height: 40px; /* Base height for the image */
+            width: auto;
+            margin-right: 8px;
+            transition: filter 0.5s ease;
+        }
+
+        .text-logo {
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Added subtle shadow for legibility */
+        }
+        
+        /* logo-filter-dark: Ensures the (assumed light) logo image remains light */
+        .logo-filter-dark {
+            filter: none;
+        }
+
+        /* logo-filter-light: Not used anymore as the logo is permanently white */
+        .logo-filter-light {
+            filter: invert(100%);
+        }
+
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <!-- UPDATED: Text changed to IYAL -->
+        <div class="text-2xl font-semibold tracking-wide text-[#4A352D] animate-pulse">
+            IYAL
+        </div>
+    </div>
+
+    <!-- Fixed Navigation Bar (Handles brown transition on scroll) -->
+    <header id="main-header" class="fixed top-0 left-0 w-full z-50 p-6 md:p-8 transition-colors duration-500">
+        <nav id="main-nav-container" class="flex justify-between items-center max-w-7xl mx-auto">
+            
+            <!-- UPDATED LOGO: Image + Text container -->
+            <div id="logo-container" class="logo-container" onclick="scrollToSection(0)">
+                <img id="logo-image" 
+                     src="https://i.imgur.com/GY15TYP.jpeg" 
+                     alt="Iyal Logo" 
+                     class="logo-img logo-filter-dark"
+                     onerror="this.onerror=null;this.src='https://placehold.co/40x40/4A352D/D4C1B0?text=I';" 
+                >
+                <!-- Text Logo: Color is now locked to white -->
+                <div id="logo-text" class="text-2xl md:text-3xl font-black text-white transition-colors duration-500 text-logo">IYAL</div>
+            </div>
+
+            <!-- Navigation Links Container - UPDATED to use onclick for custom smooth scroll -->
+            <div class="flex space-x-6">
+                <!-- Added cursor-pointer class for visual feedback -->
+                <a onclick="scrollToSection(0)" class="nav-link-style text-white cursor-pointer">Home</a>
+                <a onclick="scrollToSection(1)" class="nav-link-style text-white cursor-pointer">Products</a>
+                <a onclick="scrollToSection(2)" class="nav-link-style text-white cursor-pointer">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Global Buy Message Box (Replaces alert()) -->
+    <div id="message-box">
+        <p class="text-lg font-semibold text-[#4A352D] mb-4">Redirecting to Buy Page...</p>
+        <p>This is where your secure checkout process would begin for the selected product.</p>
+        <button onclick="document.getElementById('message-box').style.display='none';" class="mt-4 px-4 py-2 bg-[#B38B6D] text-white rounded-full shadow-md hover:bg-[#9E785C] transition">Close</button>
+    </div>
+
+    <!-- 1. Hero Section (Scroll-Driven 3D Animation & Left Content) -->
+    <section id="hero-section" class="snap-section">
+        <div id="canvas-container">
+            <!-- The three.js canvas will be injected here -->
+            <canvas id="product-canvas" class="z-20 w-full h-full"></canvas>
+            
+            <!-- Left Side Content (Fixed Position) - Overlay on Canvas -->
+            <div id="hero-content" class="absolute top-0 left-0 w-full h-full flex flex-col justify-start p-8 md:p-16 z-30 pointer-events-none max-w-7xl mx-auto">
+                
+                <div class="flex flex-col justify-start pt-16 w-1/2">
+                    <h1 id="hero-title" class="text-6xl md:text-9xl font-extrabold text-white mb-6 uppercase tracking-tighter" style="text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                        Liquid Gold
+                    </h1>
+                    <p id="hero-subtitle" class="text-xl md:text-3xl text-white opacity-80 mb-10 font-light" style="text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);">
+                        Nourish. Revitalize. Shine.
+                    </p>
+                </div>
+                
+                <!-- CTA Button: Deep Espresso Background, Caramel Hover -->
+                <a onclick="scrollToSection(1)" class="explore-button pointer-events-auto bg-[#4A352D] text-white px-8 py-4 rounded-full text-lg font-semibold shadow-2xl hover:bg-[#B38B6D] transition duration-300 transform hover:scale-105 w-max mb-10 cursor-pointer">
+                    Explore Our Products
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Product Slides Section -->
+    <!-- The padding-bottom and height:auto in CSS allows this section to hold all content and prevent overlap -->
+    <section id="product-slides" class="snap-section bg-[#FAF0E6] px-4 md:px-12">
+        <div class="max-w-7xl mx-auto flex flex-col pt-16 pb-12">
+            <h2 class="text-5xl md:text-7xl font-bold text-center mb-16 text-[#4A352D]" id="product-title">
+                Our Premium Lineup
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Product 1: Hair Oil -->
+                <div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/400x400/8B4513/ffffff?text=Hair+Oil" alt="Hair Oil Bottle" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">1. Liquid Gold Hair Oil</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Deeply nourishes scalp and strands, promoting strength and shine from root to tip. All-natural ingredients.</p>
+                    
+                    <!-- Buy Now Button -->
+                    <div class="mt-auto flex justify-between items-center pt-4">
+                        <div class="text-xl font-bold text-[#4A352D]">$49.99</div>
+                        <button onclick="showBuyMessage('Liquid Gold Hair Oil')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2: Face Pack -->
+                <div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/400x400/696969/ffffff?text=Face+Pack" alt="Face Pack Jar" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">2. Volcanic Clay Face Pack</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Detoxifies and purifies pores, revealing a brighter, smoother, and more youthful complexion.</p>
+                    
+                    <!-- Buy Now Button -->
+                    <div class="mt-auto flex justify-between items-center pt-4">
+                        <div class="text-xl font-bold text-[#4A352D]">$34.99</div>
+                        <button onclick="showBuyMessage('Volcanic Clay Face Pack')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3: Health Mix -->
+                <div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/400x400/9ACD32/ffffff?text=Health+Mix" alt="Health Mix Pouch" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">3. Daily Nutrient Health Mix</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">A powerful blend of superfoods to boost immunity and energy throughout your busy day.</p>
+                    
+                    <!-- Buy Now Button -->
+                    <div class="mt-auto flex justify-between items-center pt-4">
+                        <div class="text-xl font-bold text-[#4A352D]">$59.99</div>
+                        <button onclick="showBuyMessage('Daily Nutrient Health Mix')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Contact Us Section (Deep Espresso Background) -->
+    <section id="contact-section" class="snap-section bg-[#4A352D] text-white flex flex-col justify-center items-center p-8">
+        <div class="max-w-4xl w-full text-center">
+            <p class="text-2xl md:text-3xl mb-8 font-light italic" id="contact-subtitle">
+                Ready to take the next step in your wellness journey?
+            </p>
+            <h2 class="text-6xl md:text-8xl font-black mb-16 uppercase tracking-tighter" id="contact-title">
+                Get In Touch.
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
+                <!-- Address -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-3">Office</h3>
+                    <p>123 Wellness Way, Suite 400</p>
+                    <p>Health City, HW 90210</p>
+                    <p>India</p>
+                </div>
+                <!-- Email (Caramel highlight on hover) -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-3">Say Hello</h3>
+                    <p class="hover:text-[#B38B6D] transition"><a href="mailto:sales@iyal.in">sales@iyal.in</a></p>
+                    <p class="hover:text-[#B38B6D] transition"><a href="tel:+919876543210">+91 987-654-3210</a></p>
+                </div>
+                <!-- Social (Caramel highlight on hover) -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-3">Follow Us</h3>
+                    <p class="hover:text-[#B38B6D] transition"><a href="#">Instagram</a></p>
+                    <p class="hover:text-[#B38B6D] transition"><a href="#">Facebook</a></p>
+                    <p class="hover:text-[#B38B6D] transition"><a href="#">LinkedIn</a></p>
+                </div>
+            </div>
+        </div>
+        <footer class="mt-20 text-sm opacity-50">
+            &copy; 2024 Iyal. All Rights Reserved.
+        </footer>
+    </section>
+
+
+    <script>
+        // --- Global Variables and Utility Functions ---
+        const heroSection = document.getElementById('hero-section');
+        const mainHeader = document.getElementById('main-header');
+        const logoImage = document.getElementById('logo-image');
+        const logoText = document.getElementById('logo-text');
+        let camera, scene, renderer, bottleMesh;
+        const bottleHeight = 10;
+        const bottleRadius = 2.5;
+        const heroContent = document.getElementById('hero-content');
+        
+        // Base Y position constant for consistency 
+        const BASE_BOTTLE_Y = -4.0; 
+        
+        // Variables for the Intro Spin Animation
+        let introProgress = 0; 
+        const introDuration = 100; // Frames for intro animation (approx 1.6 seconds)
+        let startTime = performance.now(); // Used for time-based floating animation
+        
+        // --- WAVE EFFECT VARIABLES ---
+        // UPDATED: Delay kept at 100ms for a slower, smoother wave effect.
+        const DELAY = 100; // Delay in ms between character color changes (controls speed of the wave)
+        let waveTimeouts = []; // Array to store all timeouts for clearing
+        
+        /**
+         * Easing function: easeInOutQuint (starts and ends very slow, fast in the middle)
+         * @param {number} t - time/progress (0 to 1)
+         */
+        function easeInOutQuint(t) {
+            return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t;
+        }
+
+        /**
+         * Programmatically scrolls the window to a target Y position over a specified duration using an easing function.
+         * @param {number} targetY - The final scroll position.
+         * @param {number} duration - The duration of the animation in milliseconds.
+         */
+        function animateScroll(targetY, duration) {
+            const startY = window.scrollY;
+            const distance = targetY - startY;
+            const startTime = performance.now();
+
+            function step(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(1, elapsedTime / duration);
+                
+                // Use a custom easing function for a unique, controlled feel
+                const easedProgress = easeInOutQuint(progress);
+
+                window.scrollTo(0, startY + distance * easedProgress);
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        /**
+         * Initiates a custom smooth scroll to the start of a specific section based on its index.
+         * @param {number} sectionIndex - The index of the section (0=Hero, 1=Products, 2=Contact).
+         */
+        function scrollToSection(sectionIndex) {
+            // Find the target element
+            const sections = [
+                document.getElementById('hero-section'),
+                document.getElementById('product-slides'),
+                document.getElementById('contact-section')
+            ];
+
+            const targetSection = sections[sectionIndex];
+            if (!targetSection) return;
+
+            // Get the target Y position relative to the document
+            const targetY = targetSection.offsetTop;
+            
+            // Use custom animation with a longer duration (1500ms)
+            animateScroll(targetY, 1500); 
+
+            // Stop any wave effect in case the click was triggered during a hover animation
+            waveTimeouts.forEach(t => clearTimeout(t));
+            waveTimeouts = [];
+        }
+
+        /**
+         * Shows the buy page message box.
+         */
+        function showBuyMessage(productName) {
+            const messageBox = document.getElementById('message-box');
+            messageBox.querySelector('p:first-child').textContent = `Initiating purchase for ${productName}...`;
+            messageBox.style.display = 'block';
+        }
+
+        /**
+         * Wraps each character of the navigation links in a span for wave effect.
+         * This must be called before adding event listeners.
+         */
+        function prepareNavLinks() {
+            const navLinks = document.querySelectorAll('#main-nav-container .nav-link-style');
+            navLinks.forEach(link => {
+                const text = link.textContent;
+                link.innerHTML = ''; // Clear original text
+                
+                // Wrap each character in a span
+                Array.from(text).forEach((char) => {
+                    const span = document.createElement('span');
+                    span.textContent = char;
+                    span.classList.add('char-span'); // Class to target letters
+                    link.appendChild(span);
+                });
+            });
+        }
+        
+        /**
+         * Creates the color wave effect across the letters of a single link.
+         * Since the base color is locked to white, the wave uses a light accent color.
+         * @param {HTMLElement} linkElement - The parent <a> element containing char-spans.
+         * @param {boolean} startWave - True to start the wave, false to clear/reset.
+         */
+        function handleWave(linkElement, startWave) {
+            // 1. Clear any pending wave animation for this link
+            waveTimeouts.forEach(t => clearTimeout(t));
+            waveTimeouts = [];
+
+            const charSpans = linkElement.querySelectorAll('.char-span');
+
+            // The base color is ALWAYS white, as fixed in handleScroll
+            const baseColor = 'white'; 
+            // The accent color will be the light cream/tan
+            const hoverColor = '#D4C1B0'; 
+            
+            if (startWave) {
+                // Start the wave animation (color is set to accent)
+                charSpans.forEach((span, index) => {
+                    // Sequentially change color to the hover color
+                    const timeoutHover = setTimeout(() => {
+                        span.style.color = hoverColor;
+                    }, index * DELAY); 
+                    waveTimeouts.push(timeoutHover);
+                });
+            } else {
+                // Stop the wave and immediately reset all colors to the base color (white)
+                charSpans.forEach(span => {
+                    span.style.color = baseColor;
+                });
+            }
+        }
+        
+        // --- Three.js Setup and Animation Logic (Omitted for brevity, assumed unchanged) ---
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x4A352D); 
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 8; 
+
+            const canvas = document.getElementById('product-canvas');
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            const bodyGeometry = new THREE.CylinderGeometry(bottleRadius, bottleRadius, bottleHeight, 64);
+            const capGeometry = new THREE.CylinderGeometry(bottleRadius * 1.05, bottleRadius * 1.05, 0.3, 64);
+            const bodyMaterial = new THREE.MeshStandardMaterial({
+                color: 0xCDAA7B, 
+                metalness: 0.3,
+                roughness: 0.6,
+            });
+            const capMaterial = new THREE.MeshStandardMaterial({
+                color: 0xF0F0F0,
+                metalness: 0.1,
+                roughness: 0.5
+            });
+
+            const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            const capMesh = new THREE.Mesh(capGeometry, capMaterial);
+
+            bodyMesh.position.y = 0;
+            capMesh.position.y = (bottleHeight / 2) + (0.3 / 2);
+
+            bottleMesh = new THREE.Group();
+            bottleMesh.add(bodyMesh);
+            bottleMesh.add(capMesh);
+
+            bottleMesh.position.x = 4.5;
+            bottleMesh.position.y = BASE_BOTTLE_Y; 
+            bottleMesh.rotation.z = Math.PI / 15; 
+
+            bottleMesh.scale.set(0.01, 0.01, 0.01); 
+
+            scene.add(bottleMesh);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 2.0);
+            directionalLight.position.set(5, 5, 5).normalize();
+            scene.add(directionalLight);
+            const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            fillLight.position.set(-5, -5, -5).normalize();
+            scene.add(fillLight);
+        }
+
+        function onWindowResize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+            
+            if (width < 768) {
+                camera.position.z = 10; 
+            } else {
+                camera.position.z = 8;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (bottleMesh) {
+                const currentTime = performance.now();
+                const elapsedTime = (currentTime - startTime) / 1000; 
+
+                if (introProgress <= introDuration) {
+                    introProgress++;
+                    const t = introProgress / introDuration; 
+                    const easeOutCubic = 1 - Math.pow(1 - t, 3); 
+                    
+                    const targetScale = 1.1;
+                    const currentScale = 0.01 + (targetScale - 0.01) * easeOutCubic;
+                    bottleMesh.scale.set(currentScale, currentScale, currentScale);
+                    
+                    const startRotationY = Math.PI * 4; 
+                    const endRotationY = 0;
+                    bottleMesh.rotation.y = startRotationY * (1 - easeOutCubic) + endRotationY * easeOutCubic;
+
+                } else {
+                    if (window.scrollY === 0) {
+                        
+                        bottleMesh.position.y = BASE_BOTTLE_Y + Math.sin(elapsedTime * 0.6) * 0.05; 
+                        
+                        const initialX = 4.5;
+                        bottleMesh.position.x = initialX + Math.cos(elapsedTime * 0.4) * 0.03;
+
+                        bottleMesh.rotation.x = Math.sin(elapsedTime * 0.5) * 0.01;
+                        bottleMesh.rotation.y = Math.sin(elapsedTime * 0.3) * 0.05; 
+                    }
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // --- Scroll Logic for Animation and Navigation Colors ---
+
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
+            
+            const scrollProgressInViewport = (scrollY % viewportHeight) / viewportHeight;
+            const easedProgress = Math.min(1, scrollProgressInViewport * 1.8); 
+
+            // --- 1. Bottle Animation (Scale Down, Move Up/Right, Fade Out) ---
+            if (bottleMesh) {
+                const initialScale = 1.1;
+                const targetScale = 0.7;
+                const scale = initialScale - ((initialScale - targetScale) * easedProgress);
+                bottleMesh.scale.set(scale, scale, scale);
+                
+                const initialX = 4.5;
+                const targetX = 5.5;
+                bottleMesh.position.x = initialX + ((targetX - initialX) * easedProgress);
+                
+                const initialY = BASE_BOTTLE_Y; 
+                const targetY = -6.5; 
+                bottleMesh.position.y = initialY + ((targetY - initialY) * easedProgress);
+                
+                bottleMesh.rotation.x = easedProgress * 0.1;
+                
+                heroContent.style.opacity = 1 - (easedProgress * 2); 
+            }
+
+            // --- 2. Navigation Color and Header Background Transition ---
+            const currentSectionIndex = Math.round(scrollY / viewportHeight);
+            
+            const navLinks = document.querySelectorAll('#main-nav-container .nav-link-style');
+
+            // Header Background Logic: 
+            // It MUST be dark brown (4A352D) on the light Product section (Index 1) for contrast.
+            if (currentSectionIndex === 1) {
+                // Product section: Light background (FAF0E6) requires Dark Header (4A352D)
+                mainHeader.classList.add('bg-[#4A352D]', 'shadow-md');
+                mainHeader.classList.remove('bg-[#FAF0E6]'); 
+            } else {
+                // Hero/Contact sections: Dark background (4A352D) allows Transparent Header
+                mainHeader.classList.remove('bg-[#4A352D]', 'shadow-md', 'bg-[#FAF0E6]');
+            }
+
+            // --- CRITICAL FIX: Lock Logo and Navigation Text to White (regardless of scroll) ---
+            
+            // Logo Image: Always use the filter-dark setting (filter: none)
+            logoImage.classList.add('logo-filter-dark');
+            logoImage.classList.remove('logo-filter-light');
+            
+            // Logo Text: Always keep it white.
+            logoText.classList.add('text-white');
+            logoText.classList.remove('text-[#4A352D]');
+
+            // Navigation Links: Always keep the base color of the spans white.
+            navLinks.forEach(item => {
+                Array.from(item.querySelectorAll('.char-span')).forEach(span => {
+                    // Set base color directly on the span style to override all class changes
+                    span.style.color = 'white'; 
+                });
+                item.classList.add('text-white');
+                item.classList.remove('text-[#4A352D]');
+            });
+            
+            // --- 3. Hide Canvas on subsequent sections for the 'flip' effect ---
+            const canvasContainer = document.getElementById('canvas-container');
+            
+            if (currentSectionIndex > 0) {
+                 // Once snapped past the hero section, hide the canvas
+                canvasContainer.style.opacity = '0';
+            } else {
+                // Fade the bottle based on progress within the viewport for a smoother exit
+                canvasContainer.style.opacity = 1 - easedProgress;
+            }
+        }
+
+        // --- Initialization ---
+
+        window.onload = () => {
+            // Define loadingOverlay element
+            const loadingOverlay = document.getElementById('loading-overlay');
+            
+            // 1. Initial Load Animation Fade-out
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden-load');
+            }, 500); 
+            
+            // 2. Prepare Nav Links for Wave Effect (MUST be called before listeners)
+            prepareNavLinks();
+
+            // 3. Initialize Three.js
+            initThreeJS();
+
+            // 4. Start Animation Loop
+            animate();
+
+            // 5. Attach Listeners
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('scroll', handleScroll);
+            
+            // Attach wave effect listeners to navigation links
+            const navLinks = document.querySelectorAll('#main-nav-container .nav-link-style');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseover', () => handleWave(link, true));
+                link.addEventListener('mouseout', () => handleWave(link, false));
+            });
+
+            onWindowResize();
+            handleScroll();
+        };
+
+    </script>
+</body>
+</html>
