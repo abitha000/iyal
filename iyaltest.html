@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iyal | Dynamic Product Sales</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- REMOVED: Load Three.js for 3D bottle animation --><style>
+        /* Custom font import for a clean aesthetic */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAF0E6; /* Linen Cream Background */
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+
+            /* --- CRITICAL: Implement Scroll Snap for the "Flip" Effect --- */
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+        }
+
+        /* NEW: Utility class to prevent background scrolling when mobile menu is open */
+        body.overflow-hidden {
+            overflow: hidden !important;
+        }
+
+        /* Generic class for scroll snap alignment */
+        .snap-section {
+            position: relative;
+            scroll-snap-align: start;
+            /* CRITICAL FIX: AGGRESSIVELY INCREASED scroll-margin-top to 200px 
+               to ensure the fixed header cannot hide the title on snap. */
+            scroll-margin-top: 200px; 
+        }
+
+        /* Explicitly set height for Hero and Contact sections */
+        #hero-section, #contact-section {
+            height: 100vh;
+        }
+
+        /* FIX: Allow Product section to extend past 100vh if content is long, 
+           and add large padding to ensure the last item is visible before snapping. */
+        #product-slides {
+            min-height: 100vh; /* Ensures it's at least one screen height */
+            height: auto; /* Allows it to grow if content is taller */
+            padding-bottom: 15vh; /* Massive extra padding to stop the footer from obscuring content */
+        }
+        
+        /* Hero specific styling (Deep Espresso Coffee Brown) */
+        #hero-section {
+            background-color: #4A352D; /* Deep Espresso */
+        }
+
+        /* REMOVED: #canvas-container styles */
+
+        /* Base style for navigation links in the transparent header */
+        .nav-link-style {
+            transition: color 0.5s ease; 
+            text-decoration: none;
+            /* The font-weight/size are now controlled by Tailwind classes in HTML */
+            display: inline-block; 
+        }
+        
+        /* Spans must be inline-block to accept color transition */
+        .char-span {
+            display: inline-block;
+            transition: color 0.5s ease; 
+        }
+
+        /* Style for the buy button message box */
+        #message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 2px solid #4A352D;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            display: none;
+            text-align: center;
+        }
+
+        /* Removed cursor-pointer from card since we are clicking the button now */
+        .product-card {
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom style for loading overlay transition */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FAF0E6; /* Match new body background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            /* Slower transition for a more dramatic, less jarring effect */
+            transition: opacity 1.0s ease-out, visibility 1.0s ease-out; 
+        }
+
+        .hidden-load {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        /* Custom styles for the logo image and its container */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo-img {
+            height: 40px; /* Base height for the image */
+            width: auto;
+            margin-right: 8px; /* Maintain a little space just in case */
+            transition: filter 0.5s ease;
+        }
+
+        .text-logo {
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Added subtle shadow for legibility */
+        }
+        
+        /* logo-filter-dark: Ensures the (assumed light) logo image remains light */
+        .logo-filter-dark {
+            filter: none;
+        }
+
+        /* logo-filter-light: Not used anymore as the logo is permanently white */
+        .logo-filter-light {
+            filter: invert(100%);
+        }
+
+        /* NEW: Styles for the individual characters in the IYAL intro */
+        .intro-char {
+            display: inline-block;
+            opacity: 0;
+            /* Start slightly below for a nice "rise-up" effect */
+            transform: translateY(10px); 
+            /* Match the slower pace with a 0.5s transition */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .intro-char.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Loading Overlay --><div id="loading-overlay">
+        <!-- UPDATED: Text container for IYAL --><div id="iyal-intro-text" class="text-6xl md:text-8xl font-black tracking-widest text-[#4A352D]">
+            <!-- Each letter is now a span for the staggered animation --><span class="intro-char">I</span>
+            <span class="intro-char">Y</span>
+            <span class="intro-char">A</span>
+            <span class="intro-char">L</span>
+        </div>
+    </div>
+
+    <!-- Fixed Navigation Bar (Now only contains Logo and Hamburger) --><header id="main-header" class="fixed top-0 left-0 w-full z-50 p-6 md:p-8 transition-colors duration-500">
+        <nav id="main-nav-container" class="flex justify-between items-center max-w-7xl mx-auto">
+            
+            <!-- UPDATED LOGO: Image Only --><div id="logo-container" class="logo-container" onclick="scrollToSection(0)">
+                <img id="logo-image" 
+                     src="https://i.imgur.com/GY15TYP.jpeg" 
+                     alt="Iyal Logo" 
+                     class="logo-img logo-filter-dark"
+                     onerror="this.onerror=null;this.src='https://placehold.co/40x40/4A352D/D4C1B0?text=I';" 
+                >
+                <!-- REMOVED: Text Logo --></div>
+
+            <!-- REMOVED: Desktop Navigation Links. They are now accessed via the hamburger icon. -->
+            
+            <!-- Mobile Menu Toggle Button (Now visible on ALL screens for navigation) -->
+            <button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="p-2 rounded-full hover:bg-white/10 transition duration-300">
+                <!-- Hamburger Icon (White color, 28x28 size) --><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Mobile Navigation Drawer (Full screen, slides from right, now the main navigation) --><div id="mobile-menu" class="fixed top-0 left-0 w-full h-full bg-[#4A352D] z-[100] transform translate-x-full transition-transform duration-500 overflow-y-auto">
+        
+        <!-- Close Button (Top right) --><div class="flex justify-end p-8">
+            <button onclick="toggleMobileMenu()" class="p-2 rounded-full text-white hover:bg-white/10 transition duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <!-- Menu Links Container --><nav class="flex flex-col items-center space-y-8 mt-12 text-3xl font-extrabold text-white">
+            
+            <!-- Main Navigation Links (Use scrollToSectionAndClose to navigate and hide menu) --><a onclick="scrollToSectionAndClose(0)" class="hover:text-[#B38B6D] transition cursor-pointer">Home</a>
+            <a onclick="scrollToSectionAndClose(1)" class="hover:text-[#B38B6D] transition cursor-pointer">Products</a>
+            <a onclick="scrollToSectionAndClose(2)" class="hover:text-[#B38B6D] transition cursor-pointer">Contact Us</a>
+            
+            <!-- E-commerce Links -->
+            <a href="#" class="hover:text-[#B38B6D] transition">Cart</a>
+            <a href="#" class="hover:text-[#B38B6D] transition">Order History</a>
+
+            <!-- Brown Bar Separator --><div class="w-2/3 max-w-sm h-px bg-[#B38B6D] my-6 opacity-50"></div>
+
+            <!-- Login / Sign Up Action Button --><a href="#" class="text-3xl px-10 py-4 rounded-full bg-[#B38B6D] text-white shadow-xl hover:bg-[#9E785C] transition transform hover:scale-105 font-bold">
+                Login / Sign Up
+            </a>
+        </nav>
+
+    </div>
+
+    <!-- Global Buy Message Box (Replaces alert()) --><div id="message-box">
+        <p class="text-lg font-semibold text-[#4A352D] mb-4">Redirecting to Buy Page...</p>
+        <p>This is where your secure checkout process would begin for the selected product.</p>
+        <button onclick="document.getElementById('message-box').style.display='none';" class="mt-4 px-4 py-2 bg-[#B38B6D] text-white rounded-full shadow-md hover:bg-[#9E785C] transition">Close</button>
+    </div>
+
+    <!-- 1. Hero Section (Content is now centered vertically and horizontally) --><section id="hero-section" class="snap-section bg-[#4A352D] flex items-center justify-center text-center">
+        <!-- Hero Content: Center everything inside this container --><div id="hero-content" class="w-full flex flex-col items-center justify-center p-8 md:p-16 z-30 max-w-7xl mx-auto">
+            
+            <div class="flex flex-col items-center justify-center w-full">
+                <h1 id="hero-title" class="text-6xl md:text-9xl font-extrabold text-white mb-6 uppercase tracking-tighter" style="text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                    IYAL
+                </h1>
+                <p id="hero-subtitle" class="text-xl md:text-3xl text-white opacity-80 mb-10 font-light" style="text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);">
+                    Nourish. Revitalize. Shine.
+                </p>
+            </div>
+            
+            <!-- CTA Button: Use the accent brown for better contrast on dark BG --><a onclick="scrollToSection(1)" class="explore-button bg-[#B38B6D] text-white px-8 py-4 rounded-full text-lg font-semibold shadow-2xl hover:bg-[#9E785C] transition duration-300 transform hover:scale-105 w-max cursor-pointer">
+                Explore Our Products
+            </a>
+        </div>
+    </section>
+
+    <!-- 2. Product Slides Section --><!-- The padding-bottom and height:auto in CSS allows this section to hold all content and prevent overlap --><section id="product-slides" class="snap-section bg-[#FAF0E6] px-4 md:px-12">
+        <div class="max-w-7xl mx-auto flex flex-col pt-16 pb-12">
+            <h2 class="text-5xl md:text-7xl font-bold text-center mb-16 text-[#4A352D]" id="product-title">
+                Our Premium Lineup
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Product 1: Magic Hair Oil --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/400x400/8B4513/ffffff?text=Magic+Oil" alt="Hair Oil Bottle" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">1. Magic Hair Oil</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Deeply nourishes scalp and strands, promoting strength and shine from root to tip. All-natural ingredients.</p>
+                    
+                    <!-- Buy Now Button --><div class="mt-auto flex justify-between items-center pt-4">
+                        <div class="text-xl font-bold text-[#4A352D]">₹300</div>
+                        <button onclick="showBuyMessage('Magic Hair Oil')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 2: Iyal Face Pack --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/400x400/696969/ffffff?text=Iyal+Face+Pack" alt="Face Pack Jar" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">2. Iyal Face Pack</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">Detoxifies and purifies pores, revealing a brighter, smoother, and more youthful complexion.</p>
+                    
+                    <!-- Buy Now Button --><div class="mt-auto flex justify-between items-center pt-4">
+                        <div class="text-xl font-bold text-[#4A352D]">₹150</div>
+                        <button onclick="showBuyMessage('Iyal Face Pack')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product 3: Iyal Health Mix --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/400x400/9ACD32/ffffff?text=Iyal+Mix" alt="Health Mix Pouch" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">3. Iyal Health Mix</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">A powerful blend of superfoods to boost immunity and energy throughout your busy day.</p>
+                    
+                    <!-- Buy Now Button --><div class="mt-auto flex justify-between items-center pt-4">
+                        <div class="text-xl font-bold text-[#4A352D]">₹350</div>
+                        <button onclick="showBuyMessage('Iyal Health Mix')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Product 4: Iyal Pain Relief Oil --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/400x400/800000/ffffff?text=Iyal+Oil" alt="Pain Relief Oil Bottle" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">4. Iyal Pain Relief Oil</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">A potent blend of natural extracts formulated to quickly relieve muscle and joint pain, promoting relaxation and recovery.</p>
+                    
+                    <!-- Buy Now Button --><div class="mt-auto flex justify-between items-center pt-4">
+                        <div class="text-xl font-bold text-[#4A352D]">₹175</div>
+                        <button onclick="showBuyMessage('Iyal Pain Relief Oil')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Contact Us Section (Deep Espresso Background) --><section id="contact-section" class="snap-section bg-[#4A352D] text-white flex flex-col justify-center items-center p-8">
+        <div class="max-w-4xl w-full text-center">
+            <p class="text-2xl md:text-3xl mb-8 font-light italic" id="contact-subtitle">
+                Ready to take the next step in your wellness journey?
+            </p>
+            <h2 class="text-6xl md:text-8xl font-black mb-16 uppercase tracking-tighter" id="contact-title">
+                Get In Touch.
+            </h2>
+
+            <!-- Grid is now md:grid-cols-2 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
+                <!-- Email (Caramel highlight on hover) --><div>
+                    <h3 class="text-2xl font-bold mb-3">Say Hello</h3>
+                    <p class="hover:text-[#B38B6D] transition"><a href="mailto:sales@iyal.in">sales@iyal.in</a></p>
+                    <p class="hover:text-[#B38B6D] transition"><a href="tel:+919876543210">+91 987-654-3210</a></p>
+                </div>
+                <!-- Social (Caramel highlight on hover) --><div>
+                    <h3 class="text-2xl font-bold mb-3">Follow Us</h3>
+                    <p class="hover:text-[#B38B6D] transition"><a href="#">Instagram</a></p>
+                    <p class="hover:text-[#B38B6D] transition"><a href="#">Facebook</a></p>
+                    <p class="hover:text-[#B38B6D] transition"><a href="#">LinkedIn</a></p>
+                </div>
+            </div>
+        </div>
+        <footer class="mt-20 text-sm opacity-50">
+            &copy; 2024 Iyal. All Rights Reserved.
+        </footer>
+    </section>
+
+
+    <script>
+        // --- Global Variables and Utility Functions ---
+        const heroSection = document.getElementById('hero-section');
+        const mainHeader = document.getElementById('main-header');
+        const logoImage = document.getElementById('logo-image');
+        // REMOVED: logoText reference
+        const mobileMenu = document.getElementById('mobile-menu'); 
+        const heroContent = document.getElementById('hero-content');
+        
+        // --- WAVE EFFECT VARIABLES ---
+        // NOTE: Since desktop links are removed, the wave effect code is now obsolete but kept here for completeness if links were reintroduced.
+        const DELAY = 100; // Delay in ms between character color changes (controls speed of the wave)
+        let waveTimeouts = []; // Array to store all timeouts for clearing
+        
+        /**
+         * Easing function: easeInOutQuint (starts and ends very slow, fast in the middle)
+         * @param {number} t - time/progress (0 to 1)
+         */
+        function easeInOutQuint(t) {
+            return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t;
+        }
+
+        /**
+         * Programmatically scrolls the window to a target Y position over a specified duration using an easing function.
+         * @param {number} targetY - The final scroll position.
+         * @param {number} duration - The duration of the animation in milliseconds.
+         */
+        function animateScroll(targetY, duration) {
+            const startY = window.scrollY;
+            const distance = targetY - startY;
+            const startTime = performance.now();
+
+            function step(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(1, elapsedTime / duration);
+                
+                // Use a custom easing function for a unique, controlled feel
+                const easedProgress = easeInOutQuint(progress);
+
+                window.scrollTo(0, startY + distance * easedProgress);
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        /**
+         * Initiates a custom smooth scroll to the start of a specific section based on its index.
+         * @param {number} sectionIndex - The index of the section (0=Hero, 1=Products, 2=Contact).
+         */
+        function scrollToSection(sectionIndex) {
+            // Find the target element
+            const sections = [
+                document.getElementById('hero-section'),
+                document.getElementById('product-slides'),
+                document.getElementById('contact-section')
+            ];
+
+            const targetSection = sections[sectionIndex];
+            if (!targetSection) return;
+
+            // Get the target Y position relative to the document
+            const targetY = targetSection.offsetTop;
+            
+            // Use custom animation with a longer duration (1500ms)
+            animateScroll(targetY, 1500); 
+
+            // Stop any wave effect in case the click was triggered during a hover animation
+            waveTimeouts.forEach(t => clearTimeout(t));
+            waveTimeouts = [];
+        }
+
+        /**
+         * Toggles the visibility of the mobile menu drawer and locks/unlocks body scroll.
+         */
+        function toggleMobileMenu() {
+            // Checks the current state by looking for the hidden class 'translate-x-full'
+            const isMenuOpen = !mobileMenu.classList.contains('translate-x-full');
+
+            if (isMenuOpen) {
+                // Close menu: Add translate-x-full
+                mobileMenu.classList.add('translate-x-full');
+                document.body.classList.remove('overflow-hidden');
+            } else {
+                // Open menu: Remove translate-x-full
+                mobileMenu.classList.remove('translate-x-full');
+                document.body.classList.add('overflow-hidden');
+            }
+        }
+        
+        /**
+         * Scrolls to a section and then closes the mobile menu.
+         * Used for links inside the mobile menu.
+         */
+        function scrollToSectionAndClose(sectionIndex) {
+            scrollToSection(sectionIndex);
+            // Give a short moment for scroll to start before closing menu (optional, but smoother)
+            setTimeout(toggleMobileMenu, 300); 
+        }
+
+        /**
+         * Shows the buy page message box.
+         */
+        function showBuyMessage(productName) {
+            const messageBox = document.getElementById('message-box');
+            messageBox.querySelector('p:first-child').textContent = `Initiating purchase for ${productName}...`;
+            messageBox.style.display = 'block';
+        }
+
+        /**
+         * Wraps each character of the navigation links in a span for wave effect.
+         * This must be called before adding event listeners.
+         * NOTE: This function is now mostly obsolete since desktop links are removed, 
+         * but kept for safe refactoring.
+         */
+        function prepareNavLinks() {
+            const navLinks = document.querySelectorAll('#main-nav-container .nav-link-style');
+            navLinks.forEach(link => {
+                const text = link.textContent;
+                link.innerHTML = ''; // Clear original text
+                
+                // Wrap each character in a span
+                Array.from(text).forEach((char) => {
+                    const span = document.createElement('span');
+                    span.textContent = char;
+                    span.classList.add('char-span'); // Class to target letters
+                    link.appendChild(span);
+                });
+            });
+        }
+        
+        /**
+         * Creates the color wave effect across the letters of a single link.
+         * NOTE: This function is now mostly obsolete since desktop links are removed, 
+         * but kept for safe refactoring.
+         */
+        function handleWave(linkElement, startWave) {
+            // 1. Clear any pending wave animation for this link
+            waveTimeouts.forEach(t => clearTimeout(t));
+            waveTimeouts = [];
+
+            const charSpans = linkElement.querySelectorAll('.char-span');
+
+            // The base color is ALWAYS white
+            const baseColor = 'white'; 
+            // The accent color will be the light cream/tan
+            const hoverColor = '#D4C1B0'; 
+            
+            if (startWave) {
+                // Start the wave animation (color is set to accent)
+                charSpans.forEach((span, index) => {
+                    // Sequentially change color to the hover color
+                    const timeoutHover = setTimeout(() => {
+                        span.style.color = hoverColor;
+                    }, index * DELAY); 
+                    waveTimeouts.push(timeoutHover);
+                });
+            } else {
+                // Stop the wave and immediately reset all colors to the base color (white)
+                charSpans.forEach(span => {
+                    span.style.color = baseColor;
+                });
+            }
+        }
+        
+        // --- Scroll Logic for Animation and Navigation Colors ---
+
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
+            
+            // Calculate the current section index
+            const currentSectionIndex = Math.round(scrollY / viewportHeight);
+            
+            // The desktop nav links were removed, so we only need to handle the header background now.
+
+            // Header Background Logic: 
+            // It MUST be dark brown (4A352D) on the light Product section (Index 1) for contrast.
+            if (currentSectionIndex === 1) {
+                // Product section: Light background (FAF0E6) requires Dark Header (4A352D)
+                mainHeader.classList.add('bg-[#4A352D]', 'shadow-md');
+                mainHeader.classList.remove('bg-[#FAF0E6]'); 
+            } else {
+                // Hero/Contact sections: Dark background (4A352D) allows Transparent Header
+                mainHeader.classList.remove('bg-[#4A352D]', 'shadow-md', 'bg-[#FAF0E6]');
+            }
+
+            // --- Lock Logo and Hamburger Icon to White ---
+            
+            // Logo Image: Always use the filter-dark setting (filter: none)
+            logoImage.classList.add('logo-filter-dark');
+            logoImage.classList.remove('logo-filter-light');
+        }
+
+        // --- Initialization ---
+
+        window.onload = () => {
+            // Define loadingOverlay element
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const iyalTextContainer = document.getElementById('iyal-intro-text');
+            const chars = iyalTextContainer.querySelectorAll('.intro-char');
+            const staggerDelay = 200; // ms between each character reveal
+            let totalRevealTime = chars.length * staggerDelay; // 4 * 200 = 800ms
+            
+            // 1. Staggered Character Reveal (The "Text Transition In")
+            chars.forEach((char, index) => {
+                setTimeout(() => {
+                    char.classList.add('visible');
+                }, index * staggerDelay);
+            });
+            
+            // 2. Initial Load Animation Fade-out (The "Text Transition Out" via screen fade)
+            // Wait for the characters to be revealed + a small buffer (200ms) before 
+            // triggering the main 1.0s screen fade.
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden-load');
+            }, totalRevealTime + 200); 
+            
+            // 3. Prepare Nav Links for Wave Effect (Still run for safety, though element count is 0)
+            prepareNavLinks();
+
+            // 4. Attach Listeners
+            window.addEventListener('scroll', handleScroll);
+            
+            // The wave effect listeners for desktop links are now obsolete and removed here.
+
+            handleScroll();
+        };
+
+    </script>
+</body>
+</html>
