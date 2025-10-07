@@ -1,0 +1,9 @@
+{
+  "name": "iyal-store",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "firebase-admin": "^11.10.1",
+    "paytmchecksum": "^1.0.0"
+  }
+}
