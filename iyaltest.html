@@ -4,8 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iyal | Dynamic Product Sales</title>
     <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
-    <!-- REMOVED: Load Three.js for 3D bottle animation --><style>
-        /* Custom font import for a clean aesthetic */
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
         body {
@@ -14,77 +13,45 @@
             color: #1a1a1a;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-
-            /* --- CRITICAL: Implement Scroll Snap for the "Flip" Effect --- */
             scroll-snap-type: y mandatory;
             overflow-y: scroll;
         }
 
-        /* NEW: Utility class to prevent background scrolling when mobile menu is open */
         body.overflow-hidden {
             overflow: hidden !important;
         }
 
-        /* Generic class for scroll snap alignment */
         .snap-section {
             position: relative;
             scroll-snap-align: start;
-            /* CRITICAL FIX: AGGRESSIVELY INCREASED scroll-margin-top to 200px 
-               to ensure the fixed header cannot hide the title on snap. */
             scroll-margin-top: 200px; 
         }
 
-        /* Explicitly set height for Hero and Contact sections */
         #hero-section, #contact-section {
             height: 100vh;
         }
 
-        /* FIX: Allow Product section to extend past 100vh if content is long, 
-           and add large padding to ensure the last item is visible before snapping. */
         #product-slides {
-            min-height: 100vh; /* Ensures it's at least one screen height */
-            height: auto; /* Allows it to grow if content is taller */
-            padding-bottom: 15vh; /* Massive extra padding to stop the footer from obscuring content */
+            min-height: 100vh; 
+            height: auto; 
+            padding-bottom: 15vh;
         }
         
-        /* Hero specific styling (Deep Espresso Coffee Brown) */
         #hero-section {
             background-color: #4A352D; /* Deep Espresso */
         }
 
-        /* REMOVED: #canvas-container styles */
-
-        /* Base style for navigation links in the transparent header */
-        .nav-link-style {
-            transition: color 0.5s ease; 
-            text-decoration: none;
-            /* The font-weight/size are now controlled by Tailwind classes in HTML */
-            display: inline-block; 
-        }
-        
-        /* Spans must be inline-block to accept color transition */
-        .char-span {
-            display: inline-block;
-            transition: color 0.5s ease; 
+        #product-detail-page, #cart-page, #order-history-page {
+            display: none; /* Hidden by default */
+            min-height: 100vh;
+            padding-top: 100px; /* Offset for fixed header */
         }
 
-        /* Style for the buy button message box */
-        #message-box {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border: 2px solid #4A352D;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            z-index: 2000;
+        #main-landing-content.hidden-page {
             display: none;
-            text-align: center;
+            scroll-snap-type: none; /* Disable snap when hidden */
         }
 
-        /* Removed cursor-pointer from card since we are clicking the button now */
         .product-card {
             min-height: 450px;
             display: flex;
@@ -97,63 +64,33 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* Custom style for loading overlay transition */
-        #loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #FAF0E6; /* Match new body background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            /* Slower transition for a more dramatic, less jarring effect */
-            transition: opacity 1.0s ease-out, visibility 1.0s ease-out; 
-        }
-
-        .hidden-load {
-            opacity: 0;
-            visibility: hidden;
+        .buy-button-style {
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
         
-        /* Custom styles for the logo image and its container */
-        .logo-container {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-        }
-
         .logo-img {
-            height: 40px; /* Base height for the image */
+            height: 40px; 
             width: auto;
-            margin-right: 8px; /* Maintain a little space just in case */
-            transition: filter 0.5s ease;
+            margin-right: 8px; 
         }
 
-        .text-logo {
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2); /* Added subtle shadow for legibility */
+        .star-filled {
+            color: #FFD700; /* Gold */
         }
-        
-        /* logo-filter-dark: Ensures the (assumed light) logo image remains light */
-        .logo-filter-dark {
-            filter: none;
+        .star-empty {
+            color: #cccccc;
         }
 
-        /* logo-filter-light: Not used anymore as the logo is permanently white */
-        .logo-filter-light {
-            filter: invert(100%);
-        }
-
-        /* NEW: Styles for the individual characters in the IYAL intro */
+        /* Intro animation styles */
         .intro-char {
             display: inline-block;
             opacity: 0;
-            /* Start slightly below for a nice "rise-up" effect */
             transform: translateY(10px); 
-            /* Match the slower pace with a 0.5s transition */
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
         .intro-char.visible {
@@ -161,421 +98,1033 @@
             transform: translateY(0);
         }
 
+        /* Loading overlay styles */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FAF0E6; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1.0s ease-out, visibility 1.0s ease-out; 
+        }
+
+        .hidden-load {
+            opacity: 0;
+            visibility: hidden;
+        }
+
     </style>
 </head>
 <body class="overflow-x-hidden">
 
     <!-- Loading Overlay --><div id="loading-overlay">
-        <!-- UPDATED: Text container for IYAL --><div id="iyal-intro-text" class="text-6xl md:text-8xl font-black tracking-widest text-[#4A352D]">
-            <!-- Each letter is now a span for the staggered animation --><span class="intro-char">I</span>
+        <div id="iyal-intro-text" class="text-6xl md:text-8xl font-black tracking-widest text-[#4A352D]">
+            <span class="intro-char">I</span>
             <span class="intro-char">Y</span>
             <span class="intro-char">A</span>
             <span class="intro-char">L</span>
         </div>
     </div>
 
-    <!-- Fixed Navigation Bar (Now only contains Logo and Hamburger) --><header id="main-header" class="fixed top-0 left-0 w-full z-50 p-6 md:p-8 transition-colors duration-500">
+    <!-- Fixed Navigation Bar --><header id="main-header" class="fixed top-0 left-0 w-full z-50 p-6 md:p-8 transition-colors duration-500">
         <nav id="main-nav-container" class="flex justify-between items-center max-w-7xl mx-auto">
             
-            <!-- UPDATED LOGO: Image Only --><div id="logo-container" class="logo-container" onclick="scrollToSection(0)">
+            <!-- Logo: Always scrolls to the main Hero section (section 0) --><div id="logo-container" class="logo-container flex items-center cursor-pointer" onclick="goHome()">
                 <img id="logo-image" 
                      src="https://i.imgur.com/GY15TYP.jpeg" 
                      alt="Iyal Logo" 
                      class="logo-img logo-filter-dark"
                      onerror="this.onerror=null;this.src='https://placehold.co/40x40/4A352D/D4C1B0?text=I';" 
                 >
-                <!-- REMOVED: Text Logo --></div>
+                <!-- Removed: <span id="header-title" class="text-white text-2xl font-black transition-colors duration-500">IYAL</span> --></div>
 
-            <!-- REMOVED: Desktop Navigation Links. They are now accessed via the hamburger icon. -->
-            
-            <!-- Mobile Menu Toggle Button (Now visible on ALL screens for navigation) -->
-            <button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="p-2 rounded-full hover:bg-white/10 transition duration-300">
-                <!-- Hamburger Icon (White color, 28x28 size) --><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            </button>
+            <!-- Desktop Cart Icon & Mobile Menu Toggle --><div class="flex items-center space-x-4">
+                <!-- Desktop Cart Icon --><button onclick="viewCart()" class="hidden sm:block p-2 rounded-full hover:bg-white/10 transition duration-300 relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart" id="cart-icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <!-- Cart Count Badge --><span id="cart-count" class="absolute top-1 right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </button>
+
+                <!-- Mobile Menu Toggle Button (Hamburger) --><button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="p-2 rounded-full hover:bg-white/10 transition duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+            </div>
         </nav>
+        <div id="user-info-bar" class="text-xs text-right mt-1 px-4 opacity-70">
+            <span id="current-user-id" class="text-white">...</span>
+        </div>
     </header>
 
-    <!-- Mobile Navigation Drawer (Full screen, slides from right, now the main navigation) --><div id="mobile-menu" class="fixed top-0 left-0 w-full h-full bg-[#4A352D] z-[100] transform translate-x-full transition-transform duration-500 overflow-y-auto">
+    <!-- Mobile Navigation Drawer --><div id="mobile-menu" class="fixed top-0 left-0 w-full h-full bg-[#4A352D] z-[100] transform translate-x-full transition-transform duration-500 overflow-y-auto">
         
-        <!-- Close Button (Top right) --><div class="flex justify-end p-8">
+        <!-- Close Button --><div class="flex justify-end p-8">
             <button onclick="toggleMobileMenu()" class="p-2 rounded-full text-white hover:bg-white/10 transition duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
 
         <!-- Menu Links Container --><nav class="flex flex-col items-center space-y-8 mt-12 text-3xl font-extrabold text-white">
+            <a onclick="goHomeAndScroll(0)" class="hover:text-[#B38B6D] transition cursor-pointer">Home</a>
+            <a onclick="goHomeAndScroll(1)" class="hover:text-[#B38B6D] transition cursor-pointer">Products</a>
+            <a onclick="goHomeAndScroll(2)" class="hover:text-[#B38B6D] transition cursor-pointer">Contact Us</a>
             
-            <!-- Main Navigation Links (Use scrollToSectionAndClose to navigate and hide menu) --><a onclick="scrollToSectionAndClose(0)" class="hover:text-[#B38B6D] transition cursor-pointer">Home</a>
-            <a onclick="scrollToSectionAndClose(1)" class="hover:text-[#B38B6D] transition cursor-pointer">Products</a>
-            <a onclick="scrollToSectionAndClose(2)" class="hover:text-[#B38B6D] transition cursor-pointer">Contact Us</a>
-            
-            <!-- E-commerce Links -->
-            <a href="#" class="hover:text-[#B38B6D] transition">Cart</a>
-            <a href="#" class="hover:text-[#B38B6D] transition">Order History</a>
+            <a onclick="viewCart()" class="hover:text-[#B38B6D] transition cursor-pointer flex items-center space-x-2">
+                <span>Cart</span>
+                <span id="mobile-cart-count" class="bg-red-600 text-white text-base font-bold rounded-full h-6 w-6 flex items-center justify-center">0</span>
+            </a>
+            <!-- UPDATED: Order History Link --><a onclick="viewOrderHistory()" class="hover:text-[#B38B6D] transition cursor-pointer">Order History</a>
 
-            <!-- Brown Bar Separator --><div class="w-2/3 max-w-sm h-px bg-[#B38B6D] my-6 opacity-50"></div>
+            <div class="w-2/3 max-w-sm h-px bg-[#B38B6D] my-6 opacity-50"></div>
 
-            <!-- Login / Sign Up Action Button --><a href="#" class="text-3xl px-10 py-4 rounded-full bg-[#B38B6D] text-white shadow-xl hover:bg-[#9E785C] transition transform hover:scale-105 font-bold">
+            <a href="#" class="text-3xl px-10 py-4 rounded-full bg-[#B38B6D] text-white shadow-xl hover:bg-[#9E785C] transition transform hover:scale-105 font-bold">
                 Login / Sign Up
             </a>
         </nav>
-
     </div>
 
-    <!-- Global Buy Message Box (Replaces alert()) --><div id="message-box">
-        <p class="text-lg font-semibold text-[#4A352D] mb-4">Redirecting to Buy Page...</p>
-        <p>This is where your secure checkout process would begin for the selected product.</p>
-        <button onclick="document.getElementById('message-box').style.display='none';" class="mt-4 px-4 py-2 bg-[#B38B6D] text-white rounded-full shadow-md hover:bg-[#9E785C] transition">Close</button>
-    </div>
+    <!-- ---------------------------------------------------- --><!-- 1. MAIN LANDING PAGE CONTENT (Scroll Snap Sections) --><!-- ---------------------------------------------------- --><div id="main-landing-content">
+        <!-- 1. Hero Section --><section id="hero-section" class="snap-section bg-[#4A352D] flex items-center justify-center text-center">
+            <div id="hero-content" class="w-full flex flex-col items-center justify-center p-8 md:p-16 z-30 max-w-7xl mx-auto">
+                <div class="flex flex-col items-center justify-center w-full">
+                    <h1 id="hero-title" class="text-6xl md:text-9xl font-extrabold text-white mb-6 uppercase tracking-tighter" style="text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                        IYAL
+                    </h1>
+                    <p id="hero-subtitle" class="text-xl md:text-3xl text-white opacity-80 mb-10 font-light" style="text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);">
+                        Nourish. Revitalize. Shine.
+                    </p>
+                </div>
+                <a onclick="scrollToSection(1)" class="explore-button bg-[#B38B6D] text-white px-8 py-4 rounded-full text-lg font-semibold shadow-2xl hover:bg-[#9E785C] transition duration-300 transform hover:scale-105 w-max cursor-pointer">
+                    Explore Our Products
+                </a>
+            </div>
+        </section>
 
-    <!-- 1. Hero Section (Content is now centered vertically and horizontally) --><section id="hero-section" class="snap-section bg-[#4A352D] flex items-center justify-center text-center">
-        <!-- Hero Content: Center everything inside this container --><div id="hero-content" class="w-full flex flex-col items-center justify-center p-8 md:p-16 z-30 max-w-7xl mx-auto">
-            
-            <div class="flex flex-col items-center justify-center w-full">
-                <h1 id="hero-title" class="text-6xl md:text-9xl font-extrabold text-white mb-6 uppercase tracking-tighter" style="text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-                    IYAL
-                </h1>
-                <p id="hero-subtitle" class="text-xl md:text-3xl text-white opacity-80 mb-10 font-light" style="text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);">
-                    Nourish. Revitalize. Shine.
+        <!-- 2. Product Slides Section --><section id="product-slides" class="snap-section bg-[#FAF0E6] px-4 md:px-12">
+            <div class="max-w-7xl mx-auto flex flex-col pt-16 pb-12">
+                <h2 class="text-5xl md:text-7xl font-bold text-center mb-16 text-[#4A352D]" id="product-title">
+                    Our Premium Lineup
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                    <!-- Product 1: Magic Hair Oil (ID: oil_magic) --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/400x400/8B4513/ffffff?text=Magic+Oil" alt="Hair Oil Bottle" class="w-2/3 h-auto object-contain">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">1. Magic Hair Oil</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Deeply nourishes scalp and strands, promoting strength and shine from root to tip.</p>
+                        
+                        <div class="mt-auto flex justify-between items-center pt-4">
+                            <div class="text-xl font-bold text-[#4A352D]">₹300</div>
+                            <button onclick="viewProduct('oil_magic')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 2: Iyal Face Pack (ID: face_pack) --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/400x400/696969/ffffff?text=Iyal+Face+Pack" alt="Face Pack Jar" class="w-2/3 h-auto object-contain">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">2. Iyal Face Pack</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Detoxifies and purifies pores, revealing a brighter, smoother, and more youthful complexion.</p>
+                        
+                        <div class="mt-auto flex justify-between items-center pt-4">
+                            <div class="text-xl font-bold text-[#4A352D]">₹150</div>
+                            <button onclick="viewProduct('face_pack')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 3: Iyal Health Mix (ID: health_mix) --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/400x400/9ACD32/ffffff?text=Iyal+Mix" alt="Health Mix Pouch" class="w-2/3 h-auto object-contain">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">3. Iyal Health Mix</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">A powerful blend of superfoods to boost immunity and energy throughout your busy day.</p>
+                        
+                        <div class="mt-auto flex justify-between items-center pt-4">
+                            <div class="text-xl font-bold text-[#4A352D]">₹350</div>
+                            <button onclick="viewProduct('health_mix')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 4: Iyal Pain Relief Oil (ID: oil_pain) --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/400x400/800000/ffffff?text=Iyal+Oil" alt="Pain Relief Oil Bottle" class="w-2/3 h-auto object-contain">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">4. Iyal Pain Relief Oil</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">A potent blend of natural extracts formulated to quickly relieve muscle and joint pain.</p>
+                        
+                        <div class="mt-auto flex justify-between items-center pt-4">
+                            <div class="text-xl font-bold text-[#4A352D]">₹175</div>
+                            <button onclick="viewProduct('oil_pain')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Contact Us Section --><section id="contact-section" class="snap-section bg-[#4A352D] text-white flex flex-col justify-center items-center p-8">
+            <div class="max-w-4xl w-full text-center">
+                <p class="text-2xl md:text-3xl mb-8 font-light italic" id="contact-subtitle">
+                    Ready to take the next step in your wellness journey?
                 </p>
+                <h2 class="text-6xl md:text-8xl font-black mb-16 uppercase tracking-tighter" id="contact-title">
+                    Get In Touch.
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3">Say Hello</h3>
+                        <p class="hover:text-[#B38B6D] transition"><a href="mailto:sales@iyal.in">sales@iyal.in</a></p>
+                        <p class="hover:text-[#B38B6D] transition"><a href="tel:+919876543210">+91 987-654-3210</a></p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3">Follow Us</h3>
+                        <p class="hover:text-[#B38B6D] transition"><a href="#">Instagram</a></p>
+                        <p class="hover:text-[#B38B6D] transition"><a href="#">Facebook</a></p>
+                        <p class="hover:text-[#B38B6D] transition"><a href="#">LinkedIn</a></p>
+                    </div>
+                </div>
             </div>
+            <footer class="mt-20 text-sm opacity-50">
+                &copy; 2024 Iyal. All Rights Reserved.
+            </footer>
+        </section>
+    </div>
+
+    <!-- ---------------------------------------------------- --><!-- 2. PRODUCT DETAIL PAGE (Dynamically Rendered) --><!-- ---------------------------------------------------- --><div id="product-detail-page" class="bg-white px-4 md:px-12 pb-20">
+        <div class="max-w-7xl mx-auto pt-8">
+            <!-- Back Button --><button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back to Products
+            </button>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Left: Product Image & Gallery --><div class="flex flex-col items-center p-4 bg-[#FDFBF9] rounded-2xl shadow-inner">
+                    <img id="detail-image" src="" alt="Product Detail Image" class="w-full max-w-lg rounded-xl h-auto object-contain mb-4">
+                    <div class="text-sm text-gray-500 mt-2">Product image display.</div>
+                </div>
+
+                <!-- Right: Title, Pricing, Actions --><div class="pt-4">
+                    <h1 id="detail-title" class="text-4xl md:text-6xl font-extrabold text-[#4A352D] mb-4">Product Title</h1>
+                    <div id="detail-rating-display" class="flex items-center mb-6">
+                        <!-- Stars will be inserted here --><span class="text-xl text-gray-500 ml-2">(<span id="detail-review-count">0</span> reviews)</span>
+                    </div>
+
+                    <p id="detail-price" class="text-5xl font-bold text-black mb-4">₹0.00</p>
+                    
+                    <!-- Stock and Delivery Info --><div class="space-y-2 mb-8">
+                        <p id="detail-stock" class="text-xl font-semibold"></p>
+                        <p id="detail-delivery" class="text-lg text-gray-600">Estimated Delivery: <span class="font-medium text-[#4A352D]"></span></p>
+                    </div>
+
+                    <!-- Action Buttons --><div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 mb-12">
+                        <!-- Updated to call addToCart function --><button onclick="addToCart(currentProductId)" class="buy-button-style bg-[#B38B6D] text-white hover:bg-[#9E785C] flex-1">
+                            Add to Cart
+                        </button>
+                        <button onclick="console.log('Buy Now action initiated!')" class="buy-button-style bg-[#4A352D] text-white hover:bg-[#3A2B23] flex-1">
+                            Buy Now
+                        </button>
+                    </div>
+                    
+                    <!-- Full Description --><div class="bg-gray-50 p-6 rounded-xl shadow-inner">
+                        <h2 class="text-3xl font-semibold mb-3 text-[#4A352D]">Product Description</h2>
+                        <p id="detail-description" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Width Content: Specs / Ingredients / Reviews --><div class="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Ingredients/Specs --><div class="lg:col-span-1 p-6 bg-[#FAF0E6] rounded-xl shadow-lg">
+                    <h2 class="text-3xl font-bold mb-4 text-[#4A352D]">Key Ingredients</h2>
+                    <ul id="detail-specs" class="list-disc list-inside space-y-2 text-gray-700">
+                        <!-- Specs list will be inserted here --></ul>
+                </div>
+
+                <!-- Customer Reviews & Write a Review --><div class="lg:col-span-2 space-y-12">
+                    <!-- Customer Reviews List --><div>
+                        <h2 class="text-3xl font-bold mb-6 text-[#4A352D]">Customer Reviews</h2>
+                        <div id="detail-reviews-list" class="space-y-6">
+                            <!-- Reviews will be inserted here --></div>
+                    </div>
+
+                    <!-- Write a Review Form --><div class="p-8 bg-white rounded-xl shadow-2xl border border-[#B38B6D]/50">
+                        <h2 class="text-3xl font-bold mb-6 text-[#4A352D]">Write a Review</h2>
+                        <form onsubmit="handleReviewSubmit(event)">
+                            <div class="mb-4">
+                                <label for="review-name" class="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+                                <input type="text" id="review-name" name="review-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="review-rating" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                <select id="review-rating" name="review-rating" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition appearance-none" required>
+                                    <option value="">Select a rating</option>
+                                    <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                                    <option value="4">⭐⭐⭐⭐ (Good)</option>
+                                    <option value="3">⭐⭐⭐ (Average)</option>
+                                    <option value="2">⭐⭐ (Poor)</option>
+                                    <option value="1">⭐ (Terrible)</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label for="review-comment" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+                                <textarea id="review-comment" name="review-comment" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required></textarea>
+                            </div>
+                            <button type="submit" class="w-full px-6 py-3 bg-[#4A352D] text-white rounded-full font-semibold shadow-lg hover:bg-[#3A2B23] transition">
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------------------------------------------------- --><!-- 3. CART PAGE (Dynamically Rendered) --><!-- ---------------------------------------------------- --><div id="cart-page" class="bg-white px-4 md:px-12 pb-20">
+        <div class="max-w-7xl mx-auto pt-8">
+            <!-- Back Button --><button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Continue Shopping
+            </button>
+
+            <h1 class="text-5xl md:text-7xl font-extrabold text-[#4A352D] mb-12">Your Shopping Cart</h1>
             
-            <!-- CTA Button: Use the accent brown for better contrast on dark BG --><a onclick="scrollToSection(1)" class="explore-button bg-[#B38B6D] text-white px-8 py-4 rounded-full text-lg font-semibold shadow-2xl hover:bg-[#9E785C] transition duration-300 transform hover:scale-105 w-max cursor-pointer">
-                Explore Our Products
-            </a>
-        </div>
-    </section>
-
-    <!-- 2. Product Slides Section --><!-- The padding-bottom and height:auto in CSS allows this section to hold all content and prevent overlap --><section id="product-slides" class="snap-section bg-[#FAF0E6] px-4 md:px-12">
-        <div class="max-w-7xl mx-auto flex flex-col pt-16 pb-12">
-            <h2 class="text-5xl md:text-7xl font-bold text-center mb-16 text-[#4A352D]" id="product-title">
-                Our Premium Lineup
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <!-- Product 1: Magic Hair Oil --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
-                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
-                        <img src="https://placehold.co/400x400/8B4513/ffffff?text=Magic+Oil" alt="Hair Oil Bottle" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">1. Magic Hair Oil</h3>
-                    <p class="text-gray-600 mb-4 flex-grow">Deeply nourishes scalp and strands, promoting strength and shine from root to tip. All-natural ingredients.</p>
-                    
-                    <!-- Buy Now Button --><div class="mt-auto flex justify-between items-center pt-4">
-                        <div class="text-xl font-bold text-[#4A352D]">₹300</div>
-                        <button onclick="showBuyMessage('Magic Hair Oil')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
-                            Buy Now
-                        </button>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <!-- Cart Items List (2/3 width) --><div class="lg:col-span-2 space-y-6" id="cart-items-list">
+                    <!-- Cart items will be injected here --><div id="cart-empty-message" class="p-8 bg-gray-100 text-gray-600 rounded-xl text-center text-xl font-medium">
+                        Your cart is empty! Time to fill it with some IYAL goodness.
                     </div>
                 </div>
 
-                <!-- Product 2: Iyal Face Pack --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
-                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
-                        <img src="https://placehold.co/400x400/696969/ffffff?text=Iyal+Face+Pack" alt="Face Pack Jar" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">2. Iyal Face Pack</h3>
-                    <p class="text-gray-600 mb-4 flex-grow">Detoxifies and purifies pores, revealing a brighter, smoother, and more youthful complexion.</p>
+                <!-- Cart Summary (1/3 width) --><div class="lg:col-span-1 p-8 bg-[#FAF0E6] rounded-2xl shadow-xl sticky top-28 h-max">
+                    <h2 class="text-3xl font-bold text-[#4A352D] mb-6">Order Summary</h2>
                     
-                    <!-- Buy Now Button --><div class="mt-auto flex justify-between items-center pt-4">
-                        <div class="text-xl font-bold text-[#4A352D]">₹150</div>
-                        <button onclick="showBuyMessage('Iyal Face Pack')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
-                            Buy Now
-                        </button>
+                    <div class="space-y-3 border-b border-gray-300 pb-4 mb-4">
+                        <div class="flex justify-between text-lg">
+                            <span>Subtotal (<span id="summary-item-count">0</span> items)</span>
+                            <span id="summary-subtotal" class="font-medium">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span>Shipping</span>
+                            <span class="font-medium text-green-600">FREE</span>
+                        </div>
+                        <div class="flex justify-between text-lg text-gray-600">
+                            <span>Taxes (18% Mock)</span>
+                            <span id="summary-tax" class="font-medium">₹0.00</span>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Product 3: Iyal Health Mix --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
-                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
-                        <img src="https://placehold.co/400x400/9ACD32/ffffff?text=Iyal+Mix" alt="Health Mix Pouch" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
+                    <div class="flex justify-between text-2xl font-bold mb-8">
+                        <span>Grand Total</span>
+                        <span id="summary-grand-total" class="text-[#4A352D]">₹0.00</span>
                     </div>
-                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">3. Iyal Health Mix</h3>
-                    <p class="text-gray-600 mb-4 flex-grow">A powerful blend of superfoods to boost immunity and energy throughout your busy day.</p>
-                    
-                    <!-- Buy Now Button --><div class="mt-auto flex justify-between items-center pt-4">
-                        <div class="text-xl font-bold text-[#4A352D]">₹350</div>
-                        <button onclick="showBuyMessage('Iyal Health Mix')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
-                            Buy Now
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Product 4: Iyal Pain Relief Oil --><div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
-                    <div class="h-64 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
-                        <img src="https://placehold.co/400x400/800000/ffffff?text=Iyal+Oil" alt="Pain Relief Oil Bottle" class="w-2/3 h-auto object-contain transform hover:scale-105 transition duration-500">
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-2 text-gray-800">4. Iyal Pain Relief Oil</h3>
-                    <p class="text-gray-600 mb-4 flex-grow">A potent blend of natural extracts formulated to quickly relieve muscle and joint pain, promoting relaxation and recovery.</p>
-                    
-                    <!-- Buy Now Button --><div class="mt-auto flex justify-between items-center pt-4">
-                        <div class="text-xl font-bold text-[#4A352D]">₹175</div>
-                        <button onclick="showBuyMessage('Iyal Pain Relief Oil')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
-                            Buy Now
-                        </button>
-                    </div>
+
+                    <button onclick="console.log('Proceeding to Checkout!')" class="w-full buy-button-style bg-[#4A352D] text-white hover:bg-[#3A2B23] text-lg py-3">
+                        Proceed to Checkout
+                    </button>
+                    <p class="text-sm text-center text-gray-500 mt-4">Shipping calculated at checkout.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- 3. Contact Us Section (Deep Espresso Background) --><section id="contact-section" class="snap-section bg-[#4A352D] text-white flex flex-col justify-center items-center p-8">
-        <div class="max-w-4xl w-full text-center">
-            <p class="text-2xl md:text-3xl mb-8 font-light italic" id="contact-subtitle">
-                Ready to take the next step in your wellness journey?
-            </p>
-            <h2 class="text-6xl md:text-8xl font-black mb-16 uppercase tracking-tighter" id="contact-title">
-                Get In Touch.
-            </h2>
+    <!-- ---------------------------------------------------- --><!-- 4. ORDER HISTORY PAGE (NEW) --><!-- ---------------------------------------------------- --><div id="order-history-page" class="bg-white px-4 md:px-12 pb-20">
+        <div class="max-w-7xl mx-auto pt-8">
+            <!-- Back Button --><button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back to Home
+            </button>
 
-            <!-- Grid is now md:grid-cols-2 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
-                <!-- Email (Caramel highlight on hover) --><div>
-                    <h3 class="text-2xl font-bold mb-3">Say Hello</h3>
-                    <p class="hover:text-[#B38B6D] transition"><a href="mailto:sales@iyal.in">sales@iyal.in</a></p>
-                    <p class="hover:text-[#B38B6D] transition"><a href="tel:+919876543210">+91 987-654-3210</a></p>
-                </div>
-                <!-- Social (Caramel highlight on hover) --><div>
-                    <h3 class="text-2xl font-bold mb-3">Follow Us</h3>
-                    <p class="hover:text-[#B38B6D] transition"><a href="#">Instagram</a></p>
-                    <p class="hover:text-[#B38B6D] transition"><a href="#">Facebook</a></p>
-                    <p class="hover:text-[#B38B6D] transition"><a href="#">LinkedIn</a></p>
+            <h1 class="text-5xl md:text-7xl font-extrabold text-[#4A352D] mb-12">Your Order History</h1>
+            
+            <div id="orders-list-container" class="space-y-8">
+                <!-- Orders will be dynamically inserted here --><div id="order-history-empty-message" class="p-8 bg-gray-100 text-gray-600 rounded-xl text-center text-xl font-medium">
+                    You haven't placed any orders yet.
                 </div>
             </div>
         </div>
-        <footer class="mt-20 text-sm opacity-50">
-            &copy; 2024 Iyal. All Rights Reserved.
-        </footer>
-    </section>
+    </div>
 
 
-    <script>
-        // --- Global Variables and Utility Functions ---
-        const heroSection = document.getElementById('hero-section');
+    <!-- FIREBASE AND JS CODE --><script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, writeBatch, runTransaction, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        setLogLevel('debug'); // Enable Firestore logging
+
+        // --- Firebase Global Variables (Provided by environment) ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-iyal-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth, userId = null;
+        let isAuthReady = false;
+        let cartItems = []; // Local array to hold cart items synchronized with Firestore
+        let currentProductId = null; // Tracks the currently viewed product ID
+
+        // --- Product Data Mock API ---
+        const PRODUCTS = {
+            'oil_magic': { id: 'oil_magic', name: 'Magic Hair Oil', price: 300, stock: 120, avgRating: 4.8, reviews: 45, delivery: '3-5 business days', image: 'https://placehold.co/600x600/8B4513/ffffff?text=Magic+Oil', description: "Iyal's Magic Hair Oil is a potent, time-tested blend of 12 natural herbs, cold-pressed with virgin coconut oil...", specs: ['Virgin Coconut Oil Base', 'Amla (Indian Gooseberry)', 'Bhringraj (False Daisy)', 'Hibiscus Flower Extracts', 'No Artificial Scents or Colors'], mockReviews: [{ name: 'Priya S.', rating: 5, comment: 'Absolutely transformed my hair!' }, { name: 'Ravi M.', rating: 4, comment: 'Great product, but the earthy smell is quite strong.' }] },
+            'face_pack': { id: 'face_pack', name: 'Iyal Face Pack', price: 150, stock: 0, avgRating: 4.2, reviews: 22, delivery: 'Currently unavailable', image: 'https://placehold.co/600x600/696969/ffffff?text=Iyal+Face+Pack', description: "This purifying face pack is made with volcanic clay and activated charcoal to draw out deep-seated impurities...", specs: ['Volcanic Clay', 'Activated Charcoal', 'Pure Sandalwood Powder', 'Rose Water', 'Suitable for All Skin Types'], mockReviews: [{ name: 'Kavya T.', rating: 5, comment: 'My favorite! Gives a spa-like glow instantly.' }, { name: 'Arun V.', rating: 3, comment: 'A little drying on my combination skin.' }] },
+            'health_mix': { id: 'health_mix', name: 'Iyal Health Mix', price: 350, stock: 450, avgRating: 4.9, reviews: 78, delivery: '2-4 business days', image: 'https://placehold.co/600x600/9ACD32/ffffff?text=Iyal+Mix', description: "A nutritious powerhouse, this daily health mix is a blend of 18 roasted grains, pulses, and nuts...", specs: ['Multi-Grain Blend (Ragi, Bajra, Wheat)', 'Pulses (Moong, Chana)', 'Dry Fruits (Almonds, Cashews)', 'No Added Sugar', 'High in Dietary Fiber'], mockReviews: [{ name: 'Deepak J.', rating: 5, comment: 'Perfect start to my day.' }, { name: 'Shreya P.', rating: 5, comment: 'My kids love this mixed with jaggery.' }] },
+            'oil_pain': { id: 'oil_pain', name: 'Iyal Pain Relief Oil', price: 175, stock: 250, avgRating: 4.5, reviews: 31, delivery: '4-6 business days', image: 'https://placehold.co/600x600/800000/ffffff?text=Iyal+Oil', description: "Experience fast, deep relief from muscle aches, joint stiffness, and chronic pain. Our Pain Relief Oil uses traditional ayurvedic wisdom...", specs: ['Sesame Oil Base', 'Wintergreen Oil', 'Eucalyptus Oil', 'Camphor', 'Rapid Penetration Formula'], mockReviews: [{ name: 'Vimal K.', rating: 4, comment: 'Very effective for my knee pain after running.' }, { name: 'Leena R.', rating: 5, comment: 'Best pain relief oil I have ever used.' }] }
+        };
+
+        // --- MOCK ORDER DATA (Private data path: /artifacts/{appId}/users/{userId}/orders/{orderId}) ---
+        const mockOrders = [
+            { id: 'ORD4008', date: '2025-10-01', total: 680.00, status: 'Delivered', 
+                items: [{ name: 'Magic Hair Oil', price: 300, quantity: 1 }, { name: 'Iyal Pain Relief Oil', price: 175, quantity: 2 }] 
+            },
+            { id: 'ORD4007', date: '2025-08-15', total: 350.00, status: 'Shipped', 
+                items: [{ name: 'Iyal Health Mix', price: 350, quantity: 1 }] 
+            },
+            { id: 'ORD4006', date: '2025-07-20', total: 900.00, status: 'Processing', 
+                items: [{ name: 'Magic Hair Oil', price: 300, quantity: 3 }] 
+            }
+        ];
+
+
+        // --- DOM Elements ---
         const mainHeader = document.getElementById('main-header');
-        const logoImage = document.getElementById('logo-image');
-        // REMOVED: logoText reference
-        const mobileMenu = document.getElementById('mobile-menu'); 
-        const heroContent = document.getElementById('hero-content');
+        const mainLandingContent = document.getElementById('main-landing-content');
+        const productDetailPage = document.getElementById('product-detail-page');
+        const cartPage = document.getElementById('cart-page');
+        const orderHistoryPage = document.getElementById('order-history-page'); // NEW
+        const mobileMenu = document.getElementById('mobile-menu');
+        // Removed: const headerTitle = document.getElementById('header-title');
+
+        const cartItemsListElement = document.getElementById('cart-items-list');
+        const cartEmptyMessage = document.getElementById('cart-empty-message');
+        const cartCountDesktop = document.getElementById('cart-count');
+        const cartCountMobile = document.getElementById('mobile-cart-count');
+        const summaryItemCount = document.getElementById('summary-item-count');
+        const summarySubtotal = document.getElementById('summary-subtotal');
+        const summaryTax = document.getElementById('summary-tax');
+        const summaryGrandTotal = document.getElementById('summary-grand-total');
         
-        // --- WAVE EFFECT VARIABLES ---
-        // NOTE: Since desktop links are removed, the wave effect code is now obsolete but kept here for completeness if links were reintroduced.
-        const DELAY = 100; // Delay in ms between character color changes (controls speed of the wave)
-        let waveTimeouts = []; // Array to store all timeouts for clearing
-        
-        /**
-         * Easing function: easeInOutQuint (starts and ends very slow, fast in the middle)
-         * @param {number} t - time/progress (0 to 1)
-         */
-        function easeInOutQuint(t) {
-            return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t;
+        const ordersListContainer = document.getElementById('orders-list-container'); // NEW
+        const orderHistoryEmptyMessage = document.getElementById('order-history-empty-message'); // NEW
+
+        // --- FIREBASE INITIALIZATION AND AUTH ---
+        async function setupFirebaseAndAuth() {
+            if (!firebaseConfig) {
+                console.error("Firebase config not found.");
+                document.getElementById('current-user-id').textContent = 'Firebase Error: Config Missing';
+                return;
+            }
+
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            try {
+                // Set persistence to local to remember the session
+                await setPersistence(auth, browserLocalPersistence);
+                
+                // Sign in with custom token if available, otherwise anonymously
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Wait for auth state to be ready
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        isAuthReady = true;
+                        document.getElementById('current-user-id').textContent = `User ID: ${userId}`;
+                        listenToCart(); // Start listening for cart changes after successful auth
+                        // In a real app, we would also start listening to orders here.
+                    } else {
+                        // This should ideally not happen after successful sign-in
+                        console.log("User signed out or failed to sign in.");
+                    }
+                });
+
+            } catch (error) {
+                console.error("Firebase Auth or Init error:", error);
+                document.getElementById('current-user-id').textContent = `Auth Error: ${error.message}`;
+            }
         }
 
         /**
-         * Programmatically scrolls the window to a target Y position over a specified duration using an easing function.
-         * @param {number} targetY - The final scroll position.
-         * @param {number} duration - The duration of the animation in milliseconds.
+         * Returns the Firestore path for the user's cart collection.
          */
+        function getCartCollectionRef() {
+            if (!db || !userId) {
+                console.error("Database or User ID not ready.");
+                return null;
+            }
+            // Private data path: /artifacts/{appId}/users/{userId}/cart_items
+            return collection(db, `artifacts/${appId}/users/${userId}/cart_items`);
+        }
+        
+        /**
+         * Returns the Firestore path for the user's orders collection.
+         */
+        function getOrdersCollectionRef() {
+            if (!db || !userId) {
+                console.error("Database or User ID not ready.");
+                return null;
+            }
+            // Private data path: /artifacts/{appId}/users/{userId}/orders
+            return collection(db, `artifacts/${appId}/users/${userId}/orders`);
+        }
+
+
+        /**
+         * Sets up a real-time listener for the user's cart.
+         */
+        function listenToCart() {
+            const cartRef = getCartCollectionRef();
+            if (!cartRef) return;
+
+            onSnapshot(cartRef, (snapshot) => {
+                const newCartItems = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const productDetails = PRODUCTS[data.productId];
+                    // Ensure the product still exists in the mock data
+                    if (productDetails) {
+                        newCartItems.push({
+                            id: doc.id, // Firestore document ID
+                            ...data,
+                            ...productDetails
+                        });
+                    }
+                });
+                cartItems = newCartItems;
+                updateCartUI();
+                renderCartPage();
+            }, (error) => {
+                console.error("Error listening to cart changes:", error);
+            });
+        }
+
+        /**
+         * Updates the header cart icon count.
+         */
+        function updateCartUI() {
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            
+            cartCountDesktop.textContent = totalItems;
+            cartCountMobile.textContent = totalItems;
+
+            if (totalItems > 0) {
+                cartCountDesktop.classList.remove('hidden');
+            } else {
+                cartCountDesktop.classList.add('hidden');
+            }
+        }
+
+
+        // --- CART ACTIONS (CRUD) ---
+
+        /**
+         * Adds or increments the quantity of a product in the cart.
+         */
+        async function addToCart(productId) {
+            if (!isAuthReady) {
+                console.error("Authentication not ready. Cannot add to cart.");
+                return;
+            }
+
+            const product = PRODUCTS[productId];
+            if (!product || product.stock <= 0) {
+                console.warn(`Product ${productId} is out of stock.`);
+                return;
+            }
+            
+            // Check if item already exists in the cart locally (synced from Firestore)
+            const existingItem = cartItems.find(item => item.productId === productId);
+            const cartRef = getCartCollectionRef();
+
+            try {
+                if (existingItem) {
+                    // Update existing item: increment quantity
+                    const itemDocRef = doc(cartRef, existingItem.id);
+                    await updateDoc(itemDocRef, {
+                        quantity: existingItem.quantity + 1,
+                        updatedAt: new Date().toISOString()
+                    });
+                    console.log(`Updated quantity for ${product.name}`);
+                } else {
+                    // Add new item
+                    await addDoc(cartRef, {
+                        productId: productId,
+                        quantity: 1,
+                        addedAt: new Date().toISOString()
+                    });
+                    console.log(`Added ${product.name} to cart.`);
+                }
+                
+                // Show temporary feedback on the button
+                const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
+                showTemporaryFeedback(detailButton, 'Added to Cart!', 'bg-green-600');
+
+            } catch (e) {
+                console.error("Error adding/updating cart item:", e);
+                const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
+                showTemporaryFeedback(detailButton, 'Error!', 'bg-red-600');
+            }
+        }
+
+        /**
+         * Removes a cart item by its Firestore document ID.
+         */
+        async function removeItem(cartItemId) {
+            if (!isAuthReady) return;
+            const cartRef = getCartCollectionRef();
+            const itemDocRef = doc(cartRef, cartItemId);
+
+            try {
+                await deleteDoc(itemDocRef);
+                console.log(`Removed item ${cartItemId} from cart.`);
+            } catch (e) {
+                console.error("Error removing cart item:", e);
+            }
+        }
+
+        /**
+         * Updates the quantity of a cart item.
+         */
+        async function updateQuantity(cartItemId, newQuantity) {
+            if (!isAuthReady) return;
+            const quantity = parseInt(newQuantity);
+
+            if (quantity < 1 || isNaN(quantity)) {
+                console.log("Quantity less than 1, initiating removal.");
+                return removeItem(cartItemId);
+            }
+            
+            const cartRef = getCartCollectionRef();
+            const itemDocRef = doc(cartRef, cartItemId);
+            
+            try {
+                await updateDoc(itemDocRef, {
+                    quantity: quantity,
+                    updatedAt: new Date().toISOString()
+                });
+                console.log(`Quantity updated for item ${cartItemId} to ${quantity}`);
+            } catch (e) {
+                console.error("Error updating quantity:", e);
+            }
+        }
+
+        // --- CART PAGE RENDERING ---
+
+        /**
+         * Renders the full cart page content based on the global cartItems array.
+         */
+        function renderCartPage() {
+            if (!isAuthReady || !cartItemsListElement) return;
+
+            let totalItems = 0;
+            let subtotal = 0;
+            let cartHtml = '';
+
+            if (cartItems.length === 0) {
+                cartEmptyMessage.style.display = 'block';
+                cartItemsListElement.innerHTML = '';
+            } else {
+                cartEmptyMessage.style.display = 'none';
+
+                cartHtml = cartItems.map(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    totalItems += item.quantity;
+
+                    return `
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center p-4 bg-white rounded-xl shadow-md border border-gray-200">
+                            <!-- Image and Details --><img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-contain rounded-lg flex-shrink-0 mr-4 border border-gray-100">
+                            
+                            <div class="flex-grow my-2 sm:my-0">
+                                <h3 class="text-xl font-semibold text-[#4A352D]">${item.name}</h3>
+                                <p class="text-gray-500">Price: ₹${item.price.toFixed(2)}</p>
+                            </div>
+
+                            <!-- Controls and Total --><div class="flex items-center space-x-4 mt-3 sm:mt-0 sm:ml-auto">
+                                <!-- Quantity Control --><div class="flex items-center border border-gray-300 rounded-full overflow-hidden">
+                                    <button onclick="updateQuantity('${item.id}', ${item.quantity - 1})" 
+                                            class="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-lg font-bold transition rounded-l-full">
+                                        &minus;
+                                    </button>
+                                    <input type="number" value="${item.quantity}" min="1" 
+                                           onchange="updateQuantity('${item.id}', this.value)"
+                                           class="w-12 text-center text-lg border-x border-gray-300 focus:outline-none focus:ring-0 appearance-none bg-white">
+                                    <button onclick="updateQuantity('${item.id}', ${item.quantity + 1})" 
+                                            class="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-lg font-bold transition rounded-r-full">
+                                        &#43;
+                                    </button>
+                                </div>
+                                
+                                <!-- Item Total --><div class="text-xl font-bold w-24 text-right">
+                                    ₹${itemTotal.toFixed(2)}
+                                </div>
+
+                                <!-- Remove Button --><button onclick="removeItem('${item.id}')" class="text-red-500 hover:text-red-700 transition p-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                cartItemsListElement.innerHTML = cartHtml;
+            }
+
+            // Update Summary
+            const taxRate = 0.18; // 18% mock tax
+            const taxAmount = subtotal * taxRate;
+            const grandTotal = subtotal + taxAmount;
+
+            summaryItemCount.textContent = totalItems;
+            summarySubtotal.textContent = `₹${subtotal.toFixed(2)}`;
+            summaryTax.textContent = `₹${taxAmount.toFixed(2)}`;
+            summaryGrandTotal.textContent = `₹${grandTotal.toFixed(2)}`;
+        }
+        
+        // --- ORDER HISTORY RENDERING (NEW) ---
+        
+        /**
+         * Renders the order history page content based on mock data.
+         */
+        function renderOrderHistoryPage() {
+            if (!ordersListContainer) return;
+
+            if (mockOrders.length === 0) {
+                orderHistoryEmptyMessage.style.display = 'block';
+                ordersListContainer.innerHTML = '';
+                return;
+            }
+
+            orderHistoryEmptyMessage.style.display = 'none';
+            
+            const orderHtml = mockOrders.map(order => {
+                let statusColor = 'text-gray-600';
+                if (order.status === 'Delivered') statusColor = 'text-green-600 font-semibold';
+                if (order.status === 'Shipped') statusColor = 'text-yellow-600 font-semibold';
+                if (order.status === 'Processing') statusColor = 'text-blue-600 font-semibold';
+
+                const itemsList = order.items.map(item => `
+                    <div class="flex justify-between text-sm text-gray-500 ml-4">
+                        <span>${item.quantity} x ${item.name}</span>
+                        <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30 transition hover:shadow-xl">
+                        <!-- Order Header --><div class="flex justify-between items-start pb-4 border-b border-gray-200 mb-4 flex-wrap">
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold text-[#4A352D]">Order ID: ${order.id}</h3>
+                                <p class="text-sm text-gray-500">Placed on: ${order.date}</p>
+                            </div>
+                            <div class="mt-2 md:mt-0 text-right">
+                                <p class="text-2xl font-bold text-black">₹${order.total.toFixed(2)}</p>
+                                <p class="text-sm ${statusColor}">Status: ${order.status}</p>
+                            </div>
+                        </div>
+
+                        <!-- Order Items Detail --><div class="space-y-2">
+                            <h4 class="text-lg font-semibold text-gray-700">Items Ordered:</h4>
+                            ${itemsList}
+                        </div>
+
+                        <!-- Actions (Mock) --><div class="mt-6 pt-4 border-t border-gray-100 flex justify-end space-x-4">
+                            <button onclick="console.log('Tracking Order ${order.id}')" class="px-4 py-2 text-[#4A352D] border border-[#4A352D] rounded-full text-sm font-semibold hover:bg-[#4A352D] hover:text-white transition">
+                                Track Order
+                            </button>
+                            <button onclick="console.log('Reordering Order ${order.id}')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full text-sm font-semibold hover:bg-[#9E785C] transition">
+                                Reorder
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            ordersListContainer.innerHTML = orderHtml;
+        }
+
+        // --- NAVIGATION AND UI STATE ---
+
+        /**
+         * Switches the view to the Cart page.
+         */
+        function viewCart() {
+            productDetailPage.style.display = 'none';
+            orderHistoryPage.style.display = 'none'; // NEW: Hide order page
+            mainLandingContent.classList.add('hidden-page');
+            cartPage.style.display = 'block';
+
+            window.scrollTo(0, 0); 
+            handleScroll(true); // Ensure header style is correct for cart page
+            toggleMobileMenu(true); // Close menu if open
+        }
+
+        /**
+         * Switches the view to the Order History page. (NEW)
+         */
+        function viewOrderHistory() {
+            productDetailPage.style.display = 'none';
+            cartPage.style.display = 'none';
+            mainLandingContent.classList.add('hidden-page');
+            orderHistoryPage.style.display = 'block'; // NEW: Show order page
+
+            renderOrderHistoryPage(); // Render content dynamically
+            window.scrollTo(0, 0); 
+            handleScroll(true); 
+            toggleMobileMenu(true); // Close menu if open
+        }
+
+
+        /**
+         * Switches the view to the Product Detail page.
+         */
+        function viewProduct(productId) {
+            currentProductId = productId; // Store the current product ID
+            const product = PRODUCTS[productId];
+            if (!product) { console.error(`Product with ID ${productId} not found.`); return; }
+
+            // ... (Populate other details as before)
+            document.getElementById('detail-title').textContent = product.name;
+            document.getElementById('detail-image').src = product.image;
+            document.getElementById('detail-image').alt = product.name + " Image";
+            document.getElementById('detail-description').textContent = product.description;
+            document.getElementById('detail-price').textContent = `₹${product.price.toFixed(2)}`;
+
+            const stockElement = document.getElementById('detail-stock');
+            const deliveryElement = document.getElementById('detail-delivery').querySelector('span');
+            const buyButtons = productDetailPage.querySelectorAll('.buy-button-style');
+
+            if (product.stock > 0) {
+                stockElement.innerHTML = `<span class="text-green-600">&#10003; In Stock!</span> (${product.stock} left)`;
+                deliveryElement.textContent = product.delivery;
+                buyButtons.forEach(btn => btn.disabled = false);
+                buyButtons.forEach(btn => btn.classList.remove('opacity-50', 'cursor-not-allowed'));
+
+            } else {
+                stockElement.innerHTML = `<span class="text-red-600">&#10007; Out of Stock</span>`;
+                deliveryElement.textContent = 'Currently unavailable for delivery.';
+                buyButtons.forEach(btn => btn.disabled = true);
+                buyButtons.forEach(btn => btn.classList.add('opacity-50', 'cursor-not-allowed'));
+            }
+
+            const specsList = document.getElementById('detail-specs');
+            specsList.innerHTML = product.specs.map(item => `<li>${item}</li>`).join('');
+            document.getElementById('detail-review-count').textContent = product.reviews;
+            document.getElementById('detail-rating-display').innerHTML = renderStars(product.avgRating) + 
+                                                                        document.getElementById('detail-rating-display').innerHTML.split(')')[1]; 
+
+            const reviewsList = document.getElementById('detail-reviews-list');
+            reviewsList.innerHTML = product.mockReviews.map(review => `
+                <div class="border-b border-gray-200 pb-4">
+                    <div class="flex items-center mb-1">
+                        ${renderStars(review.rating)}
+                        <span class="ml-4 font-semibold text-lg">${review.name}</span>
+                    </div>
+                    <p class="text-gray-600 italic">"${review.comment}"</p>
+                </div>
+            `).join('');
+
+            // Transition View
+            mainLandingContent.classList.add('hidden-page');
+            cartPage.style.display = 'none';
+            orderHistoryPage.style.display = 'none'; // NEW: Hide order page
+            productDetailPage.style.display = 'block';
+            window.scrollTo(0, 0); 
+            
+            // Update Header for the Product Page
+            mainHeader.classList.add('bg-[#4A352D]', 'shadow-md');
+            // Removed: headerTitle.classList.add('text-white');
+        }
+
+        /**
+         * Switches the view back to the main landing page.
+         */
+        function goHome() {
+            productDetailPage.style.display = 'none';
+            cartPage.style.display = 'none';
+            orderHistoryPage.style.display = 'none'; // NEW: Hide order page
+            mainLandingContent.classList.remove('hidden-page');
+            
+            window.scrollTo(0, 0); 
+            handleScroll(); 
+        }
+
+        /**
+         * Navigates home, scrolls to a section, and closes the menu.
+         */
+        function goHomeAndScroll(sectionIndex) {
+            productDetailPage.style.display = 'none';
+            cartPage.style.display = 'none';
+            orderHistoryPage.style.display = 'none'; // NEW: Hide order page
+            mainLandingContent.classList.remove('hidden-page');
+
+            scrollToSection(sectionIndex);
+            
+            setTimeout(toggleMobileMenu, 300);
+            
+            handleScroll();
+        }
+
+        /**
+         * Logic to change header color/visibility based on scroll position in the main landing content.
+         */
+        function handleScroll(forceDark = false) {
+            // Only run if the main landing page content is visible
+            if (mainLandingContent.classList.contains('hidden-page') && !forceDark) {
+                // If on Product Detail, Cart, or Order History, the header should be dark
+                mainHeader.classList.add('bg-[#4A352D]', 'shadow-md');
+                // Removed: headerTitle.classList.add('text-white');
+                document.querySelectorAll('#cart-icon, #mobile-menu-toggle svg').forEach(el => el.setAttribute('stroke', 'white'));
+                return;
+            }
+
+            const scrollY = window.scrollY;
+            const viewportHeight = window.innerHeight;
+            
+            // Calculate the current section index
+            // We only care about section 1 (Products) vs others (Hero/Contact)
+            const isScrolledToProductSection = scrollY >= (viewportHeight * 0.5);
+            
+            if (isScrolledToProductSection) {
+                // Product section: Light background requires Dark Header (4A352D)
+                mainHeader.classList.add('bg-[#4A352D]', 'shadow-md');
+                // Removed: headerTitle.classList.add('text-white');
+                document.querySelectorAll('#cart-icon, #mobile-menu-toggle svg').forEach(el => el.setAttribute('stroke', 'white'));
+            } else {
+                // Hero section: Dark background allows Transparent Header (Text should still be white)
+                mainHeader.classList.remove('bg-[#4A352D]', 'shadow-md');
+                // Removed: headerTitle.classList.remove('text-white');
+                document.querySelectorAll('#cart-icon, #mobile-menu-toggle svg').forEach(el => el.setAttribute('stroke', 'white'));
+            }
+        }
+        
+        // --- Helper Functions (as before) ---
+
+        function renderStars(rating) {
+            let starsHtml = '';
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 !== 0;
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            for (let i = 0; i < fullStars; i++) { starsHtml += `<span class="star-filled text-2xl">&#9733;</span>`; }
+            if (halfStar) { starsHtml += `<span class="star-filled text-2xl">&#9733;</span>`; }
+            for (let i = 0; i < emptyStars; i++) { starsHtml += `<span class="star-empty text-2xl">&#9733;</span>`; }
+            starsHtml += `<span class="text-xl font-bold ml-3 text-[#4A352D]">${rating.toFixed(1)}</span>`;
+            return starsHtml;
+        }
+
+        function easeInOutQuint(t) { return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; }
+
         function animateScroll(targetY, duration) {
             const startY = window.scrollY;
             const distance = targetY - startY;
             const startTime = performance.now();
-
             function step(currentTime) {
                 const elapsedTime = currentTime - startTime;
                 const progress = Math.min(1, elapsedTime / duration);
-                
-                // Use a custom easing function for a unique, controlled feel
                 const easedProgress = easeInOutQuint(progress);
-
                 window.scrollTo(0, startY + distance * easedProgress);
-
-                if (progress < 1) {
-                    requestAnimationFrame(step);
-                }
+                if (progress < 1) { requestAnimationFrame(step); }
             }
-
             requestAnimationFrame(step);
         }
 
-        /**
-         * Initiates a custom smooth scroll to the start of a specific section based on its index.
-         * @param {number} sectionIndex - The index of the section (0=Hero, 1=Products, 2=Contact).
-         */
         function scrollToSection(sectionIndex) {
-            // Find the target element
-            const sections = [
-                document.getElementById('hero-section'),
-                document.getElementById('product-slides'),
-                document.getElementById('contact-section')
-            ];
-
+            const sections = [ document.getElementById('hero-section'), document.getElementById('product-slides'), document.getElementById('contact-section') ];
             const targetSection = sections[sectionIndex];
             if (!targetSection) return;
-
-            // Get the target Y position relative to the document
-            const targetY = targetSection.offsetTop;
-            
-            // Use custom animation with a longer duration (1500ms)
+            const headerHeight = mainHeader.offsetHeight;
+            const targetY = targetSection.offsetTop - headerHeight; 
             animateScroll(targetY, 1500); 
-
-            // Stop any wave effect in case the click was triggered during a hover animation
-            waveTimeouts.forEach(t => clearTimeout(t));
-            waveTimeouts = [];
         }
 
-        /**
-         * Toggles the visibility of the mobile menu drawer and locks/unlocks body scroll.
-         */
-        function toggleMobileMenu() {
-            // Checks the current state by looking for the hidden class 'translate-x-full'
+        function toggleMobileMenu(forceClose = false) {
             const isMenuOpen = !mobileMenu.classList.contains('translate-x-full');
-
-            if (isMenuOpen) {
-                // Close menu: Add translate-x-full
+            if (isMenuOpen || forceClose) {
                 mobileMenu.classList.add('translate-x-full');
                 document.body.classList.remove('overflow-hidden');
             } else {
-                // Open menu: Remove translate-x-full
                 mobileMenu.classList.remove('translate-x-full');
                 document.body.classList.add('overflow-hidden');
             }
         }
         
-        /**
-         * Scrolls to a section and then closes the mobile menu.
-         * Used for links inside the mobile menu.
-         */
-        function scrollToSectionAndClose(sectionIndex) {
-            scrollToSection(sectionIndex);
-            // Give a short moment for scroll to start before closing menu (optional, but smoother)
-            setTimeout(toggleMobileMenu, 300); 
+        function showTemporaryFeedback(button, text, className) {
+            const originalText = button.textContent;
+            const originalClasses = button.className;
+            
+            button.textContent = text;
+            button.className = `${originalClasses.replace(/bg-\[\#\w+\]/, className)}`;
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.className = originalClasses;
+            }, 2000);
         }
 
-        /**
-         * Shows the buy page message box.
-         */
-        function showBuyMessage(productName) {
-            const messageBox = document.getElementById('message-box');
-            messageBox.querySelector('p:first-child').textContent = `Initiating purchase for ${productName}...`;
-            messageBox.style.display = 'block';
-        }
+        function handleReviewSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('review-name').value;
+            console.log(`Review submitted by: ${name}`);
 
-        /**
-         * Wraps each character of the navigation links in a span for wave effect.
-         * This must be called before adding event listeners.
-         * NOTE: This function is now mostly obsolete since desktop links are removed, 
-         * but kept for safe refactoring.
-         */
-        function prepareNavLinks() {
-            const navLinks = document.querySelectorAll('#main-nav-container .nav-link-style');
-            navLinks.forEach(link => {
-                const text = link.textContent;
-                link.innerHTML = ''; // Clear original text
-                
-                // Wrap each character in a span
-                Array.from(text).forEach((char) => {
-                    const span = document.createElement('span');
-                    span.textContent = char;
-                    span.classList.add('char-span'); // Class to target letters
-                    link.appendChild(span);
-                });
-            });
+            const submitButton = event.target.querySelector('button[type="submit"]');
+            showTemporaryFeedback(submitButton, 'Review Submitted!', 'bg-green-600');
+            event.target.reset();
         }
         
-        /**
-         * Creates the color wave effect across the letters of a single link.
-         * NOTE: This function is now mostly obsolete since desktop links are removed, 
-         * but kept for safe refactoring.
-         */
-        function handleWave(linkElement, startWave) {
-            // 1. Clear any pending wave animation for this link
-            waveTimeouts.forEach(t => clearTimeout(t));
-            waveTimeouts = [];
+        // --- FIX: Expose functions to the global scope for inline HTML handlers ---
+        window.goHome = goHome;
+        window.viewProduct = viewProduct;
+        window.viewCart = viewCart;
+        window.viewOrderHistory = viewOrderHistory;
+        window.goHomeAndScroll = goHomeAndScroll;
+        window.toggleMobileMenu = toggleMobileMenu;
+        window.addToCart = addToCart;
+        window.updateQuantity = updateQuantity;
+        window.removeItem = removeItem;
+        window.handleReviewSubmit = handleReviewSubmit;
+        window.scrollToSection = scrollToSection;
 
-            const charSpans = linkElement.querySelectorAll('.char-span');
-
-            // The base color is ALWAYS white
-            const baseColor = 'white'; 
-            // The accent color will be the light cream/tan
-            const hoverColor = '#D4C1B0'; 
-            
-            if (startWave) {
-                // Start the wave animation (color is set to accent)
-                charSpans.forEach((span, index) => {
-                    // Sequentially change color to the hover color
-                    const timeoutHover = setTimeout(() => {
-                        span.style.color = hoverColor;
-                    }, index * DELAY); 
-                    waveTimeouts.push(timeoutHover);
-                });
-            } else {
-                // Stop the wave and immediately reset all colors to the base color (white)
-                charSpans.forEach(span => {
-                    span.style.color = baseColor;
-                });
-            }
-        }
-        
-        // --- Scroll Logic for Animation and Navigation Colors ---
-
-        function handleScroll() {
-            const scrollY = window.scrollY;
-            const viewportHeight = window.innerHeight;
-            
-            // Calculate the current section index
-            const currentSectionIndex = Math.round(scrollY / viewportHeight);
-            
-            // The desktop nav links were removed, so we only need to handle the header background now.
-
-            // Header Background Logic: 
-            // It MUST be dark brown (4A352D) on the light Product section (Index 1) for contrast.
-            if (currentSectionIndex === 1) {
-                // Product section: Light background (FAF0E6) requires Dark Header (4A352D)
-                mainHeader.classList.add('bg-[#4A352D]', 'shadow-md');
-                mainHeader.classList.remove('bg-[#FAF0E6]'); 
-            } else {
-                // Hero/Contact sections: Dark background (4A352D) allows Transparent Header
-                mainHeader.classList.remove('bg-[#4A352D]', 'shadow-md', 'bg-[#FAF0E6]');
-            }
-
-            // --- Lock Logo and Hamburger Icon to White ---
-            
-            // Logo Image: Always use the filter-dark setting (filter: none)
-            logoImage.classList.add('logo-filter-dark');
-            logoImage.classList.remove('logo-filter-light');
-        }
 
         // --- Initialization ---
 
         window.onload = () => {
-            // Define loadingOverlay element
+            setupFirebaseAndAuth();
+
+            // Loading Overlay animation
             const loadingOverlay = document.getElementById('loading-overlay');
             const iyalTextContainer = document.getElementById('iyal-intro-text');
             const chars = iyalTextContainer.querySelectorAll('.intro-char');
-            const staggerDelay = 200; // ms between each character reveal
-            let totalRevealTime = chars.length * staggerDelay; // 4 * 200 = 800ms
+            const staggerDelay = 200; 
+            let totalRevealTime = chars.length * staggerDelay; 
             
-            // 1. Staggered Character Reveal (The "Text Transition In")
             chars.forEach((char, index) => {
                 setTimeout(() => {
                     char.classList.add('visible');
                 }, index * staggerDelay);
             });
             
-            // 2. Initial Load Animation Fade-out (The "Text Transition Out" via screen fade)
-            // Wait for the characters to be revealed + a small buffer (200ms) before 
-            // triggering the main 1.0s screen fade.
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden-load');
             }, totalRevealTime + 200); 
             
-            // 3. Prepare Nav Links for Wave Effect (Still run for safety, though element count is 0)
-            prepareNavLinks();
-
-            // 4. Attach Listeners
-            window.addEventListener('scroll', handleScroll);
-            
-            // The wave effect listeners for desktop links are now obsolete and removed here.
-
-            handleScroll();
+            // Attach Listeners
+            window.addEventListener('scroll', () => handleScroll());
+            handleScroll(); // Initial check
         };
 
     </script>
