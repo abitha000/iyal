@@ -626,9 +626,17 @@
         setLogLevel('debug'); // Enable Firestore logging
 
         // --- Firebase Global Variables (Provided by environment) ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-iyal-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        const appId = iyal-app ;
+        const firebaseConfig = {
+          apikey: "AIzaSyA5hPlKdqNi1FmAlVFmIXezZxot9-BuWeA",
+          authdomain: "iyal-59a03.firebaseapp.com",
+          projectid: "iyal-59a03",
+          storageBucket: "iyal-59a03.firebasestorage.app",
+          messagingSenderId: "714618123459",
+          appId: "1:714618123459:web:ae86588468119322bd1e76",
+          measurementId: "G-0GZSM3CDME"
+        }:
+        const initialAuthToken = null;
 
         let db, auth, userId = null;
         let isAuthReady = false;
