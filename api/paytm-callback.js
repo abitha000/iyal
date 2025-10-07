@@ -1,4 +1,12 @@
 import PaytmChecksum from "paytmchecksum";
+import { initializeApp, applicationDefault } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+
+// Initialize Firebase Admin SDK (only once)
+const app = initializeApp({
+  credential: applicationDefault(),
+});
+const db = getFirestore(app);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -32,12 +40,28 @@ export default async function handler(req, res) {
     return res.status(400).send("Checksum Mismatch");
   }
 
-  // Check transaction status
-  if (params.STATUS === "TXN_SUCCESS") {
-    // TODO: Update order status in your database (e.g., Firestore)
-    // You can use params.ORDERID, params.TXNID, params.TXNAMOUNT, etc.
-    res.status(200).send("Payment Success! Thank you for your order.");
-  } else {
-    res.status(200).send("Payment Failed or Cancelled.");
+  // Update order status in Firestore
+  try {
+    await db.collection("orders").doc(params.ORDERID).set({
+      orderId: params.ORDERID,
+      txnId: params.TXNID,
+      amount: params.TXNAMOUNT,
+      status: params.STATUS,
+      paymentMode: params.PAYMENTMODE,
+      bankName: params.BANKNAME,
+      txnDate: params.TXNDATE,
+      email: params.EMAIL,
+      phone: params.MOBILE_NO,
+      paytmResponse: params,
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
+
+    if (params.STATUS === "TXN_SUCCESS") {
+      res.status(200).send("Payment Success! Thank you for your order.");
+    } else {
+      res.status(200).send("Payment Failed or Cancelled.");
+    }
+  } catch (err) {
+    res.status(500).send("Error updating order status.");
   }
 }
