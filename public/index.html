@@ -543,7 +543,7 @@
                         <span id="summary-grand-total" class="text-[#4A352D]">₹0.00</span>
                     </div>
 
-                    <button onclick="placeOrder()" class="w-full buy-button-style bg-[#4A352D] text-white hover:bg-[#3A2B23] text-lg py-3">
+                    <button onclick="console.log('Proceeding to Checkout!')" class="w-full buy-button-style bg-[#4A352D] text-white hover:bg-[#3A2B23] text-lg py-3">
                         Proceed to Checkout
                     </button>
                     <p class="text-sm text-center text-gray-500 mt-4">Shipping calculated at checkout.</p>
@@ -585,33 +585,39 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
-            <h2 id="auth-title" class="text-3xl font-bold text-[#4A352D] mb-6 text-center">Login</h2>
+            
+            <h2 id="auth-title" class="text-3xl font-bold text-[#4A352D] mb-6 text-center">Mobile Login / Sign Up</h2>
             
             <div id="auth-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4 hidden" role="alert">
                 <span id="auth-error-message" class="block sm:inline"></span>
             </div>
 
-            <form id="auth-form" onsubmit="event.preventDefault(); handleAuthSubmit();">
-                <div class="mb-4">
-                    <label for="auth-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                    <input type="email" id="auth-email" name="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required>
-                </div>
-                <div class="mb-6">
-                    <label for="auth-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                    <input type="password" id="auth-password" name="password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required minlength="6">
+            <form id="auth-form" onsubmit="event.preventDefault();">
+                <div id="phone-auth-container" class="space-y-4 pt-4">
+                    <label for="phone-input" class="block text-sm font-medium text-gray-700">Mobile Number (Login/Sign Up)</label>
+                    <input type="tel" id="phone-input" placeholder="Enter Mobile Number (+CCXXXXXXXXXX)" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
+                    
+                    <div id="recaptcha-container" class="mt-4"></div>
+
+                    <button id="send-otp-btn" onclick="handleMobileAuthAction()" 
+                            class="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-150">
+                        Send Verification Code
+                    </button>
                 </div>
 
-                <button type="submit" id="auth-submit-button" class="w-full px-6 py-3 bg-[#4A352D] text-white rounded-full font-semibold shadow-lg hover:bg-[#3A2B23] transition">
-                    Login
-                </button>
+                <div id="otp-verification-fields" class="hidden space-y-4 pt-4">
+                    <input type="number" id="otp-input" placeholder="Enter 6-digit OTP" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" 
+                           maxlength="6">
+                    
+                    <button id="verify-otp-btn" onclick="confirmOtpVerification()" 
+                            class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-150">
+                        Verify & Sign In
+                    </button>
+                </div>
             </form>
-            
-            <div class="mt-6 text-center">
-                <button id="auth-toggle-button" onclick="toggleAuthMode()" class="text-[#B38B6D] hover:text-[#4A352D] text-sm font-medium transition">
-                    New user? Click here to Sign Up
-                </button>
             </div>
-        </div>
     </div>
 
 
@@ -620,13 +626,13 @@
 <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, setPersistence, browserLocalPersistence, 
-                 createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection, query, writeBatch, runTransaction, setLogLevel, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+                 updateEmail, signOut, RecaptchaVerifier, PhoneAuthProvider, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, writeBatch, runTransaction, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        setLogLevel('debug'); 
+        setLogLevel('debug'); // Enable Firestore logging
 
-        // --- Firebase Global Variables (Replace with your actual keys) ---
-        const appId = "iyal-app"; 
+        // --- Firebase Global Variables (Provided by environment) ---
+        const appId = 'iyal-app';
         const firebaseConfig = {
           apikey: "AIzaSyA5hPlKdqNi1FmAlVFmIXezZxot9-BuWeA",
           authdomain: "iyal-59a03.firebaseapp.com",
@@ -635,16 +641,19 @@
           messagingSenderId: "714618123459",
           appId: "1:714618123459:web:ae86588468119322bd1e76",
           measurementId: "G-0GZSM3CDME"
-        }; 
+        };
         const initialAuthToken = null;
 
         let db, auth, userId = null;
         let isAuthReady = false;
-        let cartItems = []; 
-        let userOrders = []; 
-        let currentProductId = null; 
-        let authMode = 'login'; 
-        let currentUser = null; 
+        let cartItems = []; // Local array to hold cart items synchronized with Firestore
+        let currentProductId = null; // Tracks the currently viewed product ID
+        let currentUser = null; // Holds the Firebase User object
+
+        // NEW: Phone Auth Variables
+        let confirmationResult = null;
+        let recaptchaVerifier = null;
+        
 
         // --- Product Data Mock API (Same as before) ---
         const PRODUCTS = {
@@ -653,6 +662,19 @@
             'health_mix': { id: 'health_mix', name: 'Iyal Health Mix', price: 350, stock: 450, avgRating: 4.9, reviews: 78, delivery: '2-4 business days', image: 'https://placehold.co/600x600/9ACD32/ffffff?text=Iyal+Mix', description: "A nutritious powerhouse, this daily health mix is a blend of 18 roasted grains, pulses, and nuts...", specs: ['Multi-Grain Blend (Ragi, Bajra, Wheat)', 'Pulses (Moong, Chana)', 'Dry Fruits (Almonds, Cashews)', 'No Added Sugar', 'High in Dietary Fiber'], mockReviews: [{ name: 'Deepak J.', rating: 5, comment: 'Perfect start to my day.' }, { name: 'Shreya P.', rating: 5, comment: 'My kids love this mixed with jaggery.' }] },
             'oil_pain': { id: 'oil_pain', name: 'Iyal Pain Relief Oil', price: 175, stock: 250, avgRating: 4.5, reviews: 31, delivery: '4-6 business days', image: 'https://placehold.co/600x600/800000/ffffff?text=Iyal+Oil', description: "Experience fast, deep relief from muscle aches, joint stiffness, and chronic pain. Our Pain Relief Oil uses traditional ayurvedic wisdom...", specs: ['Sesame Oil Base', 'Wintergreen Oil', 'Eucalyptus Oil', 'Camphor', 'Rapid Penetration Formula'], mockReviews: [{ name: 'Vimal K.', rating: 4, comment: 'Very effective for my knee pain after running.' }, { name: 'Leena R.', rating: 5, comment: 'Best pain relief oil I have ever used.' }] }
         };
+
+        const mockOrders = [
+            { id: 'ORD4008', date: '2025-10-01', total: 680.00, status: 'Delivered', 
+                items: [{ name: 'Magic Hair Oil', price: 300, quantity: 1 }, { name: 'Iyal Pain Relief Oil', price: 175, quantity: 2 }] 
+            },
+            { id: 'ORD4007', date: '2025-08-15', total: 350.00, status: 'Shipped', 
+                items: [{ name: 'Iyal Health Mix', price: 350, quantity: 1 }] 
+            },
+            { id: 'ORD4006', date: '2025-07-20', total: 900.00, status: 'Processing', 
+                items: [{ name: 'Magic Hair Oil', price: 300, quantity: 3 }] 
+            }
+        ];
+
 
         // --- DOM Elements ---
         const mainHeader = document.getElementById('main-header');
@@ -667,8 +689,6 @@
         
         const authModal = document.getElementById('auth-modal');
         const authTitle = document.getElementById('auth-title');
-        const authSubmitButton = document.getElementById('auth-submit-button');
-        const authToggleButton = document.getElementById('auth-toggle-button');
         const authError = document.getElementById('auth-error');
         const authErrorMessage = document.getElementById('auth-error-message');
         const userStatusElement = document.getElementById('current-user-status');
@@ -692,36 +712,39 @@
             auth = getAuth(app);
 
             try {
+                // Set persistence to local to remember the session
                 await setPersistence(auth, browserLocalPersistence);
                 
+                // Sign in with custom token if available, otherwise anonymously
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
                 } else {
                     await signInAnonymously(auth);
                 }
 
+                // Main Auth State Listener
                 onAuthStateChanged(auth, (user) => {
                     currentUser = user;
                     if (user) {
                         userId = user.uid;
                         isAuthReady = true;
                         
-                        if (user.email) {
-                            if (user.emailVerified) {
-                                userStatusElement.innerHTML = `Signed in as: <span class="font-bold text-green-300">${user.email}</span>`;
-                                authActionButton.classList.add('hidden');
-                                signoutButton.classList.remove('hidden');
-                                mobileAuthText.textContent = 'Sign Out';
-                            } else {
-                                userStatusElement.innerHTML = `Email: ${user.email} (<span class="text-red-400 font-bold">Unverified</span>)`;
-                                authActionButton.textContent = 'Resend Verification';
-                                authActionButton.onclick = sendVerificationEmail;
-                                authActionButton.classList.remove('hidden');
-                                signoutButton.classList.remove('hidden');
-                                mobileAuthText.textContent = 'Sign Out';
-                            }
-                        } else {
-                            userStatusElement.innerHTML = `Guest User ID: <span class="font-bold">${user.uid.substring(0, 8)}...</span>`;
+                        // Update UI based on user type (Prioritize Phone)
+                        if (user.phoneNumber) {
+                            userStatusElement.innerHTML = `Signed in: <span class="font-bold text-green-300">${user.phoneNumber}</span>`;
+                            authActionButton.classList.add('hidden');
+                            signoutButton.classList.remove('hidden');
+                            mobileAuthText.textContent = 'Sign Out';
+                        } else if (user.email && !user.email.startsWith('user_')) {
+                            // User signed in with a real email (fallback/alternative)
+                            userStatusElement.innerHTML = `Signed in as: <span class="font-bold text-yellow-300">${user.email}</span> (Unverified)`;
+                            authActionButton.classList.add('hidden');
+                            signoutButton.classList.remove('hidden');
+                            mobileAuthText.textContent = 'Sign Out';
+                        }
+                         else {
+                            // Anonymous or Phone User without explicit phone number yet
+                            userStatusElement.innerHTML = `User ID: <span class="font-bold">${user.uid.substring(0, 8)}...</span>`;
                             authActionButton.textContent = 'Login / Sign Up';
                             authActionButton.onclick = showLoginModal;
                             authActionButton.classList.remove('hidden');
@@ -730,8 +753,8 @@
                         }
                         
                         listenToCart(); 
-                        listenToOrders(); 
                     } else {
+                        // Signed out
                         userId = null;
                         isAuthReady = false;
                         userStatusElement.textContent = 'Signed Out.';
@@ -741,7 +764,6 @@
                         signoutButton.classList.add('hidden');
                         mobileAuthText.textContent = 'Login / Sign Up';
                         cartItems = [];
-                        userOrders = []; 
                         updateCartUI();
                     }
                 });
@@ -751,127 +773,168 @@
                 userStatusElement.textContent = `Auth Error: ${error.code}`;
             }
         }
-
-        async function sendVerificationEmail() {
-            if (!currentUser) return;
-            try {
-                await sendEmailVerification(currentUser);
-                console.log("Verification email successfully sent.");
-                document.getElementById('auth-error-message').textContent = "Verification email sent! Please check your inbox and spam folder.";
-                document.getElementById('auth-error').classList.remove('hidden');
-                setTimeout(() => document.getElementById('auth-error').classList.add('hidden'), 5000);
-            } catch (error) {
-                console.error("Error sending verification email:", error);
-                document.getElementById('auth-error-message').textContent = `Error sending verification email: ${error.message}. Please try again later.`;
-                document.getElementById('auth-error').classList.remove('hidden');
-            }
-        }
         
+        /**
+         * Signs out the currently authenticated user.
+         */
         async function signOutUser() {
             try {
                 await signOut(auth);
                 console.log("User signed out successfully.");
                 goHome();
+                // NOTE: The onAuthStateChanged listener handles the UI update
             } catch (error) {
                 console.error("Error signing out:", error);
-                document.getElementById('auth-error-message').textContent = `Sign out failed: ${error.message}`;
+                window.showCustomAlert(`Sign out failed: ${error.message}`);
+            }
+        }
+
+        // --- NEW PHONE AUTH UTILITIES ---
+
+        function getAuthErrorMessage(code) {
+            switch (code) {
+                case 'auth/invalid-verification-code':
+                    return 'Invalid OTP. Please check the 6-digit code and try again.';
+                case 'auth/code-expired':
+                    return 'Verification code expired. Please re-send the code.';
+                case 'auth/invalid-phone-number':
+                    return 'Invalid phone number format. Use +CCXXXXXXXXXX format.';
+                case 'auth/too-many-requests':
+                    return 'Too many requests. Please try again later.';
+                default:
+                    return `An unknown error occurred: ${code}`;
+            }
+        }
+        
+        function resetPhoneAuthUI() {
+            document.getElementById('phone-input').value = '';
+            document.getElementById('otp-input').value = '';
+            document.getElementById('otp-verification-fields').classList.add('hidden');
+            document.getElementById('send-otp-btn').innerText = 'Send Verification Code';
+            
+            // Re-render reCAPTCHA
+            if (recaptchaVerifier) {
+                // Must explicitly reset the recaptcha
+                recaptchaVerifier.render().then(widgetId => grecaptcha.reset(widgetId));
+            }
+            confirmationResult = null;
+        }
+
+        // --- NEW PHONE AUTH LOGIC ---
+
+        // Function to handle sending the OTP (Sign up/Log in initiation)
+        async function handleMobileAuthAction() {
+            const phoneNumber = document.getElementById('phone-input').value;
+            const otpFields = document.getElementById('otp-verification-fields');
+            const authButton = document.getElementById('send-otp-btn');
+
+            document.getElementById('auth-error').classList.add('hidden');
+
+            if (!phoneNumber || phoneNumber.length < 10 || !phoneNumber.startsWith('+')) {
+                document.getElementById('auth-error-message').textContent = "Please enter a valid mobile number including the country code (e.g., +91XXXXXXXXXX).";
+                document.getElementById('auth-error').classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const auth = firebase.auth();
+                const appVerifier = window.recaptchaVerifier;
+
+                authButton.innerText = 'Sending...';
+
+                // 1. Initiate Phone Verification (Signs in or creates user upon confirmation)
+                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+                
+                window.showCustomAlert("Verification code sent! Please check your SMS.");
+                
+                // 2. Update UI
+                otpFields.classList.remove('hidden'); 
+                authButton.innerText = 'Resend Code';
+                document.getElementById('auth-title').textContent = 'Enter Verification Code';
+                
+            } catch (error) {
+                console.error("Error sending OTP:", error);
+                // Reset reCAPTCHA on error
+                if (recaptchaVerifier) recaptchaVerifier.render(); 
+                authButton.innerText = 'Send Verification Code';
+                document.getElementById('auth-error-message').textContent = getAuthErrorMessage(error.code) || error.message;
                 document.getElementById('auth-error').classList.remove('hidden');
             }
         }
 
+
+        // Function to handle the OTP confirmation and final sign-in/sign-up
+        async function confirmOtpVerification() {
+            const otpCode = document.getElementById('otp-input').value;
+            document.getElementById('auth-error').classList.add('hidden');
+
+            if (!otpCode || otpCode.length !== 6) {
+                document.getElementById('auth-error-message').textContent = "Please enter the 6-digit code.";
+                document.getElementById('auth-error').classList.remove('hidden');
+                return;
+            }
+
+            if (!confirmationResult) {
+                document.getElementById('auth-error-message').textContent = "Error: OTP session expired. Please re-send OTP.";
+                document.getElementById('auth-error').classList.remove('hidden');
+                 return;
+            }
+            
+            try {
+                // 1. Confirm the code, which signs the user in/creates the user
+                const result = await confirmationResult.confirm(otpCode);
+                const user = result.user;
+
+                // 2. Handle New User Case: Create a dummy email for management
+                if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
+                    const uniqueEmail = `user_${user.uid}@iyal.in`;
+                    // Update the Firebase user object with the unique dummy email
+                    await updateEmail(user, uniqueEmail); 
+                    console.log(`New user created and assigned dummy email: ${uniqueEmail}`);
+                }
+                
+                // 3. Finalize
+                window.showCustomAlert("Mobile number verified successfully! You are now logged in.");
+                resetPhoneAuthUI();
+                window.hideLoginModal(); 
+
+            } catch (error) {
+                console.error("Error verifying OTP:", error);
+                document.getElementById('auth-error-message').textContent = getAuthErrorMessage(error.code) || "Invalid OTP or session expired. Please try again.";
+                document.getElementById('auth-error').classList.remove('hidden');
+            }
+        }
+        
         // --- AUTH MODAL LOGIC ---
         
         function showLoginModal() {
             authModal.style.display = 'flex';
             authModal.classList.add('active');
+            // Hide any previous error messages
             authError.classList.add('hidden');
             document.getElementById('auth-form').reset();
-            toggleAuthMode('login'); 
-            toggleMobileMenu(true); 
+            resetPhoneAuthUI(); // Reset the phone auth flow state
+            document.getElementById('auth-title').textContent = 'Mobile Login / Sign Up'; // Reset title
+            toggleMobileMenu(true); // Close mobile menu if open
         }
 
         function hideLoginModal() {
             authModal.classList.remove('active');
-            setTimeout(() => { authModal.style.display = 'none'; }, 300); 
-        }
-
-        function toggleAuthMode(mode) {
-            authMode = mode || (authMode === 'login' ? 'signup' : 'login');
-            
-            if (authMode === 'login') {
-                authTitle.textContent = 'Login';
-                authSubmitButton.textContent = 'Login';
-                authToggleButton.innerHTML = 'New user? Click here to **Sign Up**';
-            } else {
-                authTitle.textContent = 'Sign Up';
-                authSubmitButton.textContent = 'Sign Up';
-                authToggleButton.innerHTML = 'Already have an account? Click here to **Login**';
-            }
-        }
-
-        async function handleAuthSubmit() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            
-            authError.classList.add('hidden');
-            authErrorMessage.textContent = '';
-            
-            try {
-                if (authMode === 'signup') {
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    
-                    await sendEmailVerification(user);
-                    
-                    authErrorMessage.textContent = `Signup successful! A verification email has been sent to ${email}. Please verify your email to fully activate your account.`;
-                    authError.classList.remove('hidden');
-                    
-                    setTimeout(() => {
-                        hideLoginModal();
-                    }, 3000); 
-
-                } else {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    hideLoginModal();
-                }
-            } catch (error) {
-                console.error("Authentication Error:", error);
-                authErrorMessage.textContent = getAuthErrorMessage(error.code);
-                authError.classList.remove('hidden');
-            }
-        }
-        
-        function getAuthErrorMessage(code) {
-            switch (code) {
-                case 'auth/operation-not-allowed':
-                    return 'Sign up/login failed. The **Email/Password sign-in method** is currently **disabled** in your Firebase Console. Please **enable it** under Authentication -> Sign-in method.';
-                case 'auth/user-not-found':
-                case 'auth/wrong-password':
-                    return 'Invalid email or password.';
-                case 'auth/email-already-in-use':
-                    return 'This email is already in use. Try logging in.';
-                case 'auth/weak-password':
-                    return 'Password should be at least 6 characters.';
-                case 'auth/invalid-email':
-                    return 'The email address is not valid.';
-                case 'auth/too-many-requests':
-                    return 'Access to this account has been temporarily blocked due to too many failed login attempts. Please try again later.';
-                default:
-                    return `An unknown error occurred: ${code}`;
-            }
+            setTimeout(() => { authModal.style.display = 'none'; }, 300); // Wait for transition
         }
 
         function handleMobileAuthAction() {
-            toggleMobileMenu(true);
-            if (currentUser && currentUser.email) {
+            if (currentUser && currentUser.phoneNumber) {
+                // If logged in via phone, mobile button is for sign out
                 signOutUser();
             } else {
+                // If guest/token user, mobile button is for login/signup
                 showLoginModal();
             }
         }
 
 
-        // --- Firestore/Cart & Order Functions ---
+        // --- Firestore/Cart Functions ---
 
         function getCartCollectionRef() {
             if (!db || !userId) {
@@ -887,101 +950,6 @@
                 return null;
             }
             return collection(db, `artifacts/${appId}/users/${userId}/orders`);
-        }
-
-        function calculateTotals(items) {
-            let subtotal = 0;
-            items.forEach(item => {
-                subtotal += item.price * item.quantity;
-            });
-            const taxRate = 0.18;
-            const taxAmount = subtotal * taxRate;
-            const grandTotal = subtotal + taxAmount;
-            return { subtotal, taxAmount, grandTotal };
-        }
-        
-        // CHECKOUT FEATURE: Atomically places order and clears cart
-        async function placeOrder() {
-            if (!isAuthReady || cartItems.length === 0) {
-                console.error("Cannot place an order. Cart is empty or not authenticated.");
-                return;
-            }
-            
-            const checkoutButton = document.querySelector('#cart-page button[onclick="placeOrder()"]');
-            const originalText = checkoutButton.textContent;
-            
-            checkoutButton.textContent = 'Processing...';
-            checkoutButton.disabled = true;
-
-            const cartRef = getCartCollectionRef();
-            const ordersRef = getOrdersCollectionRef();
-
-            try {
-                const { subtotal, taxAmount, grandTotal } = calculateTotals(cartItems);
-
-                // Use a Transaction for atomicity: save order AND clear cart
-                await runTransaction(db, async (transaction) => {
-                    // 1. Create the new order document
-                    const newOrderRef = doc(ordersRef);
-                    transaction.set(newOrderRef, {
-                        userId: userId,
-                        date: new Date().toISOString().substring(0, 10), 
-                        timestamp: new Date().getTime(),
-                        subtotal: parseFloat(subtotal.toFixed(2)),
-                        tax: parseFloat(taxAmount.toFixed(2)),
-                        total: parseFloat(grandTotal.toFixed(2)),
-                        status: 'Processing',
-                        items: cartItems.map(item => ({
-                            productId: item.productId,
-                            name: item.name,
-                            price: item.price,
-                            quantity: item.quantity
-                        }))
-                    });
-
-                    // 2. Delete all cart items
-                    cartItems.forEach(item => {
-                        const itemDocRef = doc(cartRef, item.id);
-                        transaction.delete(itemDocRef);
-                    });
-                });
-                
-                console.log("Order placed successfully and cart cleared!");
-                showTemporaryFeedback(checkoutButton, 'Order Placed! 🎉', 'bg-green-600', originalText);
-
-                setTimeout(() => {
-                    viewOrderHistory(); 
-                }, 1500);
-
-
-            } catch (e) {
-                console.error("Transaction failed: Order not placed or cart not cleared.", e);
-                showTemporaryFeedback(checkoutButton, 'Order Failed! ❌', 'bg-red-600', originalText);
-                checkoutButton.disabled = false;
-            }
-        }
-        
-        // ORDER HISTORY FEATURE: Real-time listener
-        function listenToOrders() {
-            const ordersRef = getOrdersCollectionRef();
-            if (!ordersRef) return;
-
-            const q = query(ordersRef, orderBy("timestamp", "desc"));
-
-            onSnapshot(q, (snapshot) => {
-                userOrders = [];
-                snapshot.forEach(doc => {
-                    userOrders.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                if (orderHistoryPage.style.display === 'block') {
-                     renderOrderHistoryPage();
-                }
-            }, (error) => {
-                console.error("Error listening to orders:", error);
-            });
         }
 
         function listenToCart() {
@@ -1023,8 +991,10 @@
         }
 
         async function addToCart(productId) {
-            if (!currentUser || (currentUser.email && !currentUser.emailVerified)) {
-                document.getElementById('auth-error-message').textContent = "Please log in and verify your email address to add items to your cart.";
+            // Check if user is authenticated (not anonymous) before allowing adding to cart
+            if (!currentUser || currentUser.isAnonymous) { 
+                // Display error feedback on the screen
+                document.getElementById('auth-error-message').textContent = "Please log in with your mobile number to add items to your cart.";
                 document.getElementById('auth-error').classList.remove('hidden');
                 showLoginModal();
                 return;
@@ -1043,8 +1013,6 @@
             
             const existingItem = cartItems.find(item => item.productId === productId);
             const cartRef = getCartCollectionRef();
-            const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
-
 
             try {
                 if (existingItem) {
@@ -1061,11 +1029,13 @@
                     });
                 }
                 
-                showTemporaryFeedback(detailButton, 'Added to Cart!', 'bg-green-600', detailButton.textContent);
+                const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
+                showTemporaryFeedback(detailButton, 'Added to Cart!', 'bg-green-600');
 
             } catch (e) {
                 console.error("Error adding/updating cart item:", e);
-                showTemporaryFeedback(detailButton, 'Error!', 'bg-red-600', detailButton.textContent);
+                const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
+                showTemporaryFeedback(detailButton, 'Error!', 'bg-red-600');
             }
         }
         
@@ -1091,60 +1061,42 @@
         
         function renderCartPage() { 
             if (!isAuthReady || !cartItemsListElement) return;
-            
-            const { subtotal, taxAmount, grandTotal } = calculateTotals(cartItems);
-            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-            const checkoutButton = document.querySelector('#cart-page button[onclick="placeOrder()"]');
+            let totalItems = 0; let subtotal = 0;
             const cartEmptyMessage = document.getElementById('cart-empty-message');
-
             if (cartItems.length === 0) { 
                 cartEmptyMessage.style.display = 'block'; 
                 cartItemsListElement.innerHTML = ''; 
-                if (checkoutButton) {
-                    checkoutButton.disabled = true;
-                    checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
-                }
             } else { 
                 cartEmptyMessage.style.display = 'none';
-                if (checkoutButton) {
-                    checkoutButton.disabled = false;
-                    checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                }
-                
                 cartItemsListElement.innerHTML = cartItems.map(item => {
-                    const itemTotal = item.price * item.quantity; 
+                    const itemTotal = item.price * item.quantity; subtotal += itemTotal; totalItems += item.quantity;
                     return `<div class="flex flex-col sm:flex-row items-start sm:items-center p-4 bg-white rounded-xl shadow-md border border-gray-200"><img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-contain rounded-lg flex-shrink-0 mr-4 border border-gray-100"><div class="flex-grow my-2 sm:my-0"><h3 class="text-xl font-semibold text-[#4A352D]">${item.name}</h3><p class="text-gray-500">Price: ₹${item.price.toFixed(2)}</p></div><div class="flex items-center space-x-4 mt-3 sm:mt-0 sm:ml-auto"><div class="flex items-center border border-gray-300 rounded-full overflow-hidden"><button onclick="updateQuantity('${item.id}', ${item.quantity - 1})" class="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-lg font-bold transition rounded-l-full">&minus;</button><input type="number" value="${item.quantity}" min="1" onchange="updateQuantity('${item.id}', this.value)" class="w-12 text-center text-lg border-x border-gray-300 focus:outline-none focus:ring-0 appearance-none bg-white"><button onclick="updateQuantity('${item.id}', ${item.quantity + 1})" class="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-lg font-bold transition rounded-r-full">&#43;</button></div><div class="text-xl font-bold w-24 text-right">₹${itemTotal.toFixed(2)}</div><button onclick="removeItem('${item.id}')" class="text-red-500 hover:text-red-700 transition p-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button></div></div>`;
                 }).join('');
             }
-
+            const taxRate = 0.18; 
+            const taxAmount = subtotal * taxRate; 
+            const grandTotal = subtotal + taxAmount;
             document.getElementById('summary-item-count').textContent = totalItems; 
             document.getElementById('summary-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
             document.getElementById('summary-tax').textContent = `₹${taxAmount.toFixed(2)}`; 
             document.getElementById('summary-grand-total').textContent = `₹${grandTotal.toFixed(2)}`;
         }
         
-        // Renders the real-time fetched orders
         function renderOrderHistoryPage() {
             if (!ordersListContainer) return;
-            
-            const ordersToDisplay = userOrders; 
-            
-            if (ordersToDisplay.length === 0) { 
+            if (mockOrders.length === 0) { 
                 orderHistoryEmptyMessage.style.display = 'block'; 
                 ordersListContainer.innerHTML = ''; 
                 return; 
             }
             orderHistoryEmptyMessage.style.display = 'none';
-            ordersListContainer.innerHTML = ordersToDisplay.map(order => {
+            ordersListContainer.innerHTML = mockOrders.map(order => {
                 let statusColor = 'text-gray-600'; 
                 if (order.status === 'Delivered') statusColor = 'text-green-600 font-semibold'; 
                 if (order.status === 'Shipped') statusColor = 'text-yellow-600 font-semibold'; 
                 if (order.status === 'Processing') statusColor = 'text-blue-600 font-semibold';
-                
                 const itemsList = order.items.map(item => `<div class="flex justify-between text-sm text-gray-500 ml-4"><span>${item.quantity} x ${item.name}</span><span>₹${(item.price * item.quantity).toFixed(2)}</span></div>`).join('');
-                
-                return `<div class="bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30 transition hover:shadow-xl"><div class="flex justify-between items-start pb-4 border-b border-gray-200 mb-4 flex-wrap"><div><h3 class="text-xl md:text-2xl font-bold text-[#4A352D]">Order ID: ${order.id.substring(0, 8)}...</h3><p class="text-sm text-gray-500">Placed on: ${order.date}</p></div><div class="mt-2 md:mt-0 text-right"><p class="text-2xl font-bold text-black">₹${order.total.toFixed(2)}</p><p class="text-sm ${statusColor}">Status: ${order.status}</p></div></div><div class="space-y-2"><h4 class="text-lg font-semibold text-gray-700">Items Ordered:</h4>${itemsList}</div><div class="mt-6 pt-4 border-t border-gray-100 flex justify-end space-x-4"><button onclick="console.log('Tracking Order ${order.id}')" class="px-4 py-2 text-[#4A352D] border border-[#4A352D] rounded-full text-sm font-semibold hover:bg-[#4A352D] hover:text-white transition">Track Order</button><button onclick="console.log('Reordering Order ${order.id}')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full text-sm font-semibold hover:bg-[#9E785C] transition">Reorder</button></div></div>`;
+                return `<div class="bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30 transition hover:shadow-xl"><div class="flex justify-between items-start pb-4 border-b border-gray-200 mb-4 flex-wrap"><div><h3 class="text-xl md:text-2xl font-bold text-[#4A352D]">Order ID: ${order.id}</h3><p class="text-sm text-gray-500">Placed on: ${order.date}</p></div><div class="mt-2 md:mt-0 text-right"><p class="text-2xl font-bold text-black">₹${order.total.toFixed(2)}</p><p class="text-sm ${statusColor}">Status: ${order.status}</p></div></div><div class="space-y-2"><h4 class="text-lg font-semibold text-gray-700">Items Ordered:</h4>${itemsList}</div><div class="mt-6 pt-4 border-t border-gray-100 flex justify-end space-x-4"><button onclick="console.log('Tracking Order ${order.id}')" class="px-4 py-2 text-[#4A352D] border border-[#4A352D] rounded-full text-sm font-semibold hover:bg-[#4A352D] hover:text-white transition">Track Order</button><button onclick="console.log('Reordering Order ${order.id}')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full text-sm font-semibold hover:bg-[#9E785C] transition">Reorder</button></div></div>`;
             }).join('');
         }
         
@@ -1156,7 +1108,6 @@
             window.scrollTo(0, 0); 
             handleScroll(true); 
             toggleMobileMenu(true); 
-            renderCartPage();
         }
         
         function viewOrderHistory() { 
@@ -1200,6 +1151,7 @@
             }
             
             const specsList = document.getElementById('detail-specs'); 
+            // The next line splits the rating display to keep the count span intact.
             document.getElementById('detail-rating-display').innerHTML = renderStars(product.avgRating) + document.getElementById('detail-rating-display').innerHTML.split(')')[1];
             
             specsList.innerHTML = product.specs.map(item => `<li>${item}</li>`).join(''); 
@@ -1231,7 +1183,7 @@
             orderHistoryPage.style.display = 'none'; 
             mainLandingContent.classList.remove('hidden-page');
             scrollToSection(sectionIndex);
-            setTimeout(() => toggleMobileMenu(true), 300); 
+            setTimeout(() => toggleMobileMenu(true), 300); // Pass true to force close
             handleScroll();
         }
         
@@ -1305,7 +1257,8 @@
             }
         }
         
-        function showTemporaryFeedback(button, text, className, originalText) {
+        function showTemporaryFeedback(button, text, className) {
+            const originalText = button.textContent; 
             const originalClasses = button.className;
             button.textContent = text; 
             button.className = `${originalClasses.replace(/bg-\[\#\w+\]/, className)}`;
@@ -1320,12 +1273,12 @@
             event.preventDefault(); 
             console.log(`Review submitted by: ${document.getElementById('review-name').value}`);
             const submitButton = event.target.querySelector('button[type="submit"]'); 
-            showTemporaryFeedback(submitButton, 'Review Submitted!', 'bg-green-600', submitButton.textContent); 
+            showTemporaryFeedback(submitButton, 'Review Submitted!', 'bg-green-600'); 
             event.target.reset();
         }
 
 
-        // Exposing functions globally for HTML
+        // Exposed Global Functions
         window.goHome = goHome;
         window.viewProduct = viewProduct;
         window.viewCart = viewCart;
@@ -1339,17 +1292,49 @@
         window.scrollToSection = scrollToSection;
         window.showLoginModal = showLoginModal; 
         window.hideLoginModal = hideLoginModal; 
-        window.toggleAuthMode = toggleAuthMode; 
-        window.handleAuthSubmit = handleAuthSubmit; 
         window.signOutUser = signOutUser; 
-        window.sendVerificationEmail = sendVerificationEmail; 
         window.handleMobileAuthAction = handleMobileAuthAction; 
-        window.placeOrder = placeOrder; 
+        window.confirmOtpVerification = confirmOtpVerification;
+
+        // Utility for Custom Alerts (since the original wasn't provided, defining one here)
+        window.showCustomAlert = (message) => {
+            const alertElement = document.getElementById('auth-error');
+            const messageElement = document.getElementById('auth-error-message');
+            if (alertElement && messageElement) {
+                messageElement.textContent = message;
+                alertElement.classList.remove('hidden');
+                // Temporarily show the alert for success/info messages
+                setTimeout(() => {
+                    if (messageElement.textContent === message) {
+                        alertElement.classList.add('hidden');
+                    }
+                }, 5000);
+            } else {
+                console.log("ALERT: " + message);
+            }
+        };
 
         // --- Initialization ---
 
         window.onload = () => {
             setupFirebaseAndAuth();
+
+            // NEW: Initialize Recaptcha Verifier
+            if (window.firebase && window.firebase.auth) {
+                const auth = firebase.auth();
+                recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'normal', 
+                    'callback': (response) => { /* reCAPTCHA solved */ },
+                    'expired-callback': () => { 
+                        window.showCustomAlert('reCAPTCHA expired. Please re-try sending the code.');
+                        resetPhoneAuthUI();
+                    }
+                });
+                // Recaptcha Verifier needs the Firebase Auth instance and the container ID
+                recaptchaVerifier.render(); 
+                window.recaptchaVerifier = recaptchaVerifier;
+            }
+
 
             // Loading Overlay animation
             const loadingOverlay = document.getElementById('loading-overlay');
