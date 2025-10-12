@@ -468,10 +468,14 @@
                 </div>
                 <div class="scroll-animate-right">
                     <div class="relative">
-                        <div class="w-full h-96 bg-gradient-to-br from-amber-300 to-amber-500 rounded-3xl flex items-center justify-center float-animation">
-                            <svg class="w-32 h-32 text-amber-800" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                            </svg>
+                        <div class="w-full h-96 bg-gradient-to-br from-amber-300 to-amber-500 rounded-3xl flex items-center justify-center float-animation overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Natural Health Products - Our Story" class="w-full h-full object-cover rounded-3xl" onerror="this.style.display='none'; document.getElementById('aboutImagePlaceholder').style.display='flex';">
+                            <div id="aboutImagePlaceholder" class="hidden flex flex-col items-center justify-center text-amber-800">
+                                <svg class="w-32 h-32 mb-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                </svg>
+                                <p class="text-center">Image failed to load</p>
+                            </div>
                         </div>
                         <div class="absolute -top-6 -right-6 w-24 h-24 bg-amber-400 rounded-full opacity-20 pulse-animation"></div>
                         <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-amber-600 rounded-full opacity-20 pulse-animation" style="animation-delay: -1s;"></div>
@@ -494,9 +498,13 @@
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
-                        <svg class="w-24 h-24 text-amber-800 float-animation" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                        </svg>
+                        <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Premium Hair Oil" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('hairOilPlaceholder').style.display='flex';">
+                        <div id="hairOilPlaceholder" class="hidden flex flex-col items-center justify-center text-amber-800">
+                            <svg class="w-24 h-24 float-animation mb-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            <p class="text-center text-sm">Image failed to load</p>
+                        </div>
                     </div>
                     <div class="p-8">
                         <h4 class="text-2xl font-bold text-amber-900 mb-3">Premium Hair Oil</h4>
@@ -512,9 +520,13 @@
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-green-200 to-green-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
-                        <svg class="w-24 h-24 text-green-800 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -1s;">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
+                        <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Natural Face Pack" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('facePackPlaceholder').style.display='flex';">
+                        <div id="facePackPlaceholder" class="hidden flex flex-col items-center justify-center text-green-800">
+                            <svg class="w-24 h-24 float-animation mb-2" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -1s;">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            <p class="text-center text-sm">Image failed to load</p>
+                        </div>
                     </div>
                     <div class="p-8">
                         <h4 class="text-2xl font-bold text-amber-900 mb-3">Natural Face Pack</h4>
@@ -530,9 +542,13 @@
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
-                        <svg class="w-24 h-24 text-orange-800 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -2s;">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
+                        <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Wellness Health Mix" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('healthMixPlaceholder').style.display='flex';">
+                        <div id="healthMixPlaceholder" class="hidden flex flex-col items-center justify-center text-orange-800">
+                            <svg class="w-24 h-24 float-animation mb-2" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -2s;">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            <p class="text-center text-sm">Image failed to load</p>
+                        </div>
                     </div>
                     <div class="p-8">
                         <h4 class="text-2xl font-bold text-amber-900 mb-3">Wellness Health Mix</h4>
@@ -548,9 +564,13 @@
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-red-200 to-red-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
-                        <svg class="w-24 h-24 text-red-800 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -3s;">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
+                        <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Pain Relief Oil" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('painReliefPlaceholder').style.display='flex';">
+                        <div id="painReliefPlaceholder" class="hidden flex flex-col items-center justify-center text-red-800">
+                            <svg class="w-24 h-24 float-animation mb-2" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -3s;">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <p class="text-center text-sm">Image failed to load</p>
+                        </div>
                     </div>
                     <div class="p-8">
                         <h4 class="text-2xl font-bold text-amber-900 mb-3">Pain Relief Oil</h4>
@@ -721,14 +741,14 @@
             </div>
             
             <div class="space-y-4">
-                <button class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
-                    <span class="font-semibold text-amber-900">Order History</span>
+                <button onclick="showOrderHistory()" class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
+                    <span class="font-semibold text-amber-900">📦 Order History</span>
                 </button>
-                <button class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
-                    <span class="font-semibold text-amber-900">Profile Settings</span>
+                <button onclick="showProfileSettings()" class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
+                    <span class="font-semibold text-amber-900">⚙️ Profile Settings</span>
                 </button>
-                <button class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
-                    <span class="font-semibold text-amber-900">Address Book</span>
+                <button onclick="showAddressBook()" class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
+                    <span class="font-semibold text-amber-900">📍 Address Book</span>
                 </button>
             </div>
         </div>
@@ -968,6 +988,59 @@
             alert(`Demo: Your new OTP is ${generatedOTP}\n(In production, this would be sent via SMS)`);
         }
 
+        // Image upload functions
+        function handleAboutImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const aboutImage = document.getElementById('aboutImage');
+                    const placeholder = document.getElementById('aboutImagePlaceholder');
+                    
+                    aboutImage.src = e.target.result;
+                    aboutImage.classList.remove('hidden');
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleProductImageUpload(event, productType) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageElement = document.getElementById(productType + 'Image');
+                    const placeholder = document.getElementById(productType + 'Placeholder');
+                    
+                    imageElement.src = e.target.result;
+                    imageElement.classList.remove('hidden');
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Account section functions
+        function showOrderHistory() {
+            alert('📦 Order History\n\nYour recent orders:\n\n• Premium Hair Oil - ₹299 (Delivered)\n• Natural Face Pack - ₹199 (In Transit)\n• Wellness Health Mix - ₹399 (Processing)\n\nTotal Orders: 3\nTotal Spent: ₹897');
+        }
+
+        function showProfileSettings() {
+            const newName = prompt('Enter your name:', 'User Name');
+            const newEmail = prompt('Enter your email:', 'user@example.com');
+            
+            if (newName && newEmail) {
+                document.getElementById('userName').textContent = `Welcome ${newName}!`;
+                document.getElementById('userEmail').textContent = newEmail;
+                alert('✅ Profile updated successfully!');
+            }
+        }
+
+        function showAddressBook() {
+            alert('📍 Address Book\n\nSaved Addresses:\n\n🏠 Home\n123 Main Street\nMumbai, Maharashtra 400001\n\n🏢 Office\n456 Business Park\nMumbai, Maharashtra 400002\n\nClick "Add New Address" to add more addresses.');
+        }
+
         // Enhanced add to cart function
         function addToCart(productId) {
             if (!isLoggedIn) {
@@ -1126,5 +1199,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98d4201e00f57f3a',t:'MTc2MDI0NjE5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98d4322412087f3a',t:'MTc2MDI0NjkyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
