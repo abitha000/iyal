@@ -623,10 +623,10 @@
                  createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection, query, writeBatch, runTransaction, setLogLevel, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        setLogLevel('debug'); // Enable Firestore logging
+        setLogLevel('debug'); 
 
-        // --- Firebase Global Variables (Provided by environment) ---
-        const appId = "iyal-app"; // Corrected appId to string
+        // --- Firebase Global Variables (Replace with your actual keys) ---
+        const appId = "iyal-app"; 
         const firebaseConfig = {
           apikey: "AIzaSyA5hPlKdqNi1FmAlVFmIXezZxot9-BuWeA",
           authdomain: "iyal-59a03.firebaseapp.com",
@@ -635,16 +635,16 @@
           messagingSenderId: "714618123459",
           appId: "1:714618123459:web:ae86588468119322bd1e76",
           measurementId: "G-0GZSM3CDME"
-        }; // Corrected object syntax
+        }; 
         const initialAuthToken = null;
 
         let db, auth, userId = null;
         let isAuthReady = false;
-        let cartItems = []; // Local array to hold cart items synchronized with Firestore
-        let userOrders = []; // New array to hold real orders fetched from Firestore
-        let currentProductId = null; // Tracks the currently viewed product ID
-        let authMode = 'login'; // 'login' or 'signup'
-        let currentUser = null; // Holds the Firebase User object
+        let cartItems = []; 
+        let userOrders = []; 
+        let currentProductId = null; 
+        let authMode = 'login'; 
+        let currentUser = null; 
 
         // --- Product Data Mock API (Same as before) ---
         const PRODUCTS = {
@@ -653,8 +653,6 @@
             'health_mix': { id: 'health_mix', name: 'Iyal Health Mix', price: 350, stock: 450, avgRating: 4.9, reviews: 78, delivery: '2-4 business days', image: 'https://placehold.co/600x600/9ACD32/ffffff?text=Iyal+Mix', description: "A nutritious powerhouse, this daily health mix is a blend of 18 roasted grains, pulses, and nuts...", specs: ['Multi-Grain Blend (Ragi, Bajra, Wheat)', 'Pulses (Moong, Chana)', 'Dry Fruits (Almonds, Cashews)', 'No Added Sugar', 'High in Dietary Fiber'], mockReviews: [{ name: 'Deepak J.', rating: 5, comment: 'Perfect start to my day.' }, { name: 'Shreya P.', rating: 5, comment: 'My kids love this mixed with jaggery.' }] },
             'oil_pain': { id: 'oil_pain', name: 'Iyal Pain Relief Oil', price: 175, stock: 250, avgRating: 4.5, reviews: 31, delivery: '4-6 business days', image: 'https://placehold.co/600x600/800000/ffffff?text=Iyal+Oil', description: "Experience fast, deep relief from muscle aches, joint stiffness, and chronic pain. Our Pain Relief Oil uses traditional ayurvedic wisdom...", specs: ['Sesame Oil Base', 'Wintergreen Oil', 'Eucalyptus Oil', 'Camphor', 'Rapid Penetration Formula'], mockReviews: [{ name: 'Vimal K.', rating: 4, comment: 'Very effective for my knee pain after running.' }, { name: 'Leena R.', rating: 5, comment: 'Best pain relief oil I have ever used.' }] }
         };
-
-        // Removed mockOrders array
 
         // --- DOM Elements ---
         const mainHeader = document.getElementById('main-header');
@@ -694,33 +692,27 @@
             auth = getAuth(app);
 
             try {
-                // Set persistence to local to remember the session
                 await setPersistence(auth, browserLocalPersistence);
                 
-                // Sign in with custom token if available, otherwise anonymously
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
                 } else {
                     await signInAnonymously(auth);
                 }
 
-                // Main Auth State Listener
                 onAuthStateChanged(auth, (user) => {
                     currentUser = user;
                     if (user) {
                         userId = user.uid;
                         isAuthReady = true;
                         
-                        // Update UI based on user type
                         if (user.email) {
-                            // Email/Password User (potentially unverified)
                             if (user.emailVerified) {
                                 userStatusElement.innerHTML = `Signed in as: <span class="font-bold text-green-300">${user.email}</span>`;
                                 authActionButton.classList.add('hidden');
                                 signoutButton.classList.remove('hidden');
                                 mobileAuthText.textContent = 'Sign Out';
                             } else {
-                                // Email/Password User - Unverified
                                 userStatusElement.innerHTML = `Email: ${user.email} (<span class="text-red-400 font-bold">Unverified</span>)`;
                                 authActionButton.textContent = 'Resend Verification';
                                 authActionButton.onclick = sendVerificationEmail;
@@ -729,19 +721,17 @@
                                 mobileAuthText.textContent = 'Sign Out';
                             }
                         } else {
-                            // Anonymous or Token User
                             userStatusElement.innerHTML = `Guest User ID: <span class="font-bold">${user.uid.substring(0, 8)}...</span>`;
                             authActionButton.textContent = 'Login / Sign Up';
                             authActionButton.onclick = showLoginModal;
                             authActionButton.classList.remove('hidden');
-                            signoutButton.classList.add('hidden'); // Cannot sign out anon user authenticated via token
+                            signoutButton.classList.add('hidden'); 
                             mobileAuthText.textContent = 'Login / Sign Up';
                         }
                         
                         listenToCart(); 
-                        listenToOrders(); // Listen to the user's order history
+                        listenToOrders(); 
                     } else {
-                        // Signed out
                         userId = null;
                         isAuthReady = false;
                         userStatusElement.textContent = 'Signed Out.';
@@ -751,7 +741,7 @@
                         signoutButton.classList.add('hidden');
                         mobileAuthText.textContent = 'Login / Sign Up';
                         cartItems = [];
-                        userOrders = []; // Clear orders on sign out
+                        userOrders = []; 
                         updateCartUI();
                     }
                 });
@@ -762,14 +752,10 @@
             }
         }
 
-        /**
-         * Sends the verification email to the current user.
-         */
         async function sendVerificationEmail() {
             if (!currentUser) return;
             try {
                 await sendEmailVerification(currentUser);
-                // NOTE: Using a custom alert instead of window.alert()
                 console.log("Verification email successfully sent.");
                 document.getElementById('auth-error-message').textContent = "Verification email sent! Please check your inbox and spam folder.";
                 document.getElementById('auth-error').classList.remove('hidden');
@@ -781,15 +767,11 @@
             }
         }
         
-        /**
-         * Signs out the currently authenticated user.
-         */
         async function signOutUser() {
             try {
                 await signOut(auth);
                 console.log("User signed out successfully.");
                 goHome();
-                // NOTE: The onAuthStateChanged listener handles the UI update
             } catch (error) {
                 console.error("Error signing out:", error);
                 document.getElementById('auth-error-message').textContent = `Sign out failed: ${error.message}`;
@@ -802,16 +784,15 @@
         function showLoginModal() {
             authModal.style.display = 'flex';
             authModal.classList.add('active');
-            // Hide any previous error messages
             authError.classList.add('hidden');
             document.getElementById('auth-form').reset();
-            toggleAuthMode('login'); // Default to login when showing
-            toggleMobileMenu(true); // Close mobile menu if open
+            toggleAuthMode('login'); 
+            toggleMobileMenu(true); 
         }
 
         function hideLoginModal() {
             authModal.classList.remove('active');
-            setTimeout(() => { authModal.style.display = 'none'; }, 300); // Wait for transition
+            setTimeout(() => { authModal.style.display = 'none'; }, 300); 
         }
 
         function toggleAuthMode(mode) {
@@ -837,25 +818,19 @@
             
             try {
                 if (authMode === 'signup') {
-                    // 1. Create the user
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
                     
-                    // 2. Send verification email
                     await sendEmailVerification(user);
                     
-                    // Display success message in the modal before closing
                     authErrorMessage.textContent = `Signup successful! A verification email has been sent to ${email}. Please verify your email to fully activate your account.`;
                     authError.classList.remove('hidden');
                     
-                    // Wait a moment then close the modal
                     setTimeout(() => {
                         hideLoginModal();
-                        // Firebase will automatically sign in the user after signup.
                     }, 3000); 
 
                 } else {
-                    // Login
                     await signInWithEmailAndPassword(auth, email, password);
                     hideLoginModal();
                 }
@@ -868,7 +843,6 @@
         
         function getAuthErrorMessage(code) {
             switch (code) {
-                // This is the specific fix/feedback for the user's issue
                 case 'auth/operation-not-allowed':
                     return 'Sign up/login failed. The **Email/Password sign-in method** is currently **disabled** in your Firebase Console. Please **enable it** under Authentication -> Sign-in method.';
                 case 'auth/user-not-found':
@@ -890,10 +864,8 @@
         function handleMobileAuthAction() {
             toggleMobileMenu(true);
             if (currentUser && currentUser.email) {
-                // If logged in via email, mobile button is for sign out
                 signOutUser();
             } else {
-                // If guest/token user, mobile button is for login/signup
                 showLoginModal();
             }
         }
@@ -917,7 +889,6 @@
             return collection(db, `artifacts/${appId}/users/${userId}/orders`);
         }
 
-        // Helper function to calculate cart totals
         function calculateTotals(items) {
             let subtotal = 0;
             items.forEach(item => {
@@ -929,7 +900,7 @@
             return { subtotal, taxAmount, grandTotal };
         }
         
-        // NEW FEATURE 1: Order Placement (Checkout)
+        // CHECKOUT FEATURE: Atomically places order and clears cart
         async function placeOrder() {
             if (!isAuthReady || cartItems.length === 0) {
                 console.error("Cannot place an order. Cart is empty or not authenticated.");
@@ -939,7 +910,6 @@
             const checkoutButton = document.querySelector('#cart-page button[onclick="placeOrder()"]');
             const originalText = checkoutButton.textContent;
             
-            // Temporary UI feedback
             checkoutButton.textContent = 'Processing...';
             checkoutButton.disabled = true;
 
@@ -979,9 +949,8 @@
                 console.log("Order placed successfully and cart cleared!");
                 showTemporaryFeedback(checkoutButton, 'Order Placed! 🎉', 'bg-green-600', originalText);
 
-                // Redirect user after a short delay
                 setTimeout(() => {
-                    viewOrderHistory(); // Show them their new order
+                    viewOrderHistory(); 
                 }, 1500);
 
 
@@ -992,12 +961,11 @@
             }
         }
         
-        // NEW FEATURE 2 (part 1): Listen to real orders
+        // ORDER HISTORY FEATURE: Real-time listener
         function listenToOrders() {
             const ordersRef = getOrdersCollectionRef();
             if (!ordersRef) return;
 
-            // Query orders sorted by timestamp descending (newest first)
             const q = query(ordersRef, orderBy("timestamp", "desc"));
 
             onSnapshot(q, (snapshot) => {
@@ -1008,7 +976,6 @@
                         ...doc.data()
                     });
                 });
-                // Only render if the user is currently viewing the page
                 if (orderHistoryPage.style.display === 'block') {
                      renderOrderHistoryPage();
                 }
@@ -1056,9 +1023,7 @@
         }
 
         async function addToCart(productId) {
-            // Check if user is verified before allowing adding to cart
             if (!currentUser || (currentUser.email && !currentUser.emailVerified)) {
-                // Display error feedback on the screen instead of using alert
                 document.getElementById('auth-error-message').textContent = "Please log in and verify your email address to add items to your cart.";
                 document.getElementById('auth-error').classList.remove('hidden');
                 showLoginModal();
@@ -1136,14 +1101,12 @@
             if (cartItems.length === 0) { 
                 cartEmptyMessage.style.display = 'block'; 
                 cartItemsListElement.innerHTML = ''; 
-                // Disable Checkout
                 if (checkoutButton) {
                     checkoutButton.disabled = true;
                     checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
                 }
             } else { 
                 cartEmptyMessage.style.display = 'none';
-                // Enable Checkout
                 if (checkoutButton) {
                     checkoutButton.disabled = false;
                     checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -1161,7 +1124,7 @@
             document.getElementById('summary-grand-total').textContent = `₹${grandTotal.toFixed(2)}`;
         }
         
-        // NEW FEATURE 2 (part 2): Render real orders
+        // Renders the real-time fetched orders
         function renderOrderHistoryPage() {
             if (!ordersListContainer) return;
             
@@ -1179,7 +1142,6 @@
                 if (order.status === 'Shipped') statusColor = 'text-yellow-600 font-semibold'; 
                 if (order.status === 'Processing') statusColor = 'text-blue-600 font-semibold';
                 
-                // Use order.items from the Firestore document
                 const itemsList = order.items.map(item => `<div class="flex justify-between text-sm text-gray-500 ml-4"><span>${item.quantity} x ${item.name}</span><span>₹${(item.price * item.quantity).toFixed(2)}</span></div>`).join('');
                 
                 return `<div class="bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30 transition hover:shadow-xl"><div class="flex justify-between items-start pb-4 border-b border-gray-200 mb-4 flex-wrap"><div><h3 class="text-xl md:text-2xl font-bold text-[#4A352D]">Order ID: ${order.id.substring(0, 8)}...</h3><p class="text-sm text-gray-500">Placed on: ${order.date}</p></div><div class="mt-2 md:mt-0 text-right"><p class="text-2xl font-bold text-black">₹${order.total.toFixed(2)}</p><p class="text-sm ${statusColor}">Status: ${order.status}</p></div></div><div class="space-y-2"><h4 class="text-lg font-semibold text-gray-700">Items Ordered:</h4>${itemsList}</div><div class="mt-6 pt-4 border-t border-gray-100 flex justify-end space-x-4"><button onclick="console.log('Tracking Order ${order.id}')" class="px-4 py-2 text-[#4A352D] border border-[#4A352D] rounded-full text-sm font-semibold hover:bg-[#4A352D] hover:text-white transition">Track Order</button><button onclick="console.log('Reordering Order ${order.id}')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full text-sm font-semibold hover:bg-[#9E785C] transition">Reorder</button></div></div>`;
@@ -1202,7 +1164,7 @@
             cartPage.style.display = 'none'; 
             mainLandingContent.classList.add('hidden-page'); 
             orderHistoryPage.style.display = 'block'; 
-            renderOrderHistoryPage(); // This now renders fetched orders
+            renderOrderHistoryPage(); 
             window.scrollTo(0, 0); 
             handleScroll(true); 
             toggleMobileMenu(true); 
@@ -1238,7 +1200,6 @@
             }
             
             const specsList = document.getElementById('detail-specs'); 
-            // The next line splits the rating display to keep the count span intact.
             document.getElementById('detail-rating-display').innerHTML = renderStars(product.avgRating) + document.getElementById('detail-rating-display').innerHTML.split(')')[1];
             
             specsList.innerHTML = product.specs.map(item => `<li>${item}</li>`).join(''); 
@@ -1270,7 +1231,7 @@
             orderHistoryPage.style.display = 'none'; 
             mainLandingContent.classList.remove('hidden-page');
             scrollToSection(sectionIndex);
-            setTimeout(() => toggleMobileMenu(true), 300); // Pass true to force close
+            setTimeout(() => toggleMobileMenu(true), 300); 
             handleScroll();
         }
         
@@ -1364,7 +1325,7 @@
         }
 
 
-        // Exposed Global Functions
+        // Exposing functions globally for HTML
         window.goHome = goHome;
         window.viewProduct = viewProduct;
         window.viewCart = viewCart;
@@ -1383,7 +1344,7 @@
         window.signOutUser = signOutUser; 
         window.sendVerificationEmail = sendVerificationEmail; 
         window.handleMobileAuthAction = handleMobileAuthAction; 
-        window.placeOrder = placeOrder; // Expose new function
+        window.placeOrder = placeOrder; 
 
         // --- Initialization ---
 
