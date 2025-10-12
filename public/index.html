@@ -1,1363 +1,1130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iyal | Dynamic Product Sales</title>
-    
-<script src="https://cdn.tailwindcss.com"></script>
+    <title>Iyal - Premium Health Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FAF0E6; /* Linen Cream Background */
-            color: #1a1a1a;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            scroll-snap-type: y mandatory;
-            overflow-y: scroll;
-        }
-
-        body.overflow-hidden {
-            overflow: hidden !important;
-        }
-
-        .snap-section {
-            position: relative;
-            scroll-snap-align: start;
-            scroll-margin-top: 200px; 
-        }
-
-        #hero-section, #contact-section {
-            height: 100vh;
-        }
-
-        #product-slides {
-            min-height: 100vh; 
-            height: auto; 
-            padding-bottom: 15vh;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
         }
         
-        #hero-section {
-            background-color: #4A352D; /* Deep Espresso */
-        }
-
-        #product-detail-page, #cart-page, #order-history-page {
-            display: none; /* Hidden by default */
-            min-height: 100vh;
-            padding-top: 100px; /* Offset for fixed header */
-        }
-
-        #main-landing-content.hidden-page {
-            display: none;
-            scroll-snap-type: none; /* Disable snap when hidden */
-        }
-
-        .product-card {
-            min-height: 450px;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .buy-button-style {
-            padding: 1rem 2rem;
-            font-size: 1.25rem;
-            font-weight: bold;
-            border-radius: 9999px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .logo-img {
-            height: 40px; 
-            width: auto;
-            margin-right: 8px; 
-        }
-
-        .star-filled {
-            color: #FFD700; /* Gold */
-        }
-        .star-empty {
-            color: #cccccc;
-        }
-
-        /* Intro animation styles */
-        .intro-char {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(10px); 
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-        }
-        .intro-char.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Loading overlay styles */
-        #loading-overlay {
+        /* Welcome Animation Styles */
+        .welcome-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #FAF0E6; 
+            background: linear-gradient(135deg, #3C1810 0%, #5D2914 30%, #8B4513 60%, #A0522D 100%);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 1.0s ease-out, visibility 1.0s ease-out; 
+            transition: opacity 1s ease-out, transform 1s ease-out;
         }
-
-        .hidden-load {
+        
+        .welcome-screen.fade-out {
             opacity: 0;
-            visibility: hidden;
+            transform: scale(1.1);
+            pointer-events: none;
         }
-
-        /* Modal specific styles */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: none;
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            perspective: 1000px;
+        }
+        
+        .logo-text {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #F5DEB3;
+            letter-spacing: 0.2em;
+            text-shadow: 0 0 30px rgba(245, 222, 179, 0.5);
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: rotateY(-90deg) scale(0.5);
+            animation: logoReveal 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        
+        @keyframes logoReveal {
+            0% {
+                opacity: 0;
+                transform: rotateY(-90deg) scale(0.5);
+            }
+            50% {
+                opacity: 0.7;
+                transform: rotateY(-45deg) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: rotateY(0deg) scale(1);
+            }
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: #DEB887;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-out 1.8s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .welcome-loader {
+            margin-top: 3rem;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 2.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .loader-dots {
+            display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            gap: 0.5rem;
         }
-        .modal-content {
-            background-color: #fff;
-            padding: 2.5rem;
-            border-radius: 1rem;
-            max-width: 90%;
-            width: 450px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
+        
+        .loader-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #F5DEB3;
+            animation: bounce 1.4s ease-in-out infinite both;
         }
-        .modal.active .modal-content {
-            transform: scale(1);
+        
+        .loader-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loader-dot:nth-child(2) { animation-delay: -0.16s; }
+        .loader-dot:nth-child(3) { animation-delay: 0s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
         }
-
+        
+        .main-content {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+        
+        .main-content.show {
+            opacity: 1;
+        }
+        
+        .coffee-gradient {
+            background: linear-gradient(135deg, #3C1810 0%, #5D2914 30%, #8B4513 60%, #A0522D 100%);
+        }
+        
+        .coffee-light {
+            background: linear-gradient(135deg, #D2B48C 0%, #DEB887 50%, #F5DEB3 100%);
+        }
+        
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(80px) scale(0.9);
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .scroll-animate-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .scroll-animate-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .scroll-animate-right {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .scroll-animate-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .product-card {
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: perspective(1000px) rotateY(0deg);
+        }
+        
+        .product-card:hover {
+            transform: perspective(1000px) rotateY(-5deg) translateY(-20px) scale(1.05);
+            box-shadow: 0 30px 60px rgba(60, 24, 16, 0.4);
+        }
+        
+        .hamburger {
+            width: 30px;
+            height: 20px;
+            position: relative;
+            cursor: pointer;
+            z-index: 60;
+        }
+        
+        .hamburger span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: #78350f;
+            border-radius: 3px;
+            opacity: 1;
+            left: 0;
+            transform: rotate(0deg);
+            transition: 0.4s ease-in-out;
+        }
+        
+        .hamburger span:nth-child(1) {
+            top: 0px;
+        }
+        
+        .hamburger span:nth-child(2) {
+            top: 8px;
+        }
+        
+        .hamburger span:nth-child(3) {
+            top: 16px;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            top: 8px;
+            transform: rotate(135deg);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            left: -60px;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            top: 8px;
+            transform: rotate(-135deg);
+        }
+        
+        .nav-menu {
+            transform: translateX(100%);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(20px);
+        }
+        
+        .nav-menu.active {
+            transform: translateX(0);
+        }
+        
+        .nav-item {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .nav-menu.active .nav-item {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .nav-item:nth-child(1) { transition-delay: 0.1s; }
+        .nav-item:nth-child(2) { transition-delay: 0.2s; }
+        .nav-item:nth-child(3) { transition-delay: 0.3s; }
+        .nav-item:nth-child(4) { transition-delay: 0.4s; }
+        .nav-item:nth-child(5) { transition-delay: 0.5s; }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(60, 24, 16, 0.9) 0%, rgba(93, 41, 20, 0.8) 50%, rgba(139, 69, 19, 0.7) 100%),
+                        radial-gradient(circle at 30% 70%, rgba(245, 222, 179, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(210, 180, 140, 0.1) 0%, transparent 50%);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-ball {
+            animation: floatBall 8s ease-in-out infinite;
+        }
+        
+        @keyframes floatBall {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+            }
+            25% { 
+                transform: translateY(-30px) translateX(15px) rotate(90deg); 
+            }
+            50% { 
+                transform: translateY(-60px) translateX(-10px) rotate(180deg); 
+            }
+            75% { 
+                transform: translateY(-30px) translateX(-25px) rotate(270deg); 
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(245, 222, 179, 0.4), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3C1810 0%, #5D2914 50%, #8B4513 100%);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(245, 222, 179, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5D2914 0%, #8B4513 50%, #A0522D 100%);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(60, 24, 16, 0.4);
+        }
+        
+        .section-transition {
+            transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .coffee-texture {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(245, 222, 179, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(210, 180, 140, 0.1) 0%, transparent 50%),
+                linear-gradient(45deg, transparent 49%, rgba(139, 69, 19, 0.05) 50%, transparent 51%);
+        }
+        
+        .parallax {
+            transform: translateZ(0);
+            transition: transform 0.1s ease-out;
+        }
     </style>
 </head>
-<body class="overflow-x-hidden">
-
-    
-
-<div id="loading-overlay">
-        <div id="iyal-intro-text" class="text-6xl md:text-8xl font-black tracking-widest text-[#4A352D]">
-            <span class="intro-char">I</span>
-            <span class="intro-char">Y</span>
-            <span class="intro-char">A</span>
-            <span class="intro-char">L</span>
+<body class="bg-amber-50 text-amber-900">
+    <!-- Welcome Animation Screen -->
+    <div id="welcomeScreen" class="welcome-screen">
+        <div class="logo-container">
+            <div class="logo-text">IYAL</div>
+        </div>
+        <div class="welcome-subtitle">Premium Health Products</div>
+        <div class="welcome-loader">
+            <div class="loader-dots">
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+            </div>
         </div>
     </div>
 
-    
-
-<header id="main-header" class="fixed top-0 left-0 w-full z-50 p-6 md:p-8 transition-colors duration-500">
-        <nav id="main-nav-container" class="flex justify-between items-center max-w-7xl mx-auto">
-            
-            
-
-<div id="logo-container" class="logo-container flex items-center cursor-pointer" onclick="goHome()">
-                <img id="logo-image" 
-                     src="https://i.imgur.com/GY15TYP.jpeg" 
-                     alt="Iyal Logo" 
-                     class="logo-img logo-filter-dark"
-                     onerror="this.onerror=null;this.src='https://placehold.co/40x40/4A352D/D4C1B0?text=I';" 
-                >
-            </div>
-
-            
-
-<div class="flex items-center space-x-4">
+    <!-- Main Content -->
+    <div id="mainContent" class="main-content">
+    <!-- Navigation -->
+    <nav class="coffee-gradient shadow-2xl sticky top-0 z-50 coffee-texture">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center pulse-animation">
+                    <h1 class="text-3xl font-bold text-amber-900 tracking-wider">IYAL</h1>
+                    <span class="ml-3 text-sm text-amber-900 font-medium">Premium Health Products</span>
+                </div>
                 
-
-<button onclick="viewCart()" class="hidden sm:block p-2 rounded-full hover:bg-white/10 transition duration-300 relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart" id="cart-icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    
-
-<span id="cart-count" class="absolute top-1 right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                <!-- Cart Button (hidden by default, shown after login) -->
+                <button id="cartButton" onclick="openCart()" class="hidden mr-4 relative bg-amber-200 hover:bg-amber-300 text-amber-900 p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z"/>
+                    </svg>
+                    <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
                 </button>
-
                 
-
-<button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="p-2 rounded-full hover:bg-white/10 transition duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <!-- Hamburger Menu Button -->
+                <button onclick="toggleMenu()" class="hamburger focus:outline-none">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
             </div>
-        </nav>
-        <div id="user-info-bar" class="text-xs text-right mt-1 px-4 opacity-80 flex items-center justify-end space-x-2">
-            <span id="current-user-status" class="text-white font-medium">...</span>
-            <button id="auth-action-button" onclick="showLoginModal()" class="text-white hover:text-[#B38B6D] transition font-bold underline hidden">
-                Login / Sign Up
-            </button>
-            <button id="signout-button" onclick="signOutUser()" class="text-white hover:text-red-400 transition font-bold underline hidden">
-                Sign Out
-            </button>
         </div>
-    </header>
-
-    
-
-<div id="mobile-menu" class="fixed top-0 left-0 w-full h-full bg-[#4A352D] z-[100] transform translate-x-full transition-transform duration-500 overflow-y-auto">
         
-        
-
-<div class="flex justify-end p-8">
-            <button onclick="toggleMobileMenu()" class="p-2 rounded-full text-white hover:bg-white/10 transition duration-300">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+        <!-- Full Screen Menu -->
+        <div id="mobileMenu" class="nav-menu fixed top-0 right-0 w-full h-full coffee-gradient z-40">
+            <div class="flex flex-col items-center justify-center h-full space-y-12">
+                <a href="#home" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">Home</a>
+                <a href="#about" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">About</a>
+                <a href="#products" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">Products</a>
+                <a href="#contact" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">Contact Us</a>
+                
+                <!-- Account Info (hidden by default, shown after login) -->
+                <button id="accountInfo" onclick="openAccountModal(); toggleMenu();" class="nav-item hidden text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110 flex items-center space-x-3">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    <span>My Account</span>
+                </button>
+                
+                <button id="loginButton" onclick="openAuthModal(); toggleMenu();" class="nav-item btn-primary text-amber-100 px-8 py-4 rounded-full text-xl font-medium hover:scale-110 transition-all duration-500">Login / Signup</button>
+                
+                <!-- Logout Button (hidden by default, shown after login) -->
+                <button id="logoutButton" onclick="handleLogout(); toggleMenu();" class="nav-item hidden border-2 border-amber-300 text-amber-100 px-8 py-4 rounded-full text-xl font-medium hover:scale-110 transition-all duration-500 hover:bg-amber-300 hover:text-amber-900">Logout</button>
+            </div>
         </div>
+    </nav>
 
-        
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg min-h-screen flex items-center coffee-texture relative overflow-hidden">
+        <!-- Floating Decorative Balls -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="floating-ball absolute w-32 h-32 bg-gradient-to-br from-amber-300 to-amber-500 rounded-full opacity-20" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
+            <div class="floating-ball absolute w-24 h-24 bg-gradient-to-br from-orange-300 to-orange-500 rounded-full opacity-25" style="top: 60%; right: 20%; animation-delay: -2s;"></div>
+            <div class="floating-ball absolute w-40 h-40 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full opacity-15" style="bottom: 20%; left: 10%; animation-delay: -4s;"></div>
+            <div class="floating-ball absolute w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full opacity-30" style="top: 30%; right: 10%; animation-delay: -1s;"></div>
+            <div class="floating-ball absolute w-28 h-28 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full opacity-20" style="bottom: 40%; right: 30%; animation-delay: -3s;"></div>
+            <div class="floating-ball absolute w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full opacity-35" style="top: 70%; left: 25%; animation-delay: -5s;"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+            <div class="scroll-animate">
+                <h2 class="text-6xl md:text-8xl font-black text-amber-900 mb-8 tracking-wide drop-shadow-2xl">Natural Health Solutions</h2>
+                <p class="text-2xl md:text-3xl text-amber-800 mb-12 max-w-4xl mx-auto font-semibold leading-relaxed drop-shadow-lg">Discover the power of nature with our premium collection of health products crafted for your wellness journey</p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <button onclick="smoothScrollTo('products')" class="btn-primary text-amber-100 px-12 py-6 rounded-full text-xl font-semibold shimmer hover:scale-110 transition-all duration-500">Shop Now</button>
+                    <button onclick="smoothScrollTo('about')" class="border-2 border-amber-900 text-amber-900 px-12 py-6 rounded-full text-xl font-bold hover:bg-amber-900 hover:text-white transition-all duration-500 drop-shadow-lg">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<nav class="flex flex-col items-center space-y-8 mt-12 text-3xl font-extrabold text-white">
-            <a onclick="goHomeAndScroll(0)" class="hover:text-[#B38B6D] transition cursor-pointer">Home</a>
-            <a onclick="goHomeAndScroll(1)" class="hover:text-[#B38B6D] transition cursor-pointer">Products</a>
-            <a onclick="goHomeAndScroll(2)" class="hover:text-[#B38B6D] transition cursor-pointer">Contact Us</a>
+    <!-- About Section -->
+    <section id="about" class="py-24 coffee-light coffee-texture section-transition">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="scroll-animate-left">
+                    <h3 class="text-5xl md:text-6xl font-bold text-amber-900 mb-8 leading-tight">Our Story</h3>
+                    <p class="text-xl text-amber-800 mb-6 leading-relaxed">At Iyal, we believe in the ancient wisdom of natural healing. Our journey began with a simple mission: to bring you the purest, most effective health products derived from nature's bounty.</p>
+                    <p class="text-xl text-amber-800 mb-8 leading-relaxed">Each product is carefully crafted using traditional methods combined with modern quality standards, ensuring you receive the best of both worlds.</p>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="text-center p-6 bg-white bg-opacity-50 rounded-2xl">
+                            <h4 class="text-3xl font-bold text-amber-900 mb-2">100%</h4>
+                            <p class="text-amber-800 font-medium">Natural Ingredients</p>
+                        </div>
+                        <div class="text-center p-6 bg-white bg-opacity-50 rounded-2xl">
+                            <h4 class="text-3xl font-bold text-amber-900 mb-2">5000+</h4>
+                            <p class="text-amber-800 font-medium">Happy Customers</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="scroll-animate-right">
+                    <div class="relative">
+                        <div class="w-full h-96 bg-gradient-to-br from-amber-300 to-amber-500 rounded-3xl flex items-center justify-center float-animation">
+                            <svg class="w-32 h-32 text-amber-800" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-6 -right-6 w-24 h-24 bg-amber-400 rounded-full opacity-20 pulse-animation"></div>
+                        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-amber-600 rounded-full opacity-20 pulse-animation" style="animation-delay: -1s;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-24 bg-gradient-to-b from-amber-50 to-amber-100 coffee-texture section-transition">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 scroll-animate">
+                <h3 class="text-5xl md:text-6xl font-bold text-amber-900 mb-6 tracking-wide">Our Premium Products</h3>
+                <p class="text-2xl text-amber-700 font-light max-w-3xl mx-auto">Handcrafted with natural ingredients for your health and wellness journey</p>
+            </div>
             
-            <a onclick="viewCart()" class="hover:text-[#B38B6D] transition cursor-pointer flex items-center space-x-2">
-                <span>Cart</span>
-                <span id="mobile-cart-count" class="bg-red-600 text-white text-base font-bold rounded-full h-6 w-6 flex items-center justify-center">0</span>
-            </a>
-            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <!-- Hair Oil -->
+                <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
+                    <div class="h-64 bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 shimmer"></div>
+                        <svg class="w-24 h-24 text-amber-800 float-animation" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                    </div>
+                    <div class="p-8">
+                        <h4 class="text-2xl font-bold text-amber-900 mb-3">Premium Hair Oil</h4>
+                        <p class="text-amber-700 mb-6 leading-relaxed">Nourishing blend for healthy, lustrous hair with ancient herbal extracts</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-3xl font-bold text-amber-900">₹299</span>
+                            <button onclick="addToCart('hair-oil')" class="btn-primary text-amber-100 px-6 py-3 rounded-full hover:scale-105 transition-all duration-300">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
 
-<a onclick="viewOrderHistory()" class="hover:text-[#B38B6D] transition cursor-pointer">Order History</a>
+                <!-- Face Pack -->
+                <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
+                    <div class="h-64 bg-gradient-to-br from-green-200 to-green-400 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 shimmer"></div>
+                        <svg class="w-24 h-24 text-green-800 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -1s;">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <div class="p-8">
+                        <h4 class="text-2xl font-bold text-amber-900 mb-3">Natural Face Pack</h4>
+                        <p class="text-amber-700 mb-6 leading-relaxed">Rejuvenating mask for glowing skin with pure clay and herbs</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-3xl font-bold text-amber-900">₹199</span>
+                            <button onclick="addToCart('face-pack')" class="btn-primary text-amber-100 px-6 py-3 rounded-full hover:scale-105 transition-all duration-300">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="w-2/3 max-w-sm h-px bg-[#B38B6D] my-6 opacity-50"></div>
+                <!-- Health Mix -->
+                <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
+                    <div class="h-64 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 shimmer"></div>
+                        <svg class="w-24 h-24 text-orange-800 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -2s;">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="p-8">
+                        <h4 class="text-2xl font-bold text-amber-900 mb-3">Wellness Health Mix</h4>
+                        <p class="text-amber-700 mb-6 leading-relaxed">Nutritious blend for daily vitality with superfoods and grains</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-3xl font-bold text-amber-900">₹399</span>
+                            <button onclick="addToCart('health-mix')" class="btn-primary text-amber-100 px-6 py-3 rounded-full hover:scale-105 transition-all duration-300">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
 
-            <button onclick="handleMobileAuthAction()" class="text-3xl px-10 py-4 rounded-full bg-[#B38B6D] text-white shadow-xl hover:bg-[#9E785C] transition transform hover:scale-105 font-bold">
-                <span id="mobile-auth-text">Login / Sign Up</span>
-            </button>
-        </nav>
+                <!-- Pain Relief Oil -->
+                <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
+                    <div class="h-64 bg-gradient-to-br from-red-200 to-red-400 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 shimmer"></div>
+                        <svg class="w-24 h-24 text-red-800 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -3s;">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <div class="p-8">
+                        <h4 class="text-2xl font-bold text-amber-900 mb-3">Pain Relief Oil</h4>
+                        <p class="text-amber-700 mb-6 leading-relaxed">Soothing relief for aches and pains with therapeutic oils</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-3xl font-bold text-amber-900">₹249</span>
+                            <button onclick="addToCart('pain-relief')" class="btn-primary text-amber-100 px-6 py-3 rounded-full hover:scale-105 transition-all duration-300">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 coffee-gradient">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="scroll-animate">
+                    <div class="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-amber-900" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-amber-100 mb-2">Premium Quality</h4>
+                    <p class="text-amber-200">100% natural ingredients sourced from trusted suppliers</p>
+                </div>
+                
+                <div class="scroll-animate">
+                    <div class="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-amber-900" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-amber-100 mb-2">Fast Delivery</h4>
+                    <p class="text-amber-200">Quick and secure delivery to your doorstep</p>
+                </div>
+                
+                <div class="scroll-animate">
+                    <div class="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-amber-900" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-xl font-bold text-amber-100 mb-2">Customer Care</h4>
+                    <p class="text-amber-200">24/7 support for all your health needs</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-amber-100">
+        <div class="max-w-4xl mx-auto px-4 text-center scroll-animate">
+            <h3 class="text-4xl font-bold text-amber-900 mb-8">Get In Touch</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h4 class="text-xl font-bold text-amber-900 mb-4">Contact Info</h4>
+                    <p class="text-amber-700 mb-2">📧 info@iyal.com</p>
+                    <p class="text-amber-700 mb-2">📞 +91 98765 43210</p>
+                    <p class="text-amber-700">📍 Mumbai, Maharashtra</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h4 class="text-xl font-bold text-amber-900 mb-4">Business Hours</h4>
+                    <p class="text-amber-700 mb-2">Monday - Friday: 9AM - 6PM</p>
+                    <p class="text-amber-700 mb-2">Saturday: 10AM - 4PM</p>
+                    <p class="text-amber-700">Sunday: Closed</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="coffee-gradient py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold text-amber-100 mb-4">IYAL</h2>
+            <p class="text-amber-200 mb-4">Your trusted partner in natural health and wellness</p>
+            <p class="text-amber-300 text-sm">&copy; 2024 Iyal. All rights reserved.</p>
+        </div>
+    </footer>
     </div>
+    <!-- End Main Content -->
 
-    
-
-<div id="main-landing-content">
-        
-
-<section id="hero-section" class="snap-section bg-[#4A352D] flex items-center justify-center text-center">
-            <div id="hero-content" class="w-full flex flex-col items-center justify-center p-8 md:p-16 z-30 max-w-7xl mx-auto">
-                <div class="flex flex-col items-center justify-center w-full">
-                    <h1 id="hero-title" class="text-6xl md:text-9xl font-extrabold text-white mb-6 uppercase tracking-tighter" style="text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-                        IYAL
-                    </h1>
-                    <p id="hero-subtitle" class="text-xl md:text-3xl text-white opacity-80 mb-10 font-light" style="text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);">
-                        Nourish. Revitalize. Shine.
-                    </p>
-                </div>
-                <a onclick="scrollToSection(1)" class="explore-button bg-[#B38B6D] text-white px-8 py-4 rounded-full text-lg font-semibold shadow-2xl hover:bg-[#9E785C] transition duration-300 transform hover:scale-105 w-max cursor-pointer">
-                    Explore Our Products
-                </a>
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-amber-900">Welcome to Iyal</h3>
+                <button onclick="closeAuthModal()" class="text-amber-600 hover:text-amber-800">✕</button>
             </div>
-        </section>
-
-        
-
-<section id="product-slides" class="snap-section bg-[#FAF0E6] px-4 md:px-12">
-            <div class="max-w-7xl mx-auto flex flex-col pt-16 pb-12">
-                <h2 class="text-5xl md:text-7xl font-bold text-center mb-16 text-[#4A352D]" id="product-title">
-                    Our Premium Lineup
-                </h2>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-                    
-
-<div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
-                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
-                            <img src="https://placehold.co/400x400/8B4513/ffffff?text=Magic+Oil" alt="Hair Oil Bottle" class="w-2/3 h-auto object-contain">
-                        </div>
-                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">1. Magic Hair Oil</h3>
-                        <p class="text-gray-600 mb-4 flex-grow">Deeply nourishes scalp and strands, promoting strength and shine from root to tip.</p>
-                        
-                        <div class="mt-auto flex justify-between items-center pt-4">
-                            <div class="text-xl font-bold text-[#4A352D]">₹300</div>
-                            <button onclick="viewProduct('oil_magic')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-
-                    
-
-<div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
-                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
-                            <img src="https://placehold.co/400x400/696969/ffffff?text=Iyal+Face+Pack" alt="Face Pack Jar" class="w-2/3 h-auto object-contain">
-                        </div>
-                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">2. Iyal Face Pack</h3>
-                        <p class="text-gray-600 mb-4 flex-grow">Detoxifies and purifies pores, revealing a brighter, smoother, and more youthful complexion.</p>
-                        
-                        <div class="mt-auto flex justify-between items-center pt-4">
-                            <div class="text-xl font-bold text-[#4A352D]">₹150</div>
-                            <button onclick="viewProduct('face_pack')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-
-                    
-
-<div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
-                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
-                            <img src="https://placehold.co/400x400/9ACD32/ffffff?text=Iyal+Mix" alt="Health Mix Pouch" class="w-2/3 h-auto object-contain">
-                        </div>
-                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">3. Iyal Health Mix</h3>
-                        <p class="text-gray-600 mb-4 flex-grow">A powerful blend of superfoods to boost immunity and energy throughout your busy day.</p>
-                        
-                        <div class="mt-auto flex justify-between items-center pt-4">
-                            <div class="text-xl font-bold text-[#4A352D]">₹350</div>
-                            <button onclick="viewProduct('health_mix')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-
-                    
-
-<div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
-                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
-                            <img src="https://placehold.co/400x400/800000/ffffff?text=Iyal+Oil" alt="Pain Relief Oil Bottle" class="w-2/3 h-auto object-contain">
-                        </div>
-                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">4. Iyal Pain Relief Oil</h3>
-                        <p class="text-gray-600 mb-4 flex-grow">A potent blend of natural extracts formulated to quickly relieve muscle and joint pain.</p>
-                        
-                        <div class="mt-auto flex justify-between items-center pt-4">
-                            <div class="text-xl font-bold text-[#4A352D]">₹175</div>
-                            <button onclick="viewProduct('oil_pain')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        
-
-<section id="contact-section" class="snap-section bg-[#4A352D] text-white flex flex-col justify-center items-center p-8">
-            <div class="max-w-4xl w-full text-center">
-                <p class="text-2xl md:text-3xl mb-8 font-light italic" id="contact-subtitle">
-                    Ready to take the next step in your wellness journey?
-                </p>
-                <h2 class="text-6xl md:text-8xl font-black mb-16 uppercase tracking-tighter" id="contact-title">
-                    Get In Touch.
-                </h2>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
-                    <div>
-                        <h3 class="text-2xl font-bold mb-3">Say Hello</h3>
-                        <p class="hover:text-[#B38B6D] transition"><a href="mailto:sales@iyal.in">sales@iyal.in</a></p>
-                        <p class="hover:text-[#B38B6D] transition"><a href="tel:+919876543210">+91 987-654-3210</a></p>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold mb-3">Follow Us</h3>
-                        <p class="hover:text-[#B38B6D] transition"><a href="#">Instagram</a></p>
-                        <p class="hover:text-[#B38B6D] transition"><a href="#">Facebook</a></p>
-                        <p class="hover:text-[#B38B6D] transition"><a href="#">LinkedIn</a></p>
-                    </div>
-                </div>
-            </div>
-            <footer class="mt-20 text-sm opacity-50">
-                &copy; 2024 Iyal. All Rights Reserved.
-            </footer>
-        </section>
-    </div>
-
-    
-
-<div id="product-detail-page" class="bg-white px-4 md:px-12 pb-20">
-        <div class="max-w-7xl mx-auto pt-8">
             
-
-<button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Back to Products
-            </button>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                
-
-<div class="flex flex-col items-center p-4 bg-[#FDFBF9] rounded-2xl shadow-inner">
-                    <img id="detail-image" src="" alt="Product Detail Image" class="w-full max-w-lg rounded-xl h-auto object-contain mb-4">
-                    <div class="text-sm text-gray-500 mt-2">Product image display.</div>
-                </div>
-
-                
-
-<div class="pt-4">
-                    <h1 id="detail-title" class="text-4xl md:text-6xl font-extrabold text-[#4A352D] mb-4">Product Title</h1>
-                    <div id="detail-rating-display" class="flex items-center mb-6">
-                        
-
-<span class="text-xl text-gray-500 ml-2">(<span id="detail-review-count">0</span> reviews)</span>
+            <div id="mobileForm">
+                <h4 class="text-xl font-semibold text-amber-900 mb-4">Enter Mobile Number</h4>
+                <form onsubmit="sendOTP(event)">
+                    <div class="flex mb-4">
+                        <select class="p-3 border border-amber-300 rounded-l-lg focus:outline-none focus:border-amber-500 bg-amber-50">
+                            <option value="+91">🇮🇳 +91</option>
+                            <option value="+1">🇺🇸 +1</option>
+                            <option value="+44">🇬🇧 +44</option>
+                        </select>
+                        <input type="tel" id="mobileNumber" placeholder="Mobile Number" class="flex-1 p-3 border border-amber-300 rounded-r-lg focus:outline-none focus:border-amber-500" pattern="[0-9]{10}" required>
                     </div>
-
-                    <p id="detail-price" class="text-5xl font-bold text-black mb-4">₹0.00</p>
-                    
-                    
-
-<div class="space-y-2 mb-8">
-                        <p id="detail-stock" class="text-xl font-semibold"></p>
-                        <p id="detail-delivery" class="text-lg text-gray-600">Estimated Delivery: <span class="font-medium text-[#4A352D]"></span></p>
-                    </div>
-
-                    
-
-<div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 mb-12">
-                        
-
-<button onclick="addToCart(currentProductId)" class="buy-button-style bg-[#B38B6D] text-white hover:bg-[#9E785C] flex-1">
-                            Add to Cart
-                        </button>
-                        <button onclick="console.log('Buy Now action initiated!')" class="buy-button-style bg-[#4A352D] text-white hover:bg-[#3A2B23] flex-1">
-                            Buy Now
-                        </button>
-                    </div>
-                    
-                    
-
-<div class="bg-gray-50 p-6 rounded-xl shadow-inner">
-                        <h2 class="text-3xl font-semibold mb-3 text-[#4A352D]">Product Description</h2>
-                        <p id="detail-description" class="text-gray-700 leading-relaxed"></p>
-                    </div>
-                </div>
+                    <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg mb-4">Send OTP</button>
+                </form>
+                <p class="text-center text-amber-700 text-sm">We'll send you a verification code via SMS</p>
             </div>
-
             
-
-<div class="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
-
-<div class="lg:col-span-1 p-6 bg-[#FAF0E6] rounded-xl shadow-lg">
-                    <h2 class="text-3xl font-bold mb-4 text-[#4A352D]">Key Ingredients</h2>
-                    <ul id="detail-specs" class="list-disc list-inside space-y-2 text-gray-700">
-                        
-
-</ul>
-                </div>
-
-                
-
-<div class="lg:col-span-2 space-y-12">
-                    
-
-<div>
-                        <h2 class="text-3xl font-bold mb-6 text-[#4A352D]">Customer Reviews</h2>
-                        <div id="detail-reviews-list" class="space-y-6">
-                            
-
-</div>
+            <div id="otpForm" class="hidden">
+                <h4 class="text-xl font-semibold text-amber-900 mb-4">Verify OTP</h4>
+                <p class="text-amber-700 mb-4 text-center">Enter the 6-digit code sent to <span id="sentToNumber" class="font-semibold"></span></p>
+                <form onsubmit="verifyOTP(event)">
+                    <div class="flex justify-center space-x-2 mb-6">
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
+                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
                     </div>
-
-                    
-
-<div class="p-8 bg-white rounded-xl shadow-2xl border border-[#B38B6D]/50">
-                        <h2 class="text-3xl font-bold mb-6 text-[#4A352D]">Write a Review</h2>
-                        <form onsubmit="handleReviewSubmit(event)">
-                            <div class="mb-4">
-                                <label for="review-name" class="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
-                                <input type="text" id="review-name" name="review-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required>
-                            </div>
-                            <div class="mb-4">
-                                <label for="review-rating" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                                <select id="review-rating" name="review-rating" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition appearance-none" required>
-                                    <option value="">Select a rating</option>
-                                    <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
-                                    <option value="4">⭐⭐⭐⭐ (Good)</option>
-                                    <option value="3">⭐⭐⭐ (Average)</option>
-                                    <option value="2">⭐⭐ (Poor)</option>
-                                    <option value="1">⭐ (Terrible)</option>
-                                </select>
-                            </div>
-                            <div class="mb-6">
-                                <label for="review-comment" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
-                                <textarea id="review-comment" name="review-comment" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required></textarea>
-                            </div>
-                            <button type="submit" class="w-full px-6 py-3 bg-[#4A352D] text-white rounded-full font-semibold shadow-lg hover:bg-[#3A2B23] transition">
-                                Submit Review
-                            </button>
-                        </form>
-                    </div>
+                    <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg mb-4">Verify & Login</button>
+                </form>
+                <div class="text-center">
+                    <button onclick="resendOTP()" class="text-amber-900 font-semibold hover:underline">Resend OTP</button>
+                    <span class="mx-2 text-amber-600">|</span>
+                    <button onclick="showMobileForm()" class="text-amber-900 font-semibold hover:underline">Change Number</button>
                 </div>
             </div>
         </div>
     </div>
 
-    
-
-<div id="cart-page" class="bg-white px-4 md:px-12 pb-20">
-        <div class="max-w-7xl mx-auto pt-8">
+    <!-- Cart Modal -->
+    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-amber-900">Shopping Cart</h3>
+                <button onclick="closeCart()" class="text-amber-600 hover:text-amber-800 text-2xl">✕</button>
+            </div>
             
-
-<button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Continue Shopping
-            </button>
-
-            <h1 class="text-5xl md:text-7xl font-extrabold text-[#4A352D] mb-12">Your Shopping Cart</h1>
+            <div id="cartItems" class="space-y-4 mb-6">
+                <p class="text-amber-700 text-center py-8">Your cart is empty. Start shopping to add items!</p>
+            </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                
-
-<div class="lg:col-span-2 space-y-6" id="cart-items-list">
-                    
-
-<div id="cart-empty-message" class="p-8 bg-gray-100 text-gray-600 rounded-xl text-center text-xl font-medium">
-                        Your cart is empty! Time to fill it with some IYAL goodness.
-                    </div>
-                </div>
-
-                
-
-<div class="lg:col-span-1 p-8 bg-[#FAF0E6] rounded-2xl shadow-xl sticky top-28 h-max">
-                    <h2 class="text-3xl font-bold text-[#4A352D] mb-6">Order Summary</h2>
-                    
-                    <div class="space-y-3 border-b border-gray-300 pb-4 mb-4">
-                        <div class="flex justify-between text-lg">
-                            <span>Subtotal (<span id="summary-item-count">0</span> items)</span>
-                            <span id="summary-subtotal" class="font-medium">₹0.00</span>
-                        </div>
-                        <div class="flex justify-between text-lg">
-                            <span>Shipping</span>
-                            <span class="font-medium text-green-600">FREE</span>
-                        </div>
-                        <div class="flex justify-between text-lg text-gray-600">
-                            <span>Taxes (18% Mock)</span>
-                            <span id="summary-tax" class="font-medium">₹0.00</span>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-between text-2xl font-bold mb-8">
-                        <span>Grand Total</span>
-                        <span id="summary-grand-total" class="text-[#4A352D]">₹0.00</span>
-                    </div>
-
-                    <button onclick="console.log('Proceeding to Checkout!')" class="w-full buy-button-style bg-[#4A352D] text-white hover:bg-[#3A2B23] text-lg py-3">
-                        Proceed to Checkout
-                    </button>
-                    <p class="text-sm text-center text-gray-500 mt-4">Shipping calculated at checkout.</p>
+            <div class="border-t pt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xl font-bold text-amber-900">Total: ₹<span id="cartTotal">0</span></span>
+                    <button onclick="checkout()" class="btn-primary text-white px-6 py-3 rounded-lg">Checkout</button>
                 </div>
             </div>
         </div>
     </div>
 
-    
-
-<div id="order-history-page" class="bg-white px-4 md:px-12 pb-20">
-        <div class="max-w-7xl mx-auto pt-8">
-            
-
-<button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                Back to Home
-            </button>
-
-            <h1 class="text-5xl md:text-7xl font-extrabold text-[#4A352D] mb-12">Your Order History</h1>
-            
-            <div id="orders-list-container" class="space-y-8">
-                
-
-<div id="order-history-empty-message" class="p-8 bg-gray-100 text-gray-600 rounded-xl text-center text-xl font-medium">
-                    You haven't placed any orders yet.
-                </div>
+    <!-- Account Modal -->
+    <div id="accountModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-amber-900">My Account</h3>
+                <button onclick="closeAccountModal()" class="text-amber-600 hover:text-amber-800 text-2xl">✕</button>
             </div>
-        </div>
-    </div>
-    
-    
-    
-
-<div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-end">
-                <button onclick="hideLoginModal()" class="text-gray-500 hover:text-gray-700 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-amber-800" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+                <h4 class="text-xl font-bold text-amber-900" id="userName">Welcome User!</h4>
+                <p class="text-amber-700" id="userEmail">user@example.com</p>
+            </div>
+            
+            <div class="space-y-4">
+                <button class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
+                    <span class="font-semibold text-amber-900">Order History</span>
+                </button>
+                <button class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
+                    <span class="font-semibold text-amber-900">Profile Settings</span>
+                </button>
+                <button class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
+                    <span class="font-semibold text-amber-900">Address Book</span>
                 </button>
             </div>
-            
-            <h2 id="auth-title" class="text-3xl font-bold text-[#4A352D] mb-6 text-center">Mobile Login / Sign Up</h2>
-            
-            <div id="auth-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4 hidden" role="alert">
-                <span id="auth-error-message" class="block sm:inline"></span>
-            </div>
-
-            <form id="auth-form" onsubmit="event.preventDefault();">
-                <div id="phone-auth-container" class="space-y-4 pt-4">
-                    <label for="phone-input" class="block text-sm font-medium text-gray-700">Mobile Number (Login/Sign Up)</label>
-                    <input type="tel" id="phone-input" placeholder="Enter Mobile Number (+CCXXXXXXXXXX)" 
-                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
-                    
-                    <div id="recaptcha-container" class="mt-4"></div>
-
-                    <button id="send-otp-btn" onclick="handleMobileAuthAction()" 
-                            class="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-150">
-                        Send Verification Code
-                    </button>
-                </div>
-
-                <div id="otp-verification-fields" class="hidden space-y-4 pt-4">
-                    <input type="number" id="otp-input" placeholder="Enter 6-digit OTP" 
-                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" 
-                           maxlength="6">
-                    
-                    <button id="verify-otp-btn" onclick="confirmOtpVerification()" 
-                            class="w-full py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-150">
-                        Verify & Sign In
-                    </button>
-                </div>
-            </form>
-            </div>
+        </div>
     </div>
 
+    <!-- Cart Notification -->
+    <div id="cartNotification" class="fixed top-24 right-6 coffee-gradient text-amber-100 px-8 py-4 rounded-full shadow-2xl transform translate-x-full transition-all duration-500 z-50 border border-amber-300">
+        <p class="font-semibold">✨ Product added to cart!</p>
+    </div>
 
-    
-
-<script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, setPersistence, browserLocalPersistence, 
-                 updateEmail, signOut, RecaptchaVerifier, PhoneAuthProvider, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, writeBatch, runTransaction, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <script>
+        // Welcome Animation
+        function startWelcomeAnimation() {
+            // After all animations complete, wait then fade out
+            setTimeout(() => {
+                const welcomeScreen = document.getElementById('welcomeScreen');
+                const mainContent = document.getElementById('mainContent');
+                
+                welcomeScreen.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    welcomeScreen.style.display = 'none';
+                    mainContent.classList.add('show');
+                }, 1000); // Wait for fade out animation
+            }, 4000); // Total wait time for all animations to complete
+        }
         
-        setLogLevel('debug'); // Enable Firestore logging
+        // Start welcome animation when page loads
+        window.addEventListener('load', () => {
+            startWelcomeAnimation();
+        });
 
-        // --- Firebase Global Variables (Provided by environment) ---
-        const appId = 'iyal-app';
-        const firebaseConfig = {
-          apikey: "AIzaSyA5hPlKdqNi1FmAlVFmIXezZxot9-BuWeA",
-          authdomain: "iyal-59a03.firebaseapp.com",
-          projectid: "iyal-59a03",
-          storageBucket: "iyal-59a03.firebasestorage.app",
-          messagingSenderId: "714618123459",
-          appId: "1:714618123459:web:ae86588468119322bd1e76",
-          measurementId: "G-0GZSM3CDME"
-        };
-        const initialAuthToken = null;
+        // Mobile menu toggle with hamburger animation
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.querySelector('.hamburger');
+            
+            menu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
 
-        let db, auth, userId = null;
-        let isAuthReady = false;
-        let cartItems = []; // Local array to hold cart items synchronized with Firestore
-        let currentProductId = null; // Tracks the currently viewed product ID
-        let currentUser = null; // Holds the Firebase User object
-
-        // NEW: Phone Auth Variables
-        let confirmationResult = null;
-        let recaptchaVerifier = null;
-        
-
-        // --- Product Data Mock API (Same as before) ---
-        const PRODUCTS = {
-            'oil_magic': { id: 'oil_magic', name: 'Magic Hair Oil', price: 300, stock: 120, avgRating: 4.8, reviews: 45, delivery: '3-5 business days', image: 'https://placehold.co/600x600/8B4513/ffffff?text=Magic+Oil', description: "Iyal's Magic Hair Oil is a potent, time-tested blend of 12 natural herbs, cold-pressed with virgin coconut oil...", specs: ['Virgin Coconut Oil Base', 'Amla (Indian Gooseberry)', 'Bhringraj (False Daisy)', 'Hibiscus Flower Extracts', 'No Artificial Scents or Colors'], mockReviews: [{ name: 'Priya S.', rating: 5, comment: 'Absolutely transformed my hair!' }, { name: 'Ravi M.', rating: 4, comment: 'Great product, but the earthy smell is quite strong.' }] },
-            'face_pack': { id: 'face_pack', name: 'Iyal Face Pack', price: 150, stock: 0, avgRating: 4.2, reviews: 22, delivery: 'Currently unavailable', image: 'https://placehold.co/600x600/696969/ffffff?text=Iyal+Face+Pack', description: "This purifying face pack is made with volcanic clay and activated charcoal to draw out deep-seated impurities...", specs: ['Volcanic Clay', 'Activated Charcoal', 'Pure Sandalwood Powder', 'Rose Water', 'Suitable for All Skin Types'], mockReviews: [{ name: 'Kavya T.', rating: 5, comment: 'My favorite! Gives a spa-like glow instantly.' }, { name: 'Arun V.', rating: 3, comment: 'A little drying on my combination skin.' }] },
-            'health_mix': { id: 'health_mix', name: 'Iyal Health Mix', price: 350, stock: 450, avgRating: 4.9, reviews: 78, delivery: '2-4 business days', image: 'https://placehold.co/600x600/9ACD32/ffffff?text=Iyal+Mix', description: "A nutritious powerhouse, this daily health mix is a blend of 18 roasted grains, pulses, and nuts...", specs: ['Multi-Grain Blend (Ragi, Bajra, Wheat)', 'Pulses (Moong, Chana)', 'Dry Fruits (Almonds, Cashews)', 'No Added Sugar', 'High in Dietary Fiber'], mockReviews: [{ name: 'Deepak J.', rating: 5, comment: 'Perfect start to my day.' }, { name: 'Shreya P.', rating: 5, comment: 'My kids love this mixed with jaggery.' }] },
-            'oil_pain': { id: 'oil_pain', name: 'Iyal Pain Relief Oil', price: 175, stock: 250, avgRating: 4.5, reviews: 31, delivery: '4-6 business days', image: 'https://placehold.co/600x600/800000/ffffff?text=Iyal+Oil', description: "Experience fast, deep relief from muscle aches, joint stiffness, and chronic pain. Our Pain Relief Oil uses traditional ayurvedic wisdom...", specs: ['Sesame Oil Base', 'Wintergreen Oil', 'Eucalyptus Oil', 'Camphor', 'Rapid Penetration Formula'], mockReviews: [{ name: 'Vimal K.', rating: 4, comment: 'Very effective for my knee pain after running.' }, { name: 'Leena R.', rating: 5, comment: 'Best pain relief oil I have ever used.' }] }
-        };
-
-        const mockOrders = [
-            { id: 'ORD4008', date: '2025-10-01', total: 680.00, status: 'Delivered', 
-                items: [{ name: 'Magic Hair Oil', price: 300, quantity: 1 }, { name: 'Iyal Pain Relief Oil', price: 175, quantity: 2 }] 
-            },
-            { id: 'ORD4007', date: '2025-08-15', total: 350.00, status: 'Shipped', 
-                items: [{ name: 'Iyal Health Mix', price: 350, quantity: 1 }] 
-            },
-            { id: 'ORD4006', date: '2025-07-20', total: 900.00, status: 'Processing', 
-                items: [{ name: 'Magic Hair Oil', price: 300, quantity: 3 }] 
+        // Smooth scroll function
+        function smoothScrollTo(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
-        ];
+        }
 
+        // Auth modal functions
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
 
-        // --- DOM Elements ---
-        const mainHeader = document.getElementById('main-header');
-        const mainLandingContent = document.getElementById('main-landing-content');
-        const productDetailPage = document.getElementById('product-detail-page');
-        const cartPage = document.getElementById('cart-page');
-        const orderHistoryPage = document.getElementById('order-history-page'); 
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
 
-        const cartItemsListElement = document.getElementById('cart-items-list');
-        const cartCountDesktop = document.getElementById('cart-count');
-        const cartCountMobile = document.getElementById('mobile-cart-count');
-        
-        const authModal = document.getElementById('auth-modal');
-        const authTitle = document.getElementById('auth-title');
-        const authError = document.getElementById('auth-error');
-        const authErrorMessage = document.getElementById('auth-error-message');
-        const userStatusElement = document.getElementById('current-user-status');
-        const authActionButton = document.getElementById('auth-action-button');
-        const signoutButton = document.getElementById('signout-button');
-        const mobileAuthText = document.getElementById('mobile-auth-text');
-        const ordersListContainer = document.getElementById('orders-list-container');
-        const orderHistoryEmptyMessage = document.getElementById('order-history-empty-message');
+        function showMobileForm() {
+            document.getElementById('otpForm').classList.add('hidden');
+            document.getElementById('mobileForm').classList.remove('hidden');
+        }
 
+        function showOTPForm() {
+            document.getElementById('mobileForm').classList.add('hidden');
+            document.getElementById('otpForm').classList.remove('hidden');
+        }
 
-        // --- FIREBASE INITIALIZATION AND AUTH ---
-        async function setupFirebaseAndAuth() {
-            if (!firebaseConfig) {
-                console.error("Firebase config not found.");
-                userStatusElement.textContent = 'Firebase Error: Config Missing';
+        // Cart functionality
+        let cart = [];
+        let isLoggedIn = false;
+
+        function openCart() {
+            document.getElementById('cartModal').classList.remove('hidden');
+            updateCartDisplay();
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').classList.add('hidden');
+        }
+
+        function openAccountModal() {
+            document.getElementById('accountModal').classList.remove('hidden');
+        }
+
+        function closeAccountModal() {
+            document.getElementById('accountModal').classList.add('hidden');
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartCount = document.getElementById('cartCount');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-amber-700 text-center py-8">Your cart is empty. Start shopping to add items!</p>';
+                cartTotal.textContent = '0';
+                cartCount.textContent = '0';
+            } else {
+                let total = 0;
+                cartItems.innerHTML = cart.map(item => {
+                    total += item.price * item.quantity;
+                    return `
+                        <div class="flex justify-between items-center p-4 bg-amber-50 rounded-lg">
+                            <div>
+                                <h4 class="font-semibold text-amber-900">${item.name}</h4>
+                                <p class="text-amber-700">₹${item.price} x ${item.quantity}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="updateQuantity('${item.id}', -1)" class="bg-amber-200 text-amber-900 w-8 h-8 rounded-full hover:bg-amber-300">-</button>
+                                <span class="font-semibold">${item.quantity}</span>
+                                <button onclick="updateQuantity('${item.id}', 1)" class="bg-amber-200 text-amber-900 w-8 h-8 rounded-full hover:bg-amber-300">+</button>
+                                <button onclick="removeFromCart('${item.id}')" class="text-red-500 hover:text-red-700 ml-2">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                cartTotal.textContent = total;
+                cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+            }
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartDisplay();
+                }
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartDisplay();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            alert('Checkout functionality would connect to your payment processor here!');
+        }
+
+        function handleLogout() {
+            isLoggedIn = false;
+            cart = [];
+            
+            // Hide logged-in elements
+            document.getElementById('cartButton').classList.add('hidden');
+            document.getElementById('accountInfo').classList.add('hidden');
+            document.getElementById('logoutButton').classList.add('hidden');
+            
+            // Show login button
+            document.getElementById('loginButton').classList.remove('hidden');
+            
+            updateCartDisplay();
+            alert('You have been logged out successfully!');
+        }
+
+        // Mobile verification variables
+        let currentMobileNumber = '';
+        let generatedOTP = '';
+
+        // Form handlers
+        function sendOTP(event) {
+            event.preventDefault();
+            const countryCode = event.target.querySelector('select').value;
+            const mobileNumber = event.target.querySelector('#mobileNumber').value;
+            
+            if (mobileNumber.length !== 10) {
+                alert('Please enter a valid 10-digit mobile number');
+                return;
+            }
+            
+            currentMobileNumber = countryCode + mobileNumber;
+            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            // Show the number in OTP form
+            document.getElementById('sentToNumber').textContent = currentMobileNumber;
+            
+            // In a real app, you would send SMS here
+            alert(`Demo: Your OTP is ${generatedOTP}\n(In production, this would be sent via SMS)`);
+            
+            showOTPForm();
+        }
+
+        function verifyOTP(event) {
+            event.preventDefault();
+            const otpInputs = document.querySelectorAll('.otp-input');
+            const enteredOTP = Array.from(otpInputs).map(input => input.value).join('');
+            
+            if (enteredOTP.length !== 6) {
+                alert('Please enter the complete 6-digit OTP');
+                return;
+            }
+            
+            if (enteredOTP === generatedOTP) {
+                isLoggedIn = true;
+                
+                // Show logged-in elements
+                document.getElementById('cartButton').classList.remove('hidden');
+                document.getElementById('accountInfo').classList.remove('hidden');
+                document.getElementById('logoutButton').classList.remove('hidden');
+                
+                // Hide login button
+                document.getElementById('loginButton').classList.add('hidden');
+                
+                // Update account info
+                document.getElementById('userName').textContent = `Welcome User!`;
+                document.getElementById('userEmail').textContent = currentMobileNumber;
+                
+                closeAuthModal();
+                alert('Welcome to Iyal! You are now logged in.');
+                
+                // Reset forms
+                showMobileForm();
+                otpInputs.forEach(input => input.value = '');
+                document.getElementById('mobileNumber').value = '';
+            } else {
+                alert('Invalid OTP. Please try again.');
+                otpInputs.forEach(input => input.value = '');
+                otpInputs[0].focus();
+            }
+        }
+
+        function resendOTP() {
+            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            alert(`Demo: Your new OTP is ${generatedOTP}\n(In production, this would be sent via SMS)`);
+        }
+
+        // Enhanced add to cart function
+        function addToCart(productId) {
+            if (!isLoggedIn) {
+                alert('Please login to add items to your cart!');
+                openAuthModal();
                 return;
             }
 
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
+            const products = {
+                'hair-oil': { name: 'Premium Hair Oil', price: 299 },
+                'face-pack': { name: 'Natural Face Pack', price: 199 },
+                'health-mix': { name: 'Wellness Health Mix', price: 399 },
+                'pain-relief': { name: 'Pain Relief Oil', price: 249 }
+            };
 
-            try {
-                // Set persistence to local to remember the session
-                await setPersistence(auth, browserLocalPersistence);
+            const product = products[productId];
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: productId,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+
+            updateCartDisplay();
+
+            const notification = document.getElementById('cartNotification');
+            notification.classList.remove('translate-x-full');
+            notification.style.transform = 'translateX(0) scale(1.1)';
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0) scale(1)';
+            }, 200);
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // Enhanced scroll animations
+        function handleScrollAnimations() {
+            const elements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
                 
-                // Sign in with custom token if available, otherwise anonymously
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
                 }
+            });
+        }
 
-                // Main Auth State Listener
-                onAuthStateChanged(auth, (user) => {
-                    currentUser = user;
-                    if (user) {
-                        userId = user.uid;
-                        isAuthReady = true;
-                        
-                        // Update UI based on user type (Prioritize Phone)
-                        if (user.phoneNumber) {
-                            userStatusElement.innerHTML = `Signed in: <span class="font-bold text-green-300">${user.phoneNumber}</span>`;
-                            authActionButton.classList.add('hidden');
-                            signoutButton.classList.remove('hidden');
-                            mobileAuthText.textContent = 'Sign Out';
-                        } else if (user.email && !user.email.startsWith('user_')) {
-                            // User signed in with a real email (fallback/alternative)
-                            userStatusElement.innerHTML = `Signed in as: <span class="font-bold text-yellow-300">${user.email}</span> (Unverified)`;
-                            authActionButton.classList.add('hidden');
-                            signoutButton.classList.remove('hidden');
-                            mobileAuthText.textContent = 'Sign Out';
-                        }
-                         else {
-                            // Anonymous or Phone User without explicit phone number yet
-                            userStatusElement.innerHTML = `User ID: <span class="font-bold">${user.uid.substring(0, 8)}...</span>`;
-                            authActionButton.textContent = 'Login / Sign Up';
-                            authActionButton.onclick = showLoginModal;
-                            authActionButton.classList.remove('hidden');
-                            signoutButton.classList.add('hidden'); 
-                            mobileAuthText.textContent = 'Login / Sign Up';
-                        }
-                        
-                        listenToCart(); 
-                    } else {
-                        // Signed out
-                        userId = null;
-                        isAuthReady = false;
-                        userStatusElement.textContent = 'Signed Out.';
-                        authActionButton.textContent = 'Login / Sign Up';
-                        authActionButton.onclick = showLoginModal;
-                        authActionButton.classList.remove('hidden');
-                        signoutButton.classList.add('hidden');
-                        mobileAuthText.textContent = 'Login / Sign Up';
-                        cartItems = [];
-                        updateCartUI();
+        // Parallax effect
+        function handleParallax() {
+            const parallaxElements = document.querySelectorAll('.parallax');
+            const scrolled = window.pageYOffset;
+            
+            parallaxElements.forEach(element => {
+                const rate = scrolled * -0.5;
+                element.style.transform = `translateY(${rate}px)`;
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                smoothScrollTo(targetId);
+            });
+        });
+
+        // OTP Input Navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
                     }
                 });
-
-            } catch (error) {
-                console.error("Firebase Auth or Init error:", error);
-                userStatusElement.textContent = `Auth Error: ${error.code}`;
-            }
-        }
-        
-        /**
-         * Signs out the currently authenticated user.
-         */
-        async function signOutUser() {
-            try {
-                await signOut(auth);
-                console.log("User signed out successfully.");
-                goHome();
-                // NOTE: The onAuthStateChanged listener handles the UI update
-            } catch (error) {
-                console.error("Error signing out:", error);
-                window.showCustomAlert(`Sign out failed: ${error.message}`);
-            }
-        }
-
-        // --- NEW PHONE AUTH UTILITIES ---
-
-        function getAuthErrorMessage(code) {
-            switch (code) {
-                case 'auth/invalid-verification-code':
-                    return 'Invalid OTP. Please check the 6-digit code and try again.';
-                case 'auth/code-expired':
-                    return 'Verification code expired. Please re-send the code.';
-                case 'auth/invalid-phone-number':
-                    return 'Invalid phone number format. Use +CCXXXXXXXXXX format.';
-                case 'auth/too-many-requests':
-                    return 'Too many requests. Please try again later.';
-                default:
-                    return `An unknown error occurred: ${code}`;
-            }
-        }
-        
-        function resetPhoneAuthUI() {
-            document.getElementById('phone-input').value = '';
-            document.getElementById('otp-input').value = '';
-            document.getElementById('otp-verification-fields').classList.add('hidden');
-            document.getElementById('send-otp-btn').innerText = 'Send Verification Code';
-            
-            // Re-render reCAPTCHA
-            if (recaptchaVerifier) {
-                // Must explicitly reset the recaptcha
-                recaptchaVerifier.render().then(widgetId => grecaptcha.reset(widgetId));
-            }
-            confirmationResult = null;
-        }
-
-        // --- NEW PHONE AUTH LOGIC ---
-
-        // Function to handle sending the OTP (Sign up/Log in initiation)
-        async function handleMobileAuthAction() {
-            const phoneNumber = document.getElementById('phone-input').value;
-            const otpFields = document.getElementById('otp-verification-fields');
-            const authButton = document.getElementById('send-otp-btn');
-
-            document.getElementById('auth-error').classList.add('hidden');
-
-            if (!phoneNumber || phoneNumber.length < 10 || !phoneNumber.startsWith('+')) {
-                document.getElementById('auth-error-message').textContent = "Please enter a valid mobile number including the country code (e.g., +91XXXXXXXXXX).";
-                document.getElementById('auth-error').classList.remove('hidden');
-                return;
-            }
-
-            try {
-                const auth = firebase.auth();
-                const appVerifier = window.recaptchaVerifier;
-
-                authButton.innerText = 'Sending...';
-
-                // 1. Initiate Phone Verification (Signs in or creates user upon confirmation)
-                confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
                 
-                window.showCustomAlert("Verification code sent! Please check your SMS.");
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
                 
-                // 2. Update UI
-                otpFields.classList.remove('hidden'); 
-                authButton.innerText = 'Resend Code';
-                document.getElementById('auth-title').textContent = 'Enter Verification Code';
-                
-            } catch (error) {
-                console.error("Error sending OTP:", error);
-                // Reset reCAPTCHA on error
-                if (recaptchaVerifier) recaptchaVerifier.render(); 
-                authButton.innerText = 'Send Verification Code';
-                document.getElementById('auth-error-message').textContent = getAuthErrorMessage(error.code) || error.message;
-                document.getElementById('auth-error').classList.remove('hidden');
-            }
-        }
-
-
-        // Function to handle the OTP confirmation and final sign-in/sign-up
-        async function confirmOtpVerification() {
-            const otpCode = document.getElementById('otp-input').value;
-            document.getElementById('auth-error').classList.add('hidden');
-
-            if (!otpCode || otpCode.length !== 6) {
-                document.getElementById('auth-error-message').textContent = "Please enter the 6-digit code.";
-                document.getElementById('auth-error').classList.remove('hidden');
-                return;
-            }
-
-            if (!confirmationResult) {
-                document.getElementById('auth-error-message').textContent = "Error: OTP session expired. Please re-send OTP.";
-                document.getElementById('auth-error').classList.remove('hidden');
-                 return;
-            }
-            
-            try {
-                // 1. Confirm the code, which signs the user in/creates the user
-                const result = await confirmationResult.confirm(otpCode);
-                const user = result.user;
-
-                // 2. Handle New User Case: Create a dummy email for management
-                if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
-                    const uniqueEmail = `user_${user.uid}@iyal.in`;
-                    // Update the Firebase user object with the unique dummy email
-                    await updateEmail(user, uniqueEmail); 
-                    console.log(`New user created and assigned dummy email: ${uniqueEmail}`);
-                }
-                
-                // 3. Finalize
-                window.showCustomAlert("Mobile number verified successfully! You are now logged in.");
-                resetPhoneAuthUI();
-                window.hideLoginModal(); 
-
-            } catch (error) {
-                console.error("Error verifying OTP:", error);
-                document.getElementById('auth-error-message').textContent = getAuthErrorMessage(error.code) || "Invalid OTP or session expired. Please try again.";
-                document.getElementById('auth-error').classList.remove('hidden');
-            }
-        }
-        
-        // --- AUTH MODAL LOGIC ---
-        
-        function showLoginModal() {
-            authModal.style.display = 'flex';
-            authModal.classList.add('active');
-            // Hide any previous error messages
-            authError.classList.add('hidden');
-            document.getElementById('auth-form').reset();
-            resetPhoneAuthUI(); // Reset the phone auth flow state
-            document.getElementById('auth-title').textContent = 'Mobile Login / Sign Up'; // Reset title
-            toggleMobileMenu(true); // Close mobile menu if open
-        }
-
-        function hideLoginModal() {
-            authModal.classList.remove('active');
-            setTimeout(() => { authModal.style.display = 'none'; }, 300); // Wait for transition
-        }
-
-        function handleMobileAuthAction() {
-            if (currentUser && currentUser.phoneNumber) {
-                // If logged in via phone, mobile button is for sign out
-                signOutUser();
-            } else {
-                // If guest/token user, mobile button is for login/signup
-                showLoginModal();
-            }
-        }
-
-
-        // --- Firestore/Cart Functions ---
-
-        function getCartCollectionRef() {
-            if (!db || !userId) {
-                console.error("Database or User ID not ready.");
-                return null;
-            }
-            return collection(db, `artifacts/${appId}/users/${userId}/cart_items`);
-        }
-        
-        function getOrdersCollectionRef() {
-            if (!db || !userId) {
-                console.error("Database or User ID not ready.");
-                return null;
-            }
-            return collection(db, `artifacts/${appId}/users/${userId}/orders`);
-        }
-
-        function listenToCart() {
-            const cartRef = getCartCollectionRef();
-            if (!cartRef) return;
-
-            onSnapshot(cartRef, (snapshot) => {
-                const newCartItems = [];
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const productDetails = PRODUCTS[data.productId];
-                    if (productDetails) {
-                        newCartItems.push({
-                            id: doc.id, 
-                            ...data,
-                            ...productDetails
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text');
+                    if (pastedData.length === 6 && /^\d+$/.test(pastedData)) {
+                        otpInputs.forEach((inp, i) => {
+                            inp.value = pastedData[i] || '';
                         });
                     }
                 });
-                cartItems = newCartItems;
-                updateCartUI();
-                renderCartPage();
-            }, (error) => {
-                console.error("Error listening to cart changes:", error);
             });
-        }
+        });
 
-        function updateCartUI() {
-            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+        // Initialize animations and effects
+        window.addEventListener('scroll', () => {
+            handleScrollAnimations();
+            handleParallax();
+        });
+        
+        window.addEventListener('load', () => {
+            handleScrollAnimations();
+            // Add staggered animation to product cards
+            const productCards = document.querySelectorAll('.product-card');
+            productCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0) scale(1)';
+                }, index * 200);
+            });
+        });
+
+        // Close mobile menu when clicking outside or on links
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.querySelector('.hamburger');
             
-            cartCountDesktop.textContent = totalItems;
-            cartCountMobile.textContent = totalItems;
-
-            if (totalItems > 0) {
-                cartCountDesktop.classList.remove('hidden');
-            } else {
-                cartCountDesktop.classList.add('hidden');
+            if (!hamburger.contains(event.target) && !menu.contains(event.target) && menu.classList.contains('active')) {
+                toggleMenu();
             }
-        }
+        });
 
-        async function addToCart(productId) {
-            // Check if user is authenticated (not anonymous) before allowing adding to cart
-            if (!currentUser || currentUser.isAnonymous) { 
-                // Display error feedback on the screen
-                document.getElementById('auth-error-message').textContent = "Please log in with your mobile number to add items to your cart.";
-                document.getElementById('auth-error').classList.remove('hidden');
-                showLoginModal();
-                return;
+        // Close modal when clicking outside
+        document.getElementById('authModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeAuthModal();
             }
-            
-            if (!isAuthReady) {
-                console.error("Authentication not ready. Cannot add to cart.");
-                return;
-            }
+        });
 
-            const product = PRODUCTS[productId];
-            if (!product || product.stock <= 0) {
-                console.warn(`Product ${productId} is out of stock.`);
-                return;
-            }
-            
-            const existingItem = cartItems.find(item => item.productId === productId);
-            const cartRef = getCartCollectionRef();
-
-            try {
-                if (existingItem) {
-                    const itemDocRef = doc(cartRef, existingItem.id);
-                    await updateDoc(itemDocRef, {
-                        quantity: existingItem.quantity + 1,
-                        updatedAt: new Date().toISOString()
-                    });
-                } else {
-                    await addDoc(cartRef, {
-                        productId: productId,
-                        quantity: 1,
-                        addedAt: new Date().toISOString()
-                    });
-                }
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const menu = document.getElementById('mobileMenu');
+                const modal = document.getElementById('authModal');
                 
-                const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
-                showTemporaryFeedback(detailButton, 'Added to Cart!', 'bg-green-600');
-
-            } catch (e) {
-                console.error("Error adding/updating cart item:", e);
-                const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
-                showTemporaryFeedback(detailButton, 'Error!', 'bg-red-600');
-            }
-        }
-        
-        async function removeItem(cartItemId) {
-            if (!isAuthReady) return;
-            const cartRef = getCartCollectionRef();
-            const itemDocRef = doc(cartRef, cartItemId);
-            try { await deleteDoc(itemDocRef); } catch (e) { console.error("Error removing cart item:", e); }
-        }
-
-        async function updateQuantity(cartItemId, newQuantity) {
-            if (!isAuthReady) return;
-            const quantity = parseInt(newQuantity);
-            if (quantity < 1 || isNaN(quantity)) { return removeItem(cartItemId); }
-            const cartRef = getCartCollectionRef();
-            const itemDocRef = doc(cartRef, cartItemId);
-            try {
-                await updateDoc(itemDocRef, { quantity: quantity, updatedAt: new Date().toISOString() });
-            } catch (e) { console.error("Error updating quantity:", e); }
-        }
-
-        // --- Navigation and UI State ---
-        
-        function renderCartPage() { 
-            if (!isAuthReady || !cartItemsListElement) return;
-            let totalItems = 0; let subtotal = 0;
-            const cartEmptyMessage = document.getElementById('cart-empty-message');
-            if (cartItems.length === 0) { 
-                cartEmptyMessage.style.display = 'block'; 
-                cartItemsListElement.innerHTML = ''; 
-            } else { 
-                cartEmptyMessage.style.display = 'none';
-                cartItemsListElement.innerHTML = cartItems.map(item => {
-                    const itemTotal = item.price * item.quantity; subtotal += itemTotal; totalItems += item.quantity;
-                    return `<div class="flex flex-col sm:flex-row items-start sm:items-center p-4 bg-white rounded-xl shadow-md border border-gray-200"><img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-contain rounded-lg flex-shrink-0 mr-4 border border-gray-100"><div class="flex-grow my-2 sm:my-0"><h3 class="text-xl font-semibold text-[#4A352D]">${item.name}</h3><p class="text-gray-500">Price: ₹${item.price.toFixed(2)}</p></div><div class="flex items-center space-x-4 mt-3 sm:mt-0 sm:ml-auto"><div class="flex items-center border border-gray-300 rounded-full overflow-hidden"><button onclick="updateQuantity('${item.id}', ${item.quantity - 1})" class="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-lg font-bold transition rounded-l-full">&minus;</button><input type="number" value="${item.quantity}" min="1" onchange="updateQuantity('${item.id}', this.value)" class="w-12 text-center text-lg border-x border-gray-300 focus:outline-none focus:ring-0 appearance-none bg-white"><button onclick="updateQuantity('${item.id}', ${item.quantity + 1})" class="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-lg font-bold transition rounded-r-full">&#43;</button></div><div class="text-xl font-bold w-24 text-right">₹${itemTotal.toFixed(2)}</div><button onclick="removeItem('${item.id}')" class="text-red-500 hover:text-red-700 transition p-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button></div></div>`;
-                }).join('');
-            }
-            const taxRate = 0.18; 
-            const taxAmount = subtotal * taxRate; 
-            const grandTotal = subtotal + taxAmount;
-            document.getElementById('summary-item-count').textContent = totalItems; 
-            document.getElementById('summary-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
-            document.getElementById('summary-tax').textContent = `₹${taxAmount.toFixed(2)}`; 
-            document.getElementById('summary-grand-total').textContent = `₹${grandTotal.toFixed(2)}`;
-        }
-        
-        function renderOrderHistoryPage() {
-            if (!ordersListContainer) return;
-            if (mockOrders.length === 0) { 
-                orderHistoryEmptyMessage.style.display = 'block'; 
-                ordersListContainer.innerHTML = ''; 
-                return; 
-            }
-            orderHistoryEmptyMessage.style.display = 'none';
-            ordersListContainer.innerHTML = mockOrders.map(order => {
-                let statusColor = 'text-gray-600'; 
-                if (order.status === 'Delivered') statusColor = 'text-green-600 font-semibold'; 
-                if (order.status === 'Shipped') statusColor = 'text-yellow-600 font-semibold'; 
-                if (order.status === 'Processing') statusColor = 'text-blue-600 font-semibold';
-                const itemsList = order.items.map(item => `<div class="flex justify-between text-sm text-gray-500 ml-4"><span>${item.quantity} x ${item.name}</span><span>₹${(item.price * item.quantity).toFixed(2)}</span></div>`).join('');
-                return `<div class="bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30 transition hover:shadow-xl"><div class="flex justify-between items-start pb-4 border-b border-gray-200 mb-4 flex-wrap"><div><h3 class="text-xl md:text-2xl font-bold text-[#4A352D]">Order ID: ${order.id}</h3><p class="text-sm text-gray-500">Placed on: ${order.date}</p></div><div class="mt-2 md:mt-0 text-right"><p class="text-2xl font-bold text-black">₹${order.total.toFixed(2)}</p><p class="text-sm ${statusColor}">Status: ${order.status}</p></div></div><div class="space-y-2"><h4 class="text-lg font-semibold text-gray-700">Items Ordered:</h4>${itemsList}</div><div class="mt-6 pt-4 border-t border-gray-100 flex justify-end space-x-4"><button onclick="console.log('Tracking Order ${order.id}')" class="px-4 py-2 text-[#4A352D] border border-[#4A352D] rounded-full text-sm font-semibold hover:bg-[#4A352D] hover:text-white transition">Track Order</button><button onclick="console.log('Reordering Order ${order.id}')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full text-sm font-semibold hover:bg-[#9E785C] transition">Reorder</button></div></div>`;
-            }).join('');
-        }
-        
-        function viewCart() { 
-            productDetailPage.style.display = 'none'; 
-            orderHistoryPage.style.display = 'none'; 
-            mainLandingContent.classList.add('hidden-page'); 
-            cartPage.style.display = 'block'; 
-            window.scrollTo(0, 0); 
-            handleScroll(true); 
-            toggleMobileMenu(true); 
-        }
-        
-        function viewOrderHistory() { 
-            productDetailPage.style.display = 'none'; 
-            cartPage.style.display = 'none'; 
-            mainLandingContent.classList.add('hidden-page'); 
-            orderHistoryPage.style.display = 'block'; 
-            renderOrderHistoryPage(); 
-            window.scrollTo(0, 0); 
-            handleScroll(true); 
-            toggleMobileMenu(true); 
-        }
-        
-        function viewProduct(productId) { 
-            currentProductId = productId; 
-            const product = PRODUCTS[productId]; 
-            if (!product) { 
-                console.error(`Product with ID ${productId} not found.`); 
-                return; 
-            }
-            document.getElementById('detail-title').textContent = product.name; 
-            document.getElementById('detail-image').src = product.image; 
-            document.getElementById('detail-image').alt = product.name + " Image"; 
-            document.getElementById('detail-description').textContent = product.description; 
-            document.getElementById('detail-price').textContent = `₹${product.price.toFixed(2)}`;
-            
-            const stockElement = document.getElementById('detail-stock'); 
-            const deliveryElement = document.getElementById('detail-delivery').querySelector('span'); 
-            const buyButtons = productDetailPage.querySelectorAll('.buy-button-style');
-            
-            if (product.stock > 0) { 
-                stockElement.innerHTML = `<span class="text-green-600">&#10003; In Stock!</span> (${product.stock} left)`; 
-                deliveryElement.textContent = product.delivery; 
-                buyButtons.forEach(btn => btn.disabled = false); 
-                buyButtons.forEach(btn => btn.classList.remove('opacity-50', 'cursor-not-allowed')); 
-            } else { 
-                stockElement.innerHTML = `<span class="text-red-600">&#10007; Out of Stock</span>`; 
-                deliveryElement.textContent = 'Currently unavailable for delivery.'; 
-                buyButtons.forEach(btn => btn.disabled = true); 
-                buyButtons.forEach(btn => btn.classList.add('opacity-50', 'cursor-not-allowed')); 
-            }
-            
-            const specsList = document.getElementById('detail-specs'); 
-            // The next line splits the rating display to keep the count span intact.
-            document.getElementById('detail-rating-display').innerHTML = renderStars(product.avgRating) + document.getElementById('detail-rating-display').innerHTML.split(')')[1];
-            
-            specsList.innerHTML = product.specs.map(item => `<li>${item}</li>`).join(''); 
-            document.getElementById('detail-review-count').textContent = product.reviews; 
-             
-            const reviewsList = document.getElementById('detail-reviews-list'); 
-            reviewsList.innerHTML = product.mockReviews.map(review => `<div class="border-b border-gray-200 pb-4"><div class="flex items-center mb-1">${renderStars(review.rating)}<span class="ml-4 font-semibold text-lg">${review.name}</span></div><p class="text-gray-600 italic">"${review.comment}"</p></div>`).join('');
-            
-            mainLandingContent.classList.add('hidden-page'); 
-            cartPage.style.display = 'none'; 
-            orderHistoryPage.style.display = 'none'; 
-            productDetailPage.style.display = 'block'; 
-            window.scrollTo(0, 0); 
-            mainHeader.classList.add('bg-[#4A352D]', 'shadow-md');
-        }
-        
-        function goHome() { 
-            productDetailPage.style.display = 'none';
-            cartPage.style.display = 'none';
-            orderHistoryPage.style.display = 'none'; 
-            mainLandingContent.classList.remove('hidden-page');
-            window.scrollTo(0, 0); 
-            handleScroll(); 
-        }
-        
-        function goHomeAndScroll(sectionIndex) { 
-            productDetailPage.style.display = 'none';
-            cartPage.style.display = 'none';
-            orderHistoryPage.style.display = 'none'; 
-            mainLandingContent.classList.remove('hidden-page');
-            scrollToSection(sectionIndex);
-            setTimeout(() => toggleMobileMenu(true), 300); // Pass true to force close
-            handleScroll();
-        }
-        
-        function handleScroll(forceDark = false) {
-            if (mainLandingContent.classList.contains('hidden-page') && !forceDark) {
-                mainHeader.classList.add('bg-[#4A352D]', 'shadow-md'); document.querySelectorAll('#cart-icon, #mobile-menu-toggle svg').forEach(el => el.setAttribute('stroke', 'white')); return;
-            }
-            const scrollY = window.scrollY; const viewportHeight = window.innerHeight;
-            const isScrolledToProductSection = scrollY >= (viewportHeight * 0.5);
-            if (isScrolledToProductSection) {
-                mainHeader.classList.add('bg-[#4A352D]', 'shadow-md'); document.querySelectorAll('#cart-icon, #mobile-menu-toggle svg').forEach(el => el.setAttribute('stroke', 'white'));
-            } else {
-                mainHeader.classList.remove('bg-[#4A352D]', 'shadow-md'); document.querySelectorAll('#cart-icon, #mobile-menu-toggle svg').forEach(el => el.setAttribute('stroke', 'white'));
-            }
-        }
-        
-        function renderStars(rating) {
-            let starsHtml = ''; 
-            const fullStars = Math.floor(rating); 
-            const halfStar = rating % 1 !== 0; 
-            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-            
-            for (let i = 0; i < fullStars; i++) { starsHtml += `<span class="star-filled text-2xl">&#9733;</span>`; }
-            if (halfStar) { starsHtml += `<span class="star-filled text-2xl">&#9733;</span>`; }
-            for (let i = 0; i < emptyStars; i++) { starsHtml += `<span class="star-empty text-2xl">&#9733;</span>`; }
-            
-            starsHtml += `<span class="text-xl font-bold ml-3 text-[#4A352D]">${rating.toFixed(1)}</span>`;
-            return starsHtml;
-        }
-
-        // --- Scrolling & Animation Utilities ---
-        function easeInOutQuint(t) { return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t; }
-        
-        function animateScroll(targetY, duration) {
-            const startY = window.scrollY;
-            const distance = targetY - startY;
-            let startTime = null;
-
-            function step(currentTime) {
-                if (startTime === null) startTime = currentTime;
-                const timeElapsed = currentTime - startTime;
-                const progress = Math.min(timeElapsed / duration, 1);
-                const easedProgress = easeInOutQuint(progress);
-
-                window.scrollTo(0, startY + distance * easedProgress);
-
-                if (timeElapsed < duration) {
-                    window.requestAnimationFrame(step);
+                if (menu.classList.contains('active')) {
+                    toggleMenu();
+                }
+                if (!modal.classList.contains('hidden')) {
+                    closeAuthModal();
                 }
             }
-            window.requestAnimationFrame(step);
-        }
-
-        function scrollToSection(sectionIndex) {
-            const sections = document.querySelectorAll('.snap-section');
-            if (sections[sectionIndex]) {
-                const targetY = sections[sectionIndex].offsetTop;
-                animateScroll(targetY, 800);
-            }
-        }
-        
-        function toggleMobileMenu(forceClose = false) {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const isMenuOpen = !mobileMenu.classList.contains('translate-x-full');
-            if (isMenuOpen || forceClose) { 
-                mobileMenu.classList.add('translate-x-full'); 
-                document.body.classList.remove('overflow-hidden'); 
-            } else { 
-                mobileMenu.classList.remove('translate-x-full'); 
-                document.body.classList.add('overflow-hidden'); 
-            }
-        }
-        
-        function showTemporaryFeedback(button, text, className) {
-            const originalText = button.textContent; 
-            const originalClasses = button.className;
-            button.textContent = text; 
-            button.className = `${originalClasses.replace(/bg-\[\#\w+\]/, className)}`;
-            
-            setTimeout(() => { 
-                button.textContent = originalText; 
-                button.className = originalClasses; 
-            }, 2000);
-        }
-        
-        function handleReviewSubmit(event) {
-            event.preventDefault(); 
-            console.log(`Review submitted by: ${document.getElementById('review-name').value}`);
-            const submitButton = event.target.querySelector('button[type="submit"]'); 
-            showTemporaryFeedback(submitButton, 'Review Submitted!', 'bg-green-600'); 
-            event.target.reset();
-        }
-
-
-        // Exposed Global Functions
-        window.goHome = goHome;
-        window.viewProduct = viewProduct;
-        window.viewCart = viewCart;
-        window.viewOrderHistory = viewOrderHistory;
-        window.goHomeAndScroll = goHomeAndScroll;
-        window.toggleMobileMenu = toggleMobileMenu;
-        window.addToCart = addToCart;
-        window.updateQuantity = updateQuantity;
-        window.removeItem = removeItem;
-        window.handleReviewSubmit = handleReviewSubmit;
-        window.scrollToSection = scrollToSection;
-        window.showLoginModal = showLoginModal; 
-        window.hideLoginModal = hideLoginModal; 
-        window.signOutUser = signOutUser; 
-        window.handleMobileAuthAction = handleMobileAuthAction; 
-        window.confirmOtpVerification = confirmOtpVerification;
-
-        // Utility for Custom Alerts (since the original wasn't provided, defining one here)
-        window.showCustomAlert = (message) => {
-            const alertElement = document.getElementById('auth-error');
-            const messageElement = document.getElementById('auth-error-message');
-            if (alertElement && messageElement) {
-                messageElement.textContent = message;
-                alertElement.classList.remove('hidden');
-                // Temporarily show the alert for success/info messages
-                setTimeout(() => {
-                    if (messageElement.textContent === message) {
-                        alertElement.classList.add('hidden');
-                    }
-                }, 5000);
-            } else {
-                console.log("ALERT: " + message);
-            }
-        };
-
-        // --- Initialization ---
-
-        window.onload = () => {
-            setupFirebaseAndAuth();
-
-            // NEW: Initialize Recaptcha Verifier
-            if (window.firebase && window.firebase.auth) {
-                const auth = firebase.auth();
-                recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    'size': 'normal', 
-                    'callback': (response) => { /* reCAPTCHA solved */ },
-                    'expired-callback': () => { 
-                        window.showCustomAlert('reCAPTCHA expired. Please re-try sending the code.');
-                        resetPhoneAuthUI();
-                    }
-                });
-                // Recaptcha Verifier needs the Firebase Auth instance and the container ID
-                recaptchaVerifier.render(); 
-                window.recaptchaVerifier = recaptchaVerifier;
-            }
-
-
-            // Loading Overlay animation
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const iyalTextContainer = document.getElementById('iyal-intro-text');
-            const chars = iyalTextContainer.querySelectorAll('.intro-char');
-            const staggerDelay = 200; 
-            let totalRevealTime = chars.length * staggerDelay; 
-            
-            chars.forEach((char, index) => {
-                setTimeout(() => {
-                    char.classList.add('visible');
-                }, index * staggerDelay);
-            });
-            
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden-load');
-            }, totalRevealTime + 200); 
-            
-            // Attach Listeners
-            window.addEventListener('scroll', () => handleScroll());
-            handleScroll(); // Initial check
-        };
-        
+        });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98d4201e00f57f3a',t:'MTc2MDI0NjE5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
