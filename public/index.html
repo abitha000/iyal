@@ -43,454 +43,618 @@
         }
 
         #product-detail-page, #cart-page, #order-history-page {
-            display: none;
-            min-height: calc(100vh - 80px); /* 80px for header */
-            padding-top: 80px; 
-        }
-        
-        .hidden-page {
-            display: none !important;
+            display: none; /* Hidden by default */
+            min-height: 100vh;
+            padding-top: 100px; /* Offset for fixed header */
         }
 
-        .star-filled {
-            color: #FFC300;
+        #main-landing-content.hidden-page {
+            display: none;
+            scroll-snap-type: none; /* Disable snap when hidden */
         }
-        .star-empty {
-            color: #ddd;
+
+        .product-card {
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
         .buy-button-style {
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            border-radius: 9999px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
         
-        /* Mobile Menu Transition */
-        #mobile-menu {
-            transition: transform 0.3s ease-in-out;
+        .logo-img {
+            height: 40px; 
+            width: auto;
+            margin-right: 8px; 
         }
 
-        /* Loading Animation */
-        #loading-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: #4A352D;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity 1s ease-out, visibility 1s;
+        .star-filled {
+            color: #FFD700; /* Gold */
         }
-        #loading-overlay.hidden-load {
-            opacity: 0;
-            visibility: hidden;
+        .star-empty {
+            color: #cccccc;
         }
+
+        /* Intro animation styles */
         .intro-char {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
             display: inline-block;
+            opacity: 0;
+            transform: translateY(10px); 
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
         .intro-char.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Modal Transition */
-        #auth-modal {
-            display: none;
+        /* Loading overlay styles */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FAF0E6; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1.0s ease-out, visibility 1.0s ease-out; 
+        }
+
+        .hidden-load {
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            visibility: hidden;
         }
-        #auth-modal.active {
-            opacity: 1;
+
+        /* Modal specific styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
+        .modal-content {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            max-width: 90%;
+            width: 450px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
     </style>
 </head>
-<body class="antialiased">
+<body class="overflow-x-hidden">
 
-    <div id="loading-overlay">
-        <div id="iyal-intro-text" class="text-white text-5xl font-bold tracking-wider">
-            <span class="intro-char">I</span><span class="intro-char">y</span><span class="intro-char">a</span><span class="intro-char">l</span>
+    
+
+<div id="loading-overlay">
+        <div id="iyal-intro-text" class="text-6xl md:text-8xl font-black tracking-widest text-[#4A352D]">
+            <span class="intro-char">I</span>
+            <span class="intro-char">Y</span>
+            <span class="intro-char">A</span>
+            <span class="intro-char">L</span>
         </div>
     </div>
 
-    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-6 md:px-12">
-        <div class="flex items-center justify-between">
-            <a href="javascript:void(0)" onclick="goHome()" class="text-3xl font-extrabold text-white tracking-widest transition duration-300 hover:text-[#B38B6D]">IYAL</a>
-            
-            <nav class="hidden md:flex space-x-8 text-white font-semibold">
-                <a href="javascript:void(0)" onclick="goHomeAndScroll(1)" class="hover:text-[#B38B6D] transition">Products</a>
-                <a href="javascript:void(0)" onclick="goHomeAndScroll(2)" class="hover:text-[#B38B6D] transition">About Us</a>
-                <a href="javascript:void(0)" onclick="viewOrderHistory()" class="hover:text-[#B38B6D] transition">Orders</a>
-                <a href="javascript:void(0)" onclick="goHomeAndScroll(3)" class="hover:text-[#B38B6D] transition">Contact</a>
-            </nav>
-            
-            <div class="flex items-center space-x-6">
-                
-                <span id="current-user-status" class="hidden lg:block text-sm text-gray-300">Initializing...</span>
-                
-                <button id="auth-action-button" class="hidden md:block px-4 py-2 bg-[#B38B6D] text-white rounded-full text-sm font-semibold hover:bg-[#9E785C] transition shadow-md" onclick="showLoginModal()">Login / Sign Up</button>
-                
-                <button id="signout-button" class="hidden md:block px-4 py-2 bg-red-600 text-white rounded-full text-sm font-semibold hover:bg-red-700 transition shadow-md" onclick="signOutUser()">Sign Out</button>
+    
 
-                <button onclick="viewCart()" class="relative text-white hover:text-[#B38B6D] transition">
-                    <svg id="cart-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <span id="cart-count" class="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 text-xs bg-red-600 rounded-full w-5 h-5 flex items-center justify-center font-bold hidden">0</span>
-                </button>
+<header id="main-header" class="fixed top-0 left-0 w-full z-50 p-6 md:p-8 transition-colors duration-500">
+        <nav id="main-nav-container" class="flex justify-between items-center max-w-7xl mx-auto">
+            
+            
+
+<div id="logo-container" class="logo-container flex items-center cursor-pointer" onclick="goHome()">
+                <img id="logo-image" 
+                     src="https://i.imgur.com/GY15TYP.jpeg" 
+                     alt="Iyal Logo" 
+                     class="logo-img logo-filter-dark"
+                     onerror="this.onerror=null;this.src='https://placehold.co/40x40/4A352D/D4C1B0?text=I';" 
+                >
+            </div>
+
+            
+
+<div class="flex items-center space-x-4">
                 
-                <button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="md:hidden text-white hover:text-[#B38B6D] transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+
+<button onclick="viewCart()" class="hidden sm:block p-2 rounded-full hover:bg-white/10 transition duration-300 relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart" id="cart-icon"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    
+
+<span id="cart-count" class="absolute top-1 right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </button>
+
+                
+
+<button id="mobile-menu-toggle" onclick="toggleMobileMenu()" class="p-2 rounded-full hover:bg-white/10 transition duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
             </div>
+        </nav>
+        <div id="user-info-bar" class="text-xs text-right mt-1 px-4 opacity-80 flex items-center justify-end space-x-2">
+            <span id="current-user-status" class="text-white font-medium">...</span>
+            <button id="auth-action-button" onclick="showLoginModal()" class="text-white hover:text-[#B38B6D] transition font-bold underline hidden">
+                Login / Sign Up
+            </button>
+            <button id="signout-button" onclick="signOutUser()" class="text-white hover:text-red-400 transition font-bold underline hidden">
+                Sign Out
+            </button>
         </div>
     </header>
 
-    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-64 bg-[#4A352D] text-white shadow-xl z-50 transform translate-x-full pt-20">
-        <nav class="flex flex-col space-y-4 p-6 font-semibold border-b border-gray-700">
-            <a href="javascript:void(0)" onclick="goHomeAndScroll(1)" class="hover:text-[#B38B6D] transition text-lg">Products</a>
-            <a href="javascript:void(0)" onclick="goHomeAndScroll(2)" class="hover:text-[#B38B6D] transition text-lg">About Us</a>
-            <a href="javascript:void(0)" onclick="viewOrderHistory()" class="hover:text-[#B38B6D] transition text-lg">Orders</a>
-            <a href="javascript:void(0)" onclick="goHomeAndScroll(3)" class="hover:text-[#B38B6D] transition text-lg">Contact</a>
-        </nav>
+    
+
+<div id="mobile-menu" class="fixed top-0 left-0 w-full h-full bg-[#4A352D] z-[100] transform translate-x-full transition-transform duration-500 overflow-y-auto">
         
-        <div class="p-6">
-            <button id="mobile-auth-button" onclick="handleMobileAuthAction()" class="w-full py-2 bg-[#B38B6D] text-white rounded-full text-md font-semibold hover:bg-[#9E785C] transition shadow-md">
+        
+
+<div class="flex justify-end p-8">
+            <button onclick="toggleMobileMenu()" class="p-2 rounded-full text-white hover:bg-white/10 transition duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        
+
+<nav class="flex flex-col items-center space-y-8 mt-12 text-3xl font-extrabold text-white">
+            <a onclick="goHomeAndScroll(0)" class="hover:text-[#B38B6D] transition cursor-pointer">Home</a>
+            <a onclick="goHomeAndScroll(1)" class="hover:text-[#B38B6D] transition cursor-pointer">Products</a>
+            <a onclick="goHomeAndScroll(2)" class="hover:text-[#B38B6D] transition cursor-pointer">Contact Us</a>
+            
+            <a onclick="viewCart()" class="hover:text-[#B38B6D] transition cursor-pointer flex items-center space-x-2">
+                <span>Cart</span>
+                <span id="mobile-cart-count" class="bg-red-600 text-white text-base font-bold rounded-full h-6 w-6 flex items-center justify-center">0</span>
+            </a>
+            
+
+<a onclick="viewOrderHistory()" class="hover:text-[#B38B6D] transition cursor-pointer">Order History</a>
+
+            <div class="w-2/3 max-w-sm h-px bg-[#B38B6D] my-6 opacity-50"></div>
+
+            <button onclick="handleMobileAuthAction()" class="text-3xl px-10 py-4 rounded-full bg-[#B38B6D] text-white shadow-xl hover:bg-[#9E785C] transition transform hover:scale-105 font-bold">
                 <span id="mobile-auth-text">Login / Sign Up</span>
             </button>
-            <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-700">
-                <span class="text-gray-300 font-semibold">Cart</span>
-                <button onclick="viewCart()" class="relative text-white hover:text-[#B38B6D] transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <span id="mobile-cart-count" class="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 text-xs bg-red-600 rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
+        </nav>
+    </div>
+
+    
+
+<div id="main-landing-content">
+        
+
+<section id="hero-section" class="snap-section bg-[#4A352D] flex items-center justify-center text-center">
+            <div id="hero-content" class="w-full flex flex-col items-center justify-center p-8 md:p-16 z-30 max-w-7xl mx-auto">
+                <div class="flex flex-col items-center justify-center w-full">
+                    <h1 id="hero-title" class="text-6xl md:text-9xl font-extrabold text-white mb-6 uppercase tracking-tighter" style="text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                        IYAL
+                    </h1>
+                    <p id="hero-subtitle" class="text-xl md:text-3xl text-white opacity-80 mb-10 font-light" style="text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);">
+                        Nourish. Revitalize. Shine.
+                    </p>
+                </div>
+                <a onclick="scrollToSection(1)" class="explore-button bg-[#B38B6D] text-white px-8 py-4 rounded-full text-lg font-semibold shadow-2xl hover:bg-[#9E785C] transition duration-300 transform hover:scale-105 w-max cursor-pointer">
+                    Explore Our Products
+                </a>
+            </div>
+        </section>
+
+        
+
+<section id="product-slides" class="snap-section bg-[#FAF0E6] px-4 md:px-12">
+            <div class="max-w-7xl mx-auto flex flex-col pt-16 pb-12">
+                <h2 class="text-5xl md:text-7xl font-bold text-center mb-16 text-[#4A352D]" id="product-title">
+                    Our Premium Lineup
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                    
+
+<div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/400x400/8B4513/ffffff?text=Magic+Oil" alt="Hair Oil Bottle" class="w-2/3 h-auto object-contain">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">1. Magic Hair Oil</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Deeply nourishes scalp and strands, promoting strength and shine from root to tip.</p>
+                        
+                        <div class="mt-auto flex justify-between items-center pt-4">
+                            <div class="text-xl font-bold text-[#4A352D]">₹300</div>
+                            <button onclick="viewProduct('oil_magic')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    
+
+<div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/400x400/696969/ffffff?text=Iyal+Face+Pack" alt="Face Pack Jar" class="w-2/3 h-auto object-contain">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">2. Iyal Face Pack</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Detoxifies and purifies pores, revealing a brighter, smoother, and more youthful complexion.</p>
+                        
+                        <div class="mt-auto flex justify-between items-center pt-4">
+                            <div class="text-xl font-bold text-[#4A352D]">₹150</div>
+                            <button onclick="viewProduct('face_pack')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    
+
+<div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/400x400/9ACD32/ffffff?text=Iyal+Mix" alt="Health Mix Pouch" class="w-2/3 h-auto object-contain">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">3. Iyal Health Mix</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">A powerful blend of superfoods to boost immunity and energy throughout your busy day.</p>
+                        
+                        <div class="mt-auto flex justify-between items-center pt-4">
+                            <div class="text-xl font-bold text-[#4A352D]">₹350</div>
+                            <button onclick="viewProduct('health_mix')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    
+
+<div class="product-card bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30">
+                        <div class="h-48 mb-6 flex-shrink-0 flex justify-center items-center bg-[#FDFBF9] rounded-lg overflow-hidden">
+                            <img src="https://placehold.co/400x400/800000/ffffff?text=Iyal+Oil" alt="Pain Relief Oil Bottle" class="w-2/3 h-auto object-contain">
+                        </div>
+                        <h3 class="text-2xl font-semibold mb-2 text-gray-800">4. Iyal Pain Relief Oil</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">A potent blend of natural extracts formulated to quickly relieve muscle and joint pain.</p>
+                        
+                        <div class="mt-auto flex justify-between items-center pt-4">
+                            <div class="text-xl font-bold text-[#4A352D]">₹175</div>
+                            <button onclick="viewProduct('oil_pain')" class="px-6 py-2 bg-[#B38B6D] text-white rounded-full font-semibold shadow-md hover:bg-[#9E785C] transition duration-300 transform hover:scale-105">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+
+<section id="contact-section" class="snap-section bg-[#4A352D] text-white flex flex-col justify-center items-center p-8">
+            <div class="max-w-4xl w-full text-center">
+                <p class="text-2xl md:text-3xl mb-8 font-light italic" id="contact-subtitle">
+                    Ready to take the next step in your wellness journey?
+                </p>
+                <h2 class="text-6xl md:text-8xl font-black mb-16 uppercase tracking-tighter" id="contact-title">
+                    Get In Touch.
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3">Say Hello</h3>
+                        <p class="hover:text-[#B38B6D] transition"><a href="mailto:sales@iyal.in">sales@iyal.in</a></p>
+                        <p class="hover:text-[#B38B6D] transition"><a href="tel:+919876543210">+91 987-654-3210</a></p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3">Follow Us</h3>
+                        <p class="hover:text-[#B38B6D] transition"><a href="#">Instagram</a></p>
+                        <p class="hover:text-[#B38B6D] transition"><a href="#">Facebook</a></p>
+                        <p class="hover:text-[#B38B6D] transition"><a href="#">LinkedIn</a></p>
+                    </div>
+                </div>
+            </div>
+            <footer class="mt-20 text-sm opacity-50">
+                &copy; 2024 Iyal. All Rights Reserved.
+            </footer>
+        </section>
+    </div>
+
+    
+
+<div id="product-detail-page" class="bg-white px-4 md:px-12 pb-20">
+        <div class="max-w-7xl mx-auto pt-8">
+            
+
+<button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back to Products
+            </button>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+
+<div class="flex flex-col items-center p-4 bg-[#FDFBF9] rounded-2xl shadow-inner">
+                    <img id="detail-image" src="" alt="Product Detail Image" class="w-full max-w-lg rounded-xl h-auto object-contain mb-4">
+                    <div class="text-sm text-gray-500 mt-2">Product image display.</div>
+                </div>
+
+                
+
+<div class="pt-4">
+                    <h1 id="detail-title" class="text-4xl md:text-6xl font-extrabold text-[#4A352D] mb-4">Product Title</h1>
+                    <div id="detail-rating-display" class="flex items-center mb-6">
+                        
+
+<span class="text-xl text-gray-500 ml-2">(<span id="detail-review-count">0</span> reviews)</span>
+                    </div>
+
+                    <p id="detail-price" class="text-5xl font-bold text-black mb-4">₹0.00</p>
+                    
+                    
+
+<div class="space-y-2 mb-8">
+                        <p id="detail-stock" class="text-xl font-semibold"></p>
+                        <p id="detail-delivery" class="text-lg text-gray-600">Estimated Delivery: <span class="font-medium text-[#4A352D]"></span></p>
+                    </div>
+
+                    
+
+<div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 mb-12">
+                        
+
+<button onclick="addToCart(currentProductId)" class="buy-button-style bg-[#B38B6D] text-white hover:bg-[#9E785C] flex-1">
+                            Add to Cart
+                        </button>
+                        <button onclick="console.log('Buy Now action initiated!')" class="buy-button-style bg-[#4A352D] text-white hover:bg-[#3A2B23] flex-1">
+                            Buy Now
+                        </button>
+                    </div>
+                    
+                    
+
+<div class="bg-gray-50 p-6 rounded-xl shadow-inner">
+                        <h2 class="text-3xl font-semibold mb-3 text-[#4A352D]">Product Description</h2>
+                        <p id="detail-description" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            
+
+<div class="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+
+<div class="lg:col-span-1 p-6 bg-[#FAF0E6] rounded-xl shadow-lg">
+                    <h2 class="text-3xl font-bold mb-4 text-[#4A352D]">Key Ingredients</h2>
+                    <ul id="detail-specs" class="list-disc list-inside space-y-2 text-gray-700">
+                        
+
+</ul>
+                </div>
+
+                
+
+<div class="lg:col-span-2 space-y-12">
+                    
+
+<div>
+                        <h2 class="text-3xl font-bold mb-6 text-[#4A352D]">Customer Reviews</h2>
+                        <div id="detail-reviews-list" class="space-y-6">
+                            
+
+</div>
+                    </div>
+
+                    
+
+<div class="p-8 bg-white rounded-xl shadow-2xl border border-[#B38B6D]/50">
+                        <h2 class="text-3xl font-bold mb-6 text-[#4A352D]">Write a Review</h2>
+                        <form onsubmit="handleReviewSubmit(event)">
+                            <div class="mb-4">
+                                <label for="review-name" class="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+                                <input type="text" id="review-name" name="review-name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="review-rating" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                <select id="review-rating" name="review-rating" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition appearance-none" required>
+                                    <option value="">Select a rating</option>
+                                    <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                                    <option value="4">⭐⭐⭐⭐ (Good)</option>
+                                    <option value="3">⭐⭐⭐ (Average)</option>
+                                    <option value="2">⭐⭐ (Poor)</option>
+                                    <option value="1">⭐ (Terrible)</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label for="review-comment" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+                                <textarea id="review-comment" name="review-comment" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required></textarea>
+                            </div>
+                            <button type="submit" class="w-full px-6 py-3 bg-[#4A352D] text-white rounded-full font-semibold shadow-lg hover:bg-[#3A2B23] transition">
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+<div id="cart-page" class="bg-white px-4 md:px-12 pb-20">
+        <div class="max-w-7xl mx-auto pt-8">
+            
+
+<button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Continue Shopping
+            </button>
+
+            <h1 class="text-5xl md:text-7xl font-extrabold text-[#4A352D] mb-12">Your Shopping Cart</h1>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                
+
+<div class="lg:col-span-2 space-y-6" id="cart-items-list">
+                    
+
+<div id="cart-empty-message" class="p-8 bg-gray-100 text-gray-600 rounded-xl text-center text-xl font-medium">
+                        Your cart is empty! Time to fill it with some IYAL goodness.
+                    </div>
+                </div>
+
+                
+
+<div class="lg:col-span-1 p-8 bg-[#FAF0E6] rounded-2xl shadow-xl sticky top-28 h-max">
+                    <h2 class="text-3xl font-bold text-[#4A352D] mb-6">Order Summary</h2>
+                    
+                    <div class="space-y-3 border-b border-gray-300 pb-4 mb-4">
+                        <div class="flex justify-between text-lg">
+                            <span>Subtotal (<span id="summary-item-count">0</span> items)</span>
+                            <span id="summary-subtotal" class="font-medium">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span>Shipping</span>
+                            <span class="font-medium text-green-600">FREE</span>
+                        </div>
+                        <div class="flex justify-between text-lg text-gray-600">
+                            <span>Taxes (18% Mock)</span>
+                            <span id="summary-tax" class="font-medium">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between text-2xl font-bold mb-8">
+                        <span>Grand Total</span>
+                        <span id="summary-grand-total" class="text-[#4A352D]">₹0.00</span>
+                    </div>
+
+                    <button onclick="placeOrder()" class="w-full buy-button-style bg-[#4A352D] text-white hover:bg-[#3A2B23] text-lg py-3">
+                        Proceed to Checkout
+                    </button>
+                    <p class="text-sm text-center text-gray-500 mt-4">Shipping calculated at checkout.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+<div id="order-history-page" class="bg-white px-4 md:px-12 pb-20">
+        <div class="max-w-7xl mx-auto pt-8">
+            
+
+<button onclick="goHome()" class="flex items-center text-[#4A352D] font-semibold mb-8 hover:text-[#B38B6D] transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back to Home
+            </button>
+
+            <h1 class="text-5xl md:text-7xl font-extrabold text-[#4A352D] mb-12">Your Order History</h1>
+            
+            <div id="orders-list-container" class="space-y-8">
+                
+
+<div id="order-history-empty-message" class="p-8 bg-gray-100 text-gray-600 rounded-xl text-center text-xl font-medium">
+                    You haven't placed any orders yet.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+
+<div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-end">
+                <button onclick="hideLoginModal()" class="text-gray-500 hover:text-gray-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <h2 id="auth-title" class="text-3xl font-bold text-[#4A352D] mb-6 text-center">Login</h2>
+            
+            <div id="auth-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-4 hidden" role="alert">
+                <span id="auth-error-message" class="block sm:inline"></span>
+            </div>
+
+            <form id="auth-form" onsubmit="event.preventDefault(); handleAuthSubmit();">
+                <div class="mb-4">
+                    <label for="auth-email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input type="email" id="auth-email" name="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required>
+                </div>
+                <div class="mb-6">
+                    <label for="auth-password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <input type="password" id="auth-password" name="password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#B38B6D] focus:border-[#B38B6D] transition" required minlength="6">
+                </div>
+
+                <button type="submit" id="auth-submit-button" class="w-full px-6 py-3 bg-[#4A352D] text-white rounded-full font-semibold shadow-lg hover:bg-[#3A2B23] transition">
+                    Login
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <button id="auth-toggle-button" onclick="toggleAuthMode()" class="text-[#B38B6D] hover:text-[#4A352D] text-sm font-medium transition">
+                    New user? Click here to Sign Up
                 </button>
             </div>
         </div>
     </div>
 
-    <main id="main-content">
 
-        <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]" onclick="if(event.target === this) hideLoginModal()">
-            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300">
-                <h2 id="auth-title" class="text-3xl font-bold text-[#4A352D] mb-6 text-center">Login</h2>
-                
-                <div id="auth-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 hidden" role="alert">
-                    <span id="auth-error-message" class="block sm:inline"></span>
-                </div>
+    
 
-                <form id="auth-form" onsubmit="event.preventDefault(); handleAuthSubmit();">
-                    <div class="mb-4">
-                        <label for="auth-email" class="block text-gray-700 font-medium mb-2">Email</label>
-                        <input type="email" id="auth-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#B38B6D]/50 focus:border-[#B38B6D]" required>
-                    </div>
-                    <div class="mb-6">
-                        <label for="auth-password" class="block text-gray-700 font-medium mb-2">Password</label>
-                        <input type="password" id="auth-password" minlength="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#B38B6D]/50 focus:border-[#B38B6D]" required>
-                    </div>
-                    <button id="auth-submit-button" type="submit" class="w-full bg-[#B38B6D] text-white py-3 rounded-xl font-bold text-lg hover:bg-[#9E785C] transition shadow-lg">Login</button>
-                </form>
-                
-                <div class="text-center mt-4">
-                    <button id="auth-toggle-button" onclick="toggleAuthMode()" class="text-[#4A352D] text-sm hover:text-[#B38B6D] transition underline">New user? Click here to **Sign Up**</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="main-landing-content">
-            
-            <section id="hero-section" class="snap-section flex items-center justify-center text-white p-8">
-                <div class="text-center max-w-4xl">
-                    <h1 class="text-6xl md:text-8xl font-extrabold mb-4 leading-tight">Authentic Indian Ayurveda</h1>
-                    <p class="text-xl md:text-2xl mb-8 font-light tracking-wide">Timeless remedies, made with pure intent. From our family farm to your home.</p>
-                    <button onclick="scrollToSection(1)" class="px-8 py-4 bg-[#B38B6D] text-white rounded-full text-lg font-semibold hover:bg-[#9E785C] transition transform hover:scale-105 shadow-xl">Shop Our Products</button>
-                </div>
-            </section>
-
-            <section id="product-slides" class="snap-section bg-FAF0E6 py-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-center text-[#4A352D] mb-12">Our Bestsellers</h2>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto px-6">
-                    
-                    <div class="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
-                        <img src="https://i.imgur.com/csiEy92.jpeg" alt="Magical Hair Oil" class="w-full h-64 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-2xl font-bold text-[#4A352D] mb-2">Magical Hair Oil 100ml</h3>
-                            <p class="text-gray-500 mb-4">Potent blend of 12 herbs for hair growth.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-3xl font-extrabold text-[#4A352D]">₹200</span>
-                                <button onclick="viewProduct('oil_magic')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full font-semibold hover:bg-[#9E785C] transition">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
-                        <img src="https://i.imgur.com/zGVglzS.jpeg" alt="Iyal Face Pack" class="w-full h-64 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-2xl font-bold text-[#4A352D] mb-2">Glowing Face Pack 100g</h3>
-                            <p class="text-gray-500 mb-4">Volcanic clay & charcoal for deep cleansing.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-3xl font-extrabold text-[#4A352D]">₹175</span>
-                                <button onclick="viewProduct('face_pack')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full font-semibold hover:bg-[#9E785C] transition">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
-                        <img src="https://i.imgur.com/idQyo02.png" alt="Iyal Health Mix" class="w-full h-64 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-2xl font-bold text-[#4A352D] mb-2">Iyal Health Mix 250g</h3>
-                            <p class="text-gray-500 mb-4">18 roasted grains and nuts. Daily nutrition.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-3xl font-extrabold text-[#4A352D]">₹350</span>
-                                <button onclick="viewProduct('health_mix')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full font-semibold hover:bg-[#9E785C] transition">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition duration-300 transform hover:-translate-y-1">
-                        <img src="https://i.imgur.com/sNIxEtX.jpeg" alt="Iyal Pain Relief Oil" class="w-full h-64 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-2xl font-bold text-[#4A352D] mb-2">Pain Relief Oil 100ml</h3>
-                            <p class="text-gray-500 mb-4">Remedy for muscle and joint pain.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-3xl font-extrabold text-[#4A352D]">₹150</span>
-                                <button onclick="viewProduct('oil_pain')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full font-semibold hover:bg-[#9E785C] transition">View Details</button>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <section id="about-section" class="snap-section bg-[#4A352D] text-white py-16">
-                <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <h2 class="text-4xl md:text-5xl font-bold mb-6">Our Commitment to Purity</h2>
-                        <p class="text-lg mb-4">**Iyal** is not just a brand; it's a promise inherited through generations. We source our ingredients directly from our organic family farm in the foothills of the Western Ghats, ensuring every batch is free from chemicals, preservatives, and artificial additives.</p>
-                        <p class="text-lg mb-6">We blend ancient Ayurvedic wisdom with modern, ethical processing to bring you products that are both effective and pure. When you choose Iyal, you choose wellness, tradition, and uncompromising quality.</p>
-                        <button onclick="goHomeAndScroll(3)" class="px-6 py-3 bg-[#B38B6D] text-white rounded-full font-semibold hover:bg-[#9E785C] transition transform hover:scale-105">Read Our Story</button>
-                    </div>
-                    <div class="hidden md:block">
-                        <img src="https://i.imgur.com/qTWeF4b.jpeg" alt="Iyal Farmhouse" class="rounded-xl shadow-2xl">
-                    </div>
-                </div>
-            </section>
-
-            <section id="contact-section" class="snap-section bg-FAF0E6 py-16 flex items-center justify-center">
-                <div class="max-w-xl mx-auto p-8 bg-white rounded-xl shadow-2xl">
-                    <h2 class="text-4xl font-bold text-[#4A352D] mb-6 text-center">Get In Touch</h2>
-                    <p class="text-center text-gray-600 mb-8">Have a question or feedback? We'd love to hear from you.</p>
-                    <form onsubmit="event.preventDefault(); alert('Thank you for your message! We will be in touch soon.');">
-                        <div class="mb-4">
-                            <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
-                            <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#B38B6D]/50 focus:border-[#B38B6D]" required>
-                        </div>
-                        <div class="mb-4">
-                            <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
-                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#B38B6D]/50 focus:border-[#B38B6D]" required>
-                        </div>
-                        <div class="mb-6">
-                            <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
-                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-[#B38B6D]/50 focus:border-[#B38B6D]" required></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-[#B38B6D] text-white py-3 rounded-xl font-bold text-lg hover:bg-[#9E785C] transition shadow-lg">Send Message</button>
-                    </form>
-                </div>
-            </section>
-        </div>
-
-        <div id="product-detail-page" class="bg-FAF0E6 py-10">
-            <div class="max-w-7xl mx-auto px-6">
-                <button onclick="goHome()" class="text-gray-600 hover:text-[#4A352D] mb-6 flex items-center transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                    Back to Products
-                </button>
-                <div class="bg-white p-8 rounded-xl shadow-2xl grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    
-                    <div>
-                        <img id="detail-image" src="" alt="Product Image" class="w-full h-auto object-cover rounded-xl shadow-lg border border-gray-100">
-                    </div>
-                    
-                    <div>
-                        <h1 id="detail-title" class="text-5xl font-extrabold text-[#4A352D] mb-4"></h1>
-                        
-                        <div id="detail-rating-display" class="flex items-center mb-6">
-                            <span class="text-gray-500 ml-2"> (See <span id="detail-review-count">0</span> reviews)</span>
-                        </div>
-                        
-                        <p id="detail-description" class="text-gray-700 text-lg mb-6 leading-relaxed"></p>
-                        
-                        <div class="flex justify-between items-center mb-8 border-t border-b py-4">
-                            <span id="detail-price" class="text-4xl font-extrabold text-red-600">₹0.00</span>
-                            <span id="detail-stock" class="text-lg font-medium"></span>
-                        </div>
-                        
-                        <div class="space-y-3 mb-8">
-                            <p class="flex items-center text-gray-700"><span class="font-semibold w-24">Delivery:</span> <span id="detail-delivery"><span>3-5 business days</span></span></p>
-                            <p class="flex items-center text-gray-700"><span class="font-semibold w-24">SKU:</span> <span id="detail-sku">IYAL-001</span></p>
-                        </div>
-                        
-                        <button onclick="addToCart(currentProductId)" class="buy-button-style w-full bg-[#B38B6D] text-white py-4 rounded-xl font-bold text-xl hover:bg-[#9E785C] transition shadow-lg">Add to Cart</button>
-                    </div>
-
-                    <div class="lg:col-span-2 mt-12">
-                        <h3 class="text-3xl font-bold text-[#4A352D] mb-6 border-b pb-2">Product Specifications</h3>
-                        <ul id="detail-specs" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 list-disc list-inside">
-                            </ul>
-                    </div>
-
-                    <div class="lg:col-span-2 mt-8">
-                        <h3 class="text-3xl font-bold text-[#4A352D] mb-6 border-b pb-2">Customer Reviews</h3>
-                        
-                        <div id="detail-reviews-list" class="space-y-6 mb-10">
-                            </div>
-
-                        <div class="p-6 border border-gray-200 rounded-xl bg-gray-50">
-                            <h4 class="text-2xl font-bold text-[#4A352D] mb-4">Write a Review</h4>
-                            <form onsubmit="handleReviewSubmit(event)">
-                                <div class="mb-4">
-                                    <label for="review-name" class="block text-gray-700 font-medium mb-2">Your Name</label>
-                                    <input type="text" id="review-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="review-rating" class="block text-gray-700 font-medium mb-2">Rating (1-5)</label>
-                                    <input type="number" id="review-rating" min="1" max="5" class="w-20 px-4 py-2 border border-gray-300 rounded-lg" required>
-                                </div>
-                                <div class="mb-6">
-                                    <label for="review-comment" class="block text-gray-700 font-medium mb-2">Your Review</label>
-                                    <textarea id="review-comment" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg" required></textarea>
-                                </div>
-                                <button type="submit" class="px-6 py-3 bg-[#4A352D] text-white rounded-xl font-semibold hover:bg-[#2F211C] transition">Submit Review</button>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div id="cart-page" class="bg-FAF0E6 py-10">
-            <div class="max-w-7xl mx-auto px-6">
-                <h1 class="text-4xl font-extrabold text-[#4A352D] mb-8 border-b pb-4">Your Shopping Cart</h1>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    
-                    <div class="lg:col-span-2 space-y-4">
-                        <p id="cart-empty-message" class="text-xl text-gray-500 p-8 bg-white rounded-xl shadow-md text-center hidden">Your cart is currently empty. Start shopping now!</p>
-                        <div id="cart-items-list" class="space-y-4">
-                            </div>
-                    </div>
-                    
-                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-2xl h-fit sticky top-24 border border-gray-100">
-                        <h2 class="text-2xl font-bold text-[#4A352D] mb-4 border-b pb-3">Order Summary</h2>
-                        
-                        <div class="space-y-2 text-lg mb-6">
-                            <div class="flex justify-between">
-                                <span>Items (<span id="summary-item-count">0</span>):</span>
-                                <span id="summary-subtotal">₹0.00</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span>Tax (18%):</span>
-                                <span id="summary-tax">₹0.00</span>
-                            </div>
-                            <div class="flex justify-between font-bold text-xl pt-3 border-t">
-                                <span>Grand Total:</span>
-                                <span id="summary-grand-total" class="text-red-600">₹0.00</span>
-                            </div>
-                        </div>
-                        
-                        <button onclick="alert('Checkout process initiated!')" class="w-full bg-[#4A352D] text-white py-3 rounded-xl font-bold text-lg hover:bg-[#2F211C] transition shadow-lg mb-4">Proceed to Checkout</button>
-                        <button id="paytmBtn" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg">Pay with Paytm (Mock)</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div id="order-history-page" class="bg-FAF0E6 py-10">
-            <div class="max-w-7xl mx-auto px-6">
-                <h1 class="text-4xl font-extrabold text-[#4A352D] mb-8 border-b pb-4">Your Order History</h1>
-                
-                <p id="order-history-empty-message" class="text-xl text-gray-500 p-8 bg-white rounded-xl shadow-md text-center hidden">You haven't placed any orders yet.</p>
-                <div id="orders-list-container" class="space-y-6">
-                    </div>
-            </div>
-        </div>
-
-    </main>
-
-    <footer class="bg-[#4A352D] text-white py-10 mt-12">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div>
-                <h4 class="text-xl font-bold mb-4">IYAL</h4>
-                <p class="text-sm text-gray-400">Pure. Potent. Traditional.</p>
-            </div>
-            <div>
-                <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li><a href="javascript:void(0)" onclick="goHomeAndScroll(1)" class="hover:text-white transition">Shop Products</a></li>
-                    <li><a href="javascript:void(0)" onclick="viewOrderHistory()" class="hover:text-white transition">My Orders</a></li>
-                    <li><a href="javascript:void(0)" onclick="goHomeAndScroll(2)" class="hover:text-white transition">About Us</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-lg font-semibold mb-4">Support</h4>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li><a href="#" class="hover:text-white transition">FAQ</a></li>
-                    <li><a href="#" class="hover:text-white transition">Shipping</a></li>
-                    <li><a href="#" class="hover:text-white transition">Returns</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-lg font-semibold mb-4">Connect</h4>
-                <p class="text-sm text-gray-400">Email: support@iyal.in</p>
-                <div class="flex space-x-4 mt-3">
-                    </div>
-            </div>
-        </div>
-        <div class="text-center text-sm text-gray-500 mt-10 border-t border-gray-700 pt-6">
-            &copy; 2025 Iyal. All rights reserved.
-        </div>
-    </footer>
-
-    <script type="module">
+<script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, onAuthStateChanged, setPersistence, browserLocalPersistence, 
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, setPersistence, browserLocalPersistence, 
                  createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // *** getDocs IMPORTED FOR REAL ORDER FETCHING ***
-        import { getFirestore, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, writeBatch, runTransaction, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, addDoc, updateDoc, deleteDoc, onSnapshot, collection, query, writeBatch, runTransaction, setLogLevel, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        setLogLevel('debug'); // Enable Firebase logging for debugging in the console
+        setLogLevel('debug'); // Enable Firestore logging
 
-        // --- Firebase Global Variables ---
-        const appId = "iyal-app" ; 
-        
+        // --- Firebase Global Variables (Provided by environment) ---
+        const appId = "iyal-app"; // Corrected appId to string
         const firebaseConfig = {
-          apiKey: "AIzaSyA5hPlKdqNi1FmAlVFmIXezZxot9-BuWeA", 
-          authDomain: "iyal-59a03.firebaseapp.com",     
-          projectId: "iyal-59a03",                      
+          apikey: "AIzaSyA5hPlKdqNi1FmAlVFmIXezZxot9-BuWeA",
+          authdomain: "iyal-59a03.firebaseapp.com",
+          projectid: "iyal-59a03",
           storageBucket: "iyal-59a03.firebasestorage.app",
           messagingSenderId: "714618123459",
           appId: "1:714618123459:web:ae86588468119322bd1e76",
           measurementId: "G-0GZSM3CDME"
-        }; 
-
+        }; // Corrected object syntax
         const initialAuthToken = null;
 
         let db, auth, userId = null;
         let isAuthReady = false;
-        let cartItems = []; 
-        let currentProductId = null; 
-        let authMode = 'login'; 
-        let currentUser = null; 
+        let cartItems = []; // Local array to hold cart items synchronized with Firestore
+        let userOrders = []; // New array to hold real orders fetched from Firestore
+        let currentProductId = null; // Tracks the currently viewed product ID
+        let authMode = 'login'; // 'login' or 'signup'
+        let currentUser = null; // Holds the Firebase User object
 
-        // --- Product Data Mock API (Kept for product details) ---
+        // --- Product Data Mock API (Same as before) ---
         const PRODUCTS = {
             'oil_magic': { id: 'oil_magic', name: 'Magic Hair Oil', price: 300, stock: 120, avgRating: 4.8, reviews: 45, delivery: '3-5 business days', image: 'https://placehold.co/600x600/8B4513/ffffff?text=Magic+Oil', description: "Iyal's Magic Hair Oil is a potent, time-tested blend of 12 natural herbs, cold-pressed with virgin coconut oil...", specs: ['Virgin Coconut Oil Base', 'Amla (Indian Gooseberry)', 'Bhringraj (False Daisy)', 'Hibiscus Flower Extracts', 'No Artificial Scents or Colors'], mockReviews: [{ name: 'Priya S.', rating: 5, comment: 'Absolutely transformed my hair!' }, { name: 'Ravi M.', rating: 4, comment: 'Great product, but the earthy smell is quite strong.' }] },
             'face_pack': { id: 'face_pack', name: 'Iyal Face Pack', price: 150, stock: 0, avgRating: 4.2, reviews: 22, delivery: 'Currently unavailable', image: 'https://placehold.co/600x600/696969/ffffff?text=Iyal+Face+Pack', description: "This purifying face pack is made with volcanic clay and activated charcoal to draw out deep-seated impurities...", specs: ['Volcanic Clay', 'Activated Charcoal', 'Pure Sandalwood Powder', 'Rose Water', 'Suitable for All Skin Types'], mockReviews: [{ name: 'Kavya T.', rating: 5, comment: 'My favorite! Gives a spa-like glow instantly.' }, { name: 'Arun V.', rating: 3, comment: 'A little drying on my combination skin.' }] },
             'health_mix': { id: 'health_mix', name: 'Iyal Health Mix', price: 350, stock: 450, avgRating: 4.9, reviews: 78, delivery: '2-4 business days', image: 'https://placehold.co/600x600/9ACD32/ffffff?text=Iyal+Mix', description: "A nutritious powerhouse, this daily health mix is a blend of 18 roasted grains, pulses, and nuts...", specs: ['Multi-Grain Blend (Ragi, Bajra, Wheat)', 'Pulses (Moong, Chana)', 'Dry Fruits (Almonds, Cashews)', 'No Added Sugar', 'High in Dietary Fiber'], mockReviews: [{ name: 'Deepak J.', rating: 5, comment: 'Perfect start to my day.' }, { name: 'Shreya P.', rating: 5, comment: 'My kids love this mixed with jaggery.' }] },
             'oil_pain': { id: 'oil_pain', name: 'Iyal Pain Relief Oil', price: 175, stock: 250, avgRating: 4.5, reviews: 31, delivery: '4-6 business days', image: 'https://placehold.co/600x600/800000/ffffff?text=Iyal+Oil', description: "Experience fast, deep relief from muscle aches, joint stiffness, and chronic pain. Our Pain Relief Oil uses traditional ayurvedic wisdom...", specs: ['Sesame Oil Base', 'Wintergreen Oil', 'Eucalyptus Oil', 'Camphor', 'Rapid Penetration Formula'], mockReviews: [{ name: 'Vimal K.', rating: 4, comment: 'Very effective for my knee pain after running.' }, { name: 'Leena R.', rating: 5, comment: 'Best pain relief oil I have ever used.' }] }
         };
+
+        // Removed mockOrders array
 
         // --- DOM Elements ---
         const mainHeader = document.getElementById('main-header');
@@ -519,31 +683,26 @@
 
         // --- FIREBASE INITIALIZATION AND AUTH ---
         async function setupFirebaseAndAuth() {
-            if (!firebaseConfig.apiKey) {
-                console.error("Firebase config missing API Key.");
-                userStatusElement.textContent = 'Firebase Error: Config Missing Key';
+            if (!firebaseConfig) {
+                console.error("Firebase config not found.");
+                userStatusElement.textContent = 'Firebase Error: Config Missing';
                 return;
             }
 
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-            } catch (error) {
-                 console.error("Firebase Initialization Failed (Check Config Casing!):", error);
-                 userStatusElement.textContent = `Init Error: ${error.message || 'Check config casing.'}`;
-                 return; 
-            }
-            
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
 
             try {
                 // Set persistence to local to remember the session
                 await setPersistence(auth, browserLocalPersistence);
                 
-                // Sign in with custom token if available. 
+                // Sign in with custom token if available, otherwise anonymously
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
-                } 
+                } else {
+                    await signInAnonymously(auth);
+                }
 
                 // Main Auth State Listener
                 onAuthStateChanged(auth, (user) => {
@@ -580,6 +739,7 @@
                         }
                         
                         listenToCart(); 
+                        listenToOrders(); // Listen to the user's order history
                     } else {
                         // Signed out
                         userId = null;
@@ -591,14 +751,14 @@
                         signoutButton.classList.add('hidden');
                         mobileAuthText.textContent = 'Login / Sign Up';
                         cartItems = [];
+                        userOrders = []; // Clear orders on sign out
                         updateCartUI();
                     }
                 });
 
             } catch (error) {
                 console.error("Firebase Auth or Init error:", error);
-                // Handle the case where the config itself is bad (often logs 'undefined' error)
-                userStatusElement.textContent = `Auth Error: ${error.code || 'Initialization Failed'}`;
+                userStatusElement.textContent = `Auth Error: ${error.code}`;
             }
         }
 
@@ -637,7 +797,7 @@
             }
         }
 
-        // --- AUTH MODAL LOGIC (functions kept as is) ---
+        // --- AUTH MODAL LOGIC ---
         
         function showLoginModal() {
             authModal.style.display = 'flex';
@@ -675,13 +835,6 @@
             authError.classList.add('hidden');
             authErrorMessage.textContent = '';
             
-            // Client-side validation for empty/invalid fields
-            if (!email || !password || password.length < 6) {
-                authErrorMessage.textContent = "Please ensure both a valid email and a password (minimum 6 characters) are entered correctly.";
-                authError.classList.remove('hidden');
-                return; // Stop execution if inputs are invalid
-            }
-            
             try {
                 if (authMode === 'signup') {
                     // 1. Create the user
@@ -708,21 +861,14 @@
                 }
             } catch (error) {
                 console.error("Authentication Error:", error);
-                
-                // Robust error handling
-                if (error.code) {
-                    authErrorMessage.textContent = getAuthErrorMessage(error.code);
-                } else {
-                    // This catches any remaining generic error
-                    authErrorMessage.textContent = "A critical error occurred. Please ensure your network is stable and the Firebase configuration is exactly correct.";
-                }
-
+                authErrorMessage.textContent = getAuthErrorMessage(error.code);
                 authError.classList.remove('hidden');
             }
         }
         
         function getAuthErrorMessage(code) {
             switch (code) {
+                // This is the specific fix/feedback for the user's issue
                 case 'auth/operation-not-allowed':
                     return 'Sign up/login failed. The **Email/Password sign-in method** is currently **disabled** in your Firebase Console. Please **enable it** under Authentication -> Sign-in method.';
                 case 'auth/user-not-found':
@@ -737,8 +883,7 @@
                 case 'auth/too-many-requests':
                     return 'Access to this account has been temporarily blocked due to too many failed login attempts. Please try again later.';
                 default:
-                    // If the code is still unknown, use the generic message
-                    return `An unknown error occurred. (Code: ${code})`;
+                    return `An unknown error occurred: ${code}`;
             }
         }
 
@@ -754,7 +899,7 @@
         }
 
 
-        // --- Firestore/Cart Functions ---
+        // --- Firestore/Cart & Order Functions ---
 
         function getCartCollectionRef() {
             if (!db || !userId) {
@@ -764,44 +909,112 @@
             return collection(db, `artifacts/${appId}/users/${userId}/cart_items`);
         }
         
-        /**
-         * Fetches the real order data for the current user from Firestore.
-         */
-        async function fetchUserOrders() {
-            if (!db || !userId) {
-                console.error("Cannot fetch orders: Database or User ID not ready.");
-                return []; 
-            }
-            const ordersRef = getOrdersCollectionRef();
-            if (!ordersRef) return [];
-            
-            try {
-                // Fetch all documents from the user's orders collection
-                const querySnapshot = await getDocs(ordersRef); 
-                
-                const realOrders = querySnapshot.docs.map(doc => ({
-                    id: doc.id, // Firestore document ID is the Order ID
-                    ...doc.data()
-                }));
-                
-                // Optional: Sort by date (assuming a 'date' field exists, newest first)
-                // realOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                return realOrders;
-
-            } catch (e) {
-                console.error("Error fetching user orders:", e);
-                return []; 
-            }
-        }
-
         function getOrdersCollectionRef() {
             if (!db || !userId) {
                 console.error("Database or User ID not ready.");
                 return null;
             }
-            // This is the correct collection path for user-specific orders
             return collection(db, `artifacts/${appId}/users/${userId}/orders`);
+        }
+
+        // Helper function to calculate cart totals
+        function calculateTotals(items) {
+            let subtotal = 0;
+            items.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+            const taxRate = 0.18;
+            const taxAmount = subtotal * taxRate;
+            const grandTotal = subtotal + taxAmount;
+            return { subtotal, taxAmount, grandTotal };
+        }
+        
+        // NEW FEATURE 1: Order Placement (Checkout)
+        async function placeOrder() {
+            if (!isAuthReady || cartItems.length === 0) {
+                console.error("Cannot place an order. Cart is empty or not authenticated.");
+                return;
+            }
+            
+            const checkoutButton = document.querySelector('#cart-page button[onclick="placeOrder()"]');
+            const originalText = checkoutButton.textContent;
+            
+            // Temporary UI feedback
+            checkoutButton.textContent = 'Processing...';
+            checkoutButton.disabled = true;
+
+            const cartRef = getCartCollectionRef();
+            const ordersRef = getOrdersCollectionRef();
+
+            try {
+                const { subtotal, taxAmount, grandTotal } = calculateTotals(cartItems);
+
+                // Use a Transaction for atomicity: save order AND clear cart
+                await runTransaction(db, async (transaction) => {
+                    // 1. Create the new order document
+                    const newOrderRef = doc(ordersRef);
+                    transaction.set(newOrderRef, {
+                        userId: userId,
+                        date: new Date().toISOString().substring(0, 10), 
+                        timestamp: new Date().getTime(),
+                        subtotal: parseFloat(subtotal.toFixed(2)),
+                        tax: parseFloat(taxAmount.toFixed(2)),
+                        total: parseFloat(grandTotal.toFixed(2)),
+                        status: 'Processing',
+                        items: cartItems.map(item => ({
+                            productId: item.productId,
+                            name: item.name,
+                            price: item.price,
+                            quantity: item.quantity
+                        }))
+                    });
+
+                    // 2. Delete all cart items
+                    cartItems.forEach(item => {
+                        const itemDocRef = doc(cartRef, item.id);
+                        transaction.delete(itemDocRef);
+                    });
+                });
+                
+                console.log("Order placed successfully and cart cleared!");
+                showTemporaryFeedback(checkoutButton, 'Order Placed! 🎉', 'bg-green-600', originalText);
+
+                // Redirect user after a short delay
+                setTimeout(() => {
+                    viewOrderHistory(); // Show them their new order
+                }, 1500);
+
+
+            } catch (e) {
+                console.error("Transaction failed: Order not placed or cart not cleared.", e);
+                showTemporaryFeedback(checkoutButton, 'Order Failed! ❌', 'bg-red-600', originalText);
+                checkoutButton.disabled = false;
+            }
+        }
+        
+        // NEW FEATURE 2 (part 1): Listen to real orders
+        function listenToOrders() {
+            const ordersRef = getOrdersCollectionRef();
+            if (!ordersRef) return;
+
+            // Query orders sorted by timestamp descending (newest first)
+            const q = query(ordersRef, orderBy("timestamp", "desc"));
+
+            onSnapshot(q, (snapshot) => {
+                userOrders = [];
+                snapshot.forEach(doc => {
+                    userOrders.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                // Only render if the user is currently viewing the page
+                if (orderHistoryPage.style.display === 'block') {
+                     renderOrderHistoryPage();
+                }
+            }, (error) => {
+                console.error("Error listening to orders:", error);
+            });
         }
 
         function listenToCart() {
@@ -865,6 +1078,8 @@
             
             const existingItem = cartItems.find(item => item.productId === productId);
             const cartRef = getCartCollectionRef();
+            const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
+
 
             try {
                 if (existingItem) {
@@ -881,13 +1096,11 @@
                     });
                 }
                 
-                const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
-                showTemporaryFeedback(detailButton, 'Added to Cart!', 'bg-green-600');
+                showTemporaryFeedback(detailButton, 'Added to Cart!', 'bg-green-600', detailButton.textContent);
 
             } catch (e) {
                 console.error("Error adding/updating cart item:", e);
-                const detailButton = document.querySelector(`#product-detail-page button[onclick="addToCart('${productId}')"]`);
-                showTemporaryFeedback(detailButton, 'Error!', 'bg-red-600');
+                showTemporaryFeedback(detailButton, 'Error!', 'bg-red-600', detailButton.textContent);
             }
         }
         
@@ -913,59 +1126,63 @@
         
         function renderCartPage() { 
             if (!isAuthReady || !cartItemsListElement) return;
-            let totalItems = 0; let subtotal = 0;
+            
+            const { subtotal, taxAmount, grandTotal } = calculateTotals(cartItems);
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+            const checkoutButton = document.querySelector('#cart-page button[onclick="placeOrder()"]');
             const cartEmptyMessage = document.getElementById('cart-empty-message');
+
             if (cartItems.length === 0) { 
                 cartEmptyMessage.style.display = 'block'; 
                 cartItemsListElement.innerHTML = ''; 
+                // Disable Checkout
+                if (checkoutButton) {
+                    checkoutButton.disabled = true;
+                    checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
+                }
             } else { 
                 cartEmptyMessage.style.display = 'none';
+                // Enable Checkout
+                if (checkoutButton) {
+                    checkoutButton.disabled = false;
+                    checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+                
                 cartItemsListElement.innerHTML = cartItems.map(item => {
-                    const itemTotal = item.price * item.quantity; subtotal += itemTotal; totalItems += item.quantity;
+                    const itemTotal = item.price * item.quantity; 
                     return `<div class="flex flex-col sm:flex-row items-start sm:items-center p-4 bg-white rounded-xl shadow-md border border-gray-200"><img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-contain rounded-lg flex-shrink-0 mr-4 border border-gray-100"><div class="flex-grow my-2 sm:my-0"><h3 class="text-xl font-semibold text-[#4A352D]">${item.name}</h3><p class="text-gray-500">Price: ₹${item.price.toFixed(2)}</p></div><div class="flex items-center space-x-4 mt-3 sm:mt-0 sm:ml-auto"><div class="flex items-center border border-gray-300 rounded-full overflow-hidden"><button onclick="updateQuantity('${item.id}', ${item.quantity - 1})" class="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-lg font-bold transition rounded-l-full">&minus;</button><input type="number" value="${item.quantity}" min="1" onchange="updateQuantity('${item.id}', this.value)" class="w-12 text-center text-lg border-x border-gray-300 focus:outline-none focus:ring-0 appearance-none bg-white"><button onclick="updateQuantity('${item.id}', ${item.quantity + 1})" class="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-lg font-bold transition rounded-r-full">&#43;</button></div><div class="text-xl font-bold w-24 text-right">₹${itemTotal.toFixed(2)}</div><button onclick="removeItem('${item.id}')" class="text-red-500 hover:text-red-700 transition p-2"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button></div></div>`;
                 }).join('');
             }
-            const taxRate = 0.18; 
-            const taxAmount = subtotal * taxRate; 
-            const grandTotal = subtotal + taxAmount;
+
             document.getElementById('summary-item-count').textContent = totalItems; 
             document.getElementById('summary-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
             document.getElementById('summary-tax').textContent = `₹${taxAmount.toFixed(2)}`; 
             document.getElementById('summary-grand-total').textContent = `₹${grandTotal.toFixed(2)}`;
         }
         
-        /**
-         * Renders the order history page using real data fetched from Firestore.
-         */
-        async function renderOrderHistoryPage() {
+        // NEW FEATURE 2 (part 2): Render real orders
+        function renderOrderHistoryPage() {
             if (!ordersListContainer) return;
-
-            // Optional: Show loading state
-            ordersListContainer.innerHTML = '<p class="text-center text-xl text-gray-500 p-8 bg-white rounded-xl shadow-md">Loading your orders...</p>';
-
-            // Fetch the actual orders from Firestore
-            const orders = await fetchUserOrders();
             
-            if (orders.length === 0) { 
+            const ordersToDisplay = userOrders; 
+            
+            if (ordersToDisplay.length === 0) { 
                 orderHistoryEmptyMessage.style.display = 'block'; 
                 ordersListContainer.innerHTML = ''; 
                 return; 
             }
-            
             orderHistoryEmptyMessage.style.display = 'none';
-            ordersListContainer.innerHTML = orders.map(order => {
+            ordersListContainer.innerHTML = ordersToDisplay.map(order => {
                 let statusColor = 'text-gray-600'; 
                 if (order.status === 'Delivered') statusColor = 'text-green-600 font-semibold'; 
                 if (order.status === 'Shipped') statusColor = 'text-yellow-600 font-semibold'; 
                 if (order.status === 'Processing') statusColor = 'text-blue-600 font-semibold';
                 
-                // Safely render item details
-                const itemsList = Array.isArray(order.items) ? order.items.map(item => `<div class="flex justify-between text-sm text-gray-500 ml-4"><span>${item.quantity} x ${item.name}</span><span>₹${(item.price * item.quantity).toFixed(2)}</span></div>`).join('') : '<div class="text-sm text-red-500">No item details available.</div>';
+                // Use order.items from the Firestore document
+                const itemsList = order.items.map(item => `<div class="flex justify-between text-sm text-gray-500 ml-4"><span>${item.quantity} x ${item.name}</span><span>₹${(item.price * item.quantity).toFixed(2)}</span></div>`).join('');
                 
-                // Safely format total
-                const totalDisplay = (typeof order.total === 'number') ? order.total.toFixed(2) : 'N/A';
-
-                return `<div class="bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30 transition hover:shadow-xl"><div class="flex justify-between items-start pb-4 border-b border-gray-200 mb-4 flex-wrap"><div><h3 class="text-xl md:text-2xl font-bold text-[#4A352D]">Order ID: ${order.id}</h3><p class="text-sm text-gray-500">Placed on: ${order.date || 'Unknown Date'}</p></div><div class="mt-2 md:mt-0 text-right"><p class="text-2xl font-bold text-black">₹${totalDisplay}</p><p class="text-sm ${statusColor}">Status: ${order.status || 'Unknown'}</p></div></div><div class="space-y-2"><h4 class="text-lg font-semibold text-gray-700">Items Ordered:</h4>${itemsList}</div><div class="mt-6 pt-4 border-t border-gray-100 flex justify-end space-x-4"><button onclick="console.log('Tracking Order ${order.id}')" class="px-4 py-2 text-[#4A352D] border border-[#4A352D] rounded-full text-sm font-semibold hover:bg-[#4A352D] hover:text-white transition">Track Order</button><button onclick="console.log('Reordering Order ${order.id}')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full text-sm font-semibold hover:bg-[#9E785C] transition">Reorder</button></div></div>`;
+                return `<div class="bg-white p-6 rounded-xl shadow-lg border border-[#B38B6D]/30 transition hover:shadow-xl"><div class="flex justify-between items-start pb-4 border-b border-gray-200 mb-4 flex-wrap"><div><h3 class="text-xl md:text-2xl font-bold text-[#4A352D]">Order ID: ${order.id.substring(0, 8)}...</h3><p class="text-sm text-gray-500">Placed on: ${order.date}</p></div><div class="mt-2 md:mt-0 text-right"><p class="text-2xl font-bold text-black">₹${order.total.toFixed(2)}</p><p class="text-sm ${statusColor}">Status: ${order.status}</p></div></div><div class="space-y-2"><h4 class="text-lg font-semibold text-gray-700">Items Ordered:</h4>${itemsList}</div><div class="mt-6 pt-4 border-t border-gray-100 flex justify-end space-x-4"><button onclick="console.log('Tracking Order ${order.id}')" class="px-4 py-2 text-[#4A352D] border border-[#4A352D] rounded-full text-sm font-semibold hover:bg-[#4A352D] hover:text-white transition">Track Order</button><button onclick="console.log('Reordering Order ${order.id}')" class="px-4 py-2 bg-[#B38B6D] text-white rounded-full text-sm font-semibold hover:bg-[#9E785C] transition">Reorder</button></div></div>`;
             }).join('');
         }
         
@@ -977,6 +1194,7 @@
             window.scrollTo(0, 0); 
             handleScroll(true); 
             toggleMobileMenu(true); 
+            renderCartPage();
         }
         
         function viewOrderHistory() { 
@@ -984,7 +1202,7 @@
             cartPage.style.display = 'none'; 
             mainLandingContent.classList.add('hidden-page'); 
             orderHistoryPage.style.display = 'block'; 
-            renderOrderHistoryPage(); // <-- Calls the async function to fetch real data
+            renderOrderHistoryPage(); // This now renders fetched orders
             window.scrollTo(0, 0); 
             handleScroll(true); 
             toggleMobileMenu(true); 
@@ -1029,12 +1247,10 @@
             const reviewsList = document.getElementById('detail-reviews-list'); 
             reviewsList.innerHTML = product.mockReviews.map(review => `<div class="border-b border-gray-200 pb-4"><div class="flex items-center mb-1">${renderStars(review.rating)}<span class="ml-4 font-semibold text-lg">${review.name}</span></div><p class="text-gray-600 italic">"${review.comment}"</p></div>`).join('');
             
-            // --- Navigation Fixes for Robustness ---
             mainLandingContent.classList.add('hidden-page'); 
             cartPage.style.display = 'none'; 
             orderHistoryPage.style.display = 'none'; 
-            productDetailPage.style.display = 'block'; // **Ensures the page is displayed**
-            
+            productDetailPage.style.display = 'block'; 
             window.scrollTo(0, 0); 
             mainHeader.classList.add('bg-[#4A352D]', 'shadow-md');
         }
@@ -1105,72 +1321,59 @@
                     window.requestAnimationFrame(step);
                 }
             }
-
             window.requestAnimationFrame(step);
         }
 
-        function scrollToSection(index) {
+        function scrollToSection(sectionIndex) {
             const sections = document.querySelectorAll('.snap-section');
-            if (index >= 0 && index < sections.length) {
-                const targetSection = sections[index];
-                const targetY = targetSection.offsetTop - mainHeader.offsetHeight;
+            if (sections[sectionIndex]) {
+                const targetY = sections[sectionIndex].offsetTop;
                 animateScroll(targetY, 800);
             }
         }
-
+        
         function toggleMobileMenu(forceClose = false) {
-            const menu = document.getElementById('mobile-menu');
-            const body = document.body;
-            
-            if (forceClose || menu.classList.contains('translate-x-0')) {
-                menu.classList.remove('translate-x-0');
-                menu.classList.add('translate-x-full');
-                body.classList.remove('overflow-hidden');
-            } else {
-                menu.classList.remove('translate-x-full');
-                menu.classList.add('translate-x-0');
-                body.classList.add('overflow-hidden');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const isMenuOpen = !mobileMenu.classList.contains('translate-x-full');
+            if (isMenuOpen || forceClose) { 
+                mobileMenu.classList.add('translate-x-full'); 
+                document.body.classList.remove('overflow-hidden'); 
+            } else { 
+                mobileMenu.classList.remove('translate-x-full'); 
+                document.body.classList.add('overflow-hidden'); 
             }
         }
-
-        function showTemporaryFeedback(element, message, bgColorClass) {
-            const originalText = element.textContent;
-            const originalClasses = element.className;
-
-            element.textContent = message;
-            element.classList.add(bgColorClass);
-            element.classList.remove('bg-[#B38B6D]', 'hover:bg-[#9E785C]');
+        
+        function showTemporaryFeedback(button, text, className, originalText) {
+            const originalClasses = button.className;
+            button.textContent = text; 
+            button.className = `${originalClasses.replace(/bg-\[\#\w+\]/, className)}`;
             
-            setTimeout(() => {
-                element.textContent = originalText;
-                element.className = originalClasses; // Restore original classes completely
-            }, 1500);
+            setTimeout(() => { 
+                button.textContent = originalText; 
+                button.className = originalClasses; 
+            }, 2000);
         }
-
+        
         function handleReviewSubmit(event) {
-            event.preventDefault();
-            const name = document.getElementById('review-name').value;
-            const rating = document.getElementById('review-rating').value;
-            const comment = document.getElementById('review-comment').value;
-            
-            // Mock API: In a real app, this would post to Firestore/Backend
-            console.log(`Submitting Review for Product ID ${currentProductId}: Name=${name}, Rating=${rating}, Comment=${comment}`);
-            
-            alert('Review submitted successfully (Mock)!');
-            event.target.reset(); 
-            // In a real app, you would refresh the product view or append the new review.
+            event.preventDefault(); 
+            console.log(`Review submitted by: ${document.getElementById('review-name').value}`);
+            const submitButton = event.target.querySelector('button[type="submit"]'); 
+            showTemporaryFeedback(submitButton, 'Review Submitted!', 'bg-green-600', submitButton.textContent); 
+            event.target.reset();
         }
 
-        // --- Global Exports ---
+
+        // Exposed Global Functions
         window.goHome = goHome;
         window.viewProduct = viewProduct;
         window.viewCart = viewCart;
         window.viewOrderHistory = viewOrderHistory;
-        window.addToCart = addToCart;
-        window.removeItem = removeItem;
-        window.updateQuantity = updateQuantity;
-        window.toggleMobileMenu = toggleMobileMenu;
         window.goHomeAndScroll = goHomeAndScroll;
+        window.toggleMobileMenu = toggleMobileMenu;
+        window.addToCart = addToCart;
+        window.updateQuantity = updateQuantity;
+        window.removeItem = removeItem;
         window.handleReviewSubmit = handleReviewSubmit;
         window.scrollToSection = scrollToSection;
         window.showLoginModal = showLoginModal; 
@@ -1180,6 +1383,7 @@
         window.signOutUser = signOutUser; 
         window.sendVerificationEmail = sendVerificationEmail; 
         window.handleMobileAuthAction = handleMobileAuthAction; 
+        window.placeOrder = placeOrder; // Expose new function
 
         // --- Initialization ---
 
