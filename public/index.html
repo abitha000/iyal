@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Iyal - Premium Natural Health Products. 100% natural ingredients, traditional methods with modern quality standards.">
-    <meta name="keywords" content="natural health products, hair oil, face pack, wellness, ayurveda">
-    <meta name="author" content="Iyal Natural Health">
     <title>Iyal - Premium Health Products</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -386,7 +383,7 @@
                     <span class="ml-3 text-sm text-amber-900 font-medium">Premium Health Products</span>
                 </div>
                 
-                <!-- Cart Button -->
+                <!-- Cart Button (hidden by default, shown after login) -->
                 <button id="cartButton" onclick="openCart()" class="hidden mr-4 relative bg-amber-200 hover:bg-amber-300 text-amber-900 p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z"/>
@@ -411,7 +408,7 @@
                 <a href="#products" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">Products</a>
                 <a href="#contact" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">Contact Us</a>
                 
-                <!-- Account Info -->
+                <!-- Account Info (hidden by default, shown after login) -->
                 <button id="accountInfo" onclick="openAccountModal(); toggleMenu();" class="nav-item hidden text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110 flex items-center space-x-3">
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -421,7 +418,7 @@
                 
                 <button id="loginButton" onclick="openAuthModal(); toggleMenu();" class="nav-item btn-primary text-amber-100 px-8 py-4 rounded-full text-xl font-medium hover:scale-110 transition-all duration-500">Login / Signup</button>
                 
-                <!-- Logout Button -->
+                <!-- Logout Button (hidden by default, shown after login) -->
                 <button id="logoutButton" onclick="handleLogout(); toggleMenu();" class="nav-item hidden border-2 border-amber-300 text-amber-100 px-8 py-4 rounded-full text-xl font-medium hover:scale-110 transition-all duration-500 hover:bg-amber-300 hover:text-amber-900">Logout</button>
             </div>
         </div>
@@ -472,7 +469,7 @@
                 <div class="scroll-animate-right">
                     <div class="relative">
                         <div class="w-full h-96 bg-gradient-to-br from-amber-300 to-amber-500 rounded-3xl flex items-center justify-center float-animation overflow-hidden relative">
-                            <img src="https://i.imgur.com/3xfUdKT.jpeg" alt="Natural Health Products - Our Story" class="w-full h-full object-cover rounded-3xl loading="lazy"" onerror="this.style.display='none'; document.getElementById('aboutImagePlaceholder').style.display='flex';">
+                            <img src="https://i.imgur.com/3xfUdKT.jpeg" alt="Natural Health Products - Our Story" class="w-full h-full object-cover rounded-3xl" onerror="this.style.display='none'; document.getElementById('aboutImagePlaceholder').style.display='flex';">
                             <div id="aboutImagePlaceholder" class="hidden flex flex-col items-center justify-center text-amber-800">
                                 <svg class="w-32 h-32 mb-4" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
@@ -497,11 +494,11 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-                <!-- Hair Oil Product Card -->
+                <!-- Hair Oil -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
-                        <img src="https://images.unsplash.com/photo-1.571781926291e+12-c477ebfd024b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Premium Hair Oil" class="w-full h-full object-cover loading="lazy"" onerror="this.style.display='none'; document.getElementById('hairOilPlaceholder').style.display='flex';">
+                        <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Premium Hair Oil" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('hairOilPlaceholder').style.display='flex';">
                         <div id="hairOilPlaceholder" class="hidden flex flex-col items-center justify-center text-amber-800">
                             <svg class="w-24 h-24 float-animation mb-2" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
@@ -519,11 +516,11 @@
                     </div>
                 </div>
 
-                <!-- Face Pack Product Card -->
+                <!-- Face Pack -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-green-200 to-green-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
-                        <img src="https://images.unsplash.com/photo-1.596755389378e+12-c31d21fd1273?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Natural Face Pack" class="w-full h-full object-cover loading="lazy"" onerror="this.style.display='none'; document.getElementById('facePackPlaceholder').style.display='flex';">
+                        <img src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Natural Face Pack" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('facePackPlaceholder').style.display='flex';">
                         <div id="facePackPlaceholder" class="hidden flex flex-col items-center justify-center text-green-800">
                             <svg class="w-24 h-24 float-animation mb-2" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -1s;">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -541,11 +538,11 @@
                     </div>
                 </div>
 
-                <!-- Health Mix Product Card -->
+                <!-- Health Mix -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
-                        <img src="https://images.unsplash.com/photo-1.544787219e+09-7f47ccb76574?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Wellness Health Mix" class="w-full h-full object-cover loading="lazy"" onerror="this.style.display='none'; document.getElementById('healthMixPlaceholder').style.display='flex';">
+                        <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Wellness Health Mix" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('healthMixPlaceholder').style.display='flex';">
                         <div id="healthMixPlaceholder" class="hidden flex flex-col items-center justify-center text-orange-800">
                             <svg class="w-24 h-24 float-animation mb-2" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -2s;">
                                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -563,11 +560,11 @@
                     </div>
                 </div>
 
-                <!-- Pain Relief Oil Product Card -->
+                <!-- Pain Relief Oil -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-red-200 to-red-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
-                        <img src="https://images.unsplash.com/photo-1.608571423902e+12-eed4a5ad8108?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Pain Relief Oil" class="w-full h-full object-cover loading="lazy"" onerror="this.style.display='none'; document.getElementById('painReliefPlaceholder').style.display='flex';">
+                        <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Pain Relief Oil" class="w-full h-full object-cover" onerror="this.style.display='none'; document.getElementById('painReliefPlaceholder').style.display='flex';">
                         <div id="painReliefPlaceholder" class="hidden flex flex-col items-center justify-center text-red-800">
                             <svg class="w-24 h-24 float-animation mb-2" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -3s;">
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -647,13 +644,58 @@
     </section>
 
     <!-- Footer -->
-    <footer class="coffee-gradient py-8">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h2 class="text-2xl font-bold text-amber-100 mb-4">IYAL</h2>
-            <p class="text-amber-200 mb-4">Your trusted partner in natural health and wellness</p>
-            <p class="text-amber-300 text-sm">&copy; 2024 Iyal. All rights reserved.</p>
+    <footer class="coffee-gradient py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- Company Info -->
+                <div class="text-center md:text-left">
+                    <h2 class="text-2xl font-bold text-amber-100 mb-4">IYAL</h2>
+                    <p class="text-amber-200 mb-4">Your trusted partner in natural health and wellness</p>
+                    <p class="text-amber-300 text-sm">54g, 4th Cross Street, Marakkanam Road</p>
+                    <p class="text-amber-300 text-sm">Anna Nagar, Tindivanam, India</p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="text-center">
+                    <h3 class="text-xl font-bold text-amber-100 mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-amber-200 hover:text-amber-100 transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-amber-200 hover:text-amber-100 transition-colors">About Us</a></li>
+                        <li><a href="#products" class="text-amber-200 hover:text-amber-100 transition-colors">Products</a></li>
+                        <li><a href="#contact" class="text-amber-200 hover:text-amber-100 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Policies -->
+                <div class="text-center md:text-right">
+                    <h3 class="text-xl font-bold text-amber-100 mb-4">Policies</h3>
+                    <ul class="space-y-2">
+                        <li><button onclick="openPolicyModal('terms')" class="text-amber-200 hover:text-amber-100 transition-colors">Terms & Conditions</button></li>
+                        <li><button onclick="openPolicyModal('privacy')" class="text-amber-200 hover:text-amber-100 transition-colors">Privacy Policy</button></li>
+                        <li><button onclick="openPolicyModal('refund')" class="text-amber-200 hover:text-amber-100 transition-colors">Refund & Cancellation</button></li>
+                        <li><button onclick="openPolicyModal('shipping')" class="text-amber-200 hover:text-amber-100 transition-colors">Shipping Policy</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-amber-700 pt-6 text-center">
+                <p class="text-amber-300 text-sm">&copy; 2024 Iyal. All rights reserved.</p>
+            </div>
         </div>
     </footer>
+
+    <!-- Policy Modal -->
+    <div id="policyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-amber-200">
+                <h3 id="policyTitle" class="text-2xl font-bold text-amber-900"></h3>
+                <button onclick="closePolicyModal()" class="text-amber-600 hover:text-amber-800 text-2xl">&times;</button>
+            </div>
+            <div id="policyContent" class="p-6 overflow-y-auto max-h-[calc(90vh-100px)] text-amber-900">
+                <!-- Policy content will be inserted here -->
+            </div>
+        </div>
+    </div>
     </div>
     <!-- End Main Content -->
 
@@ -674,7 +716,7 @@
                             <option value="+1">🇺🇸 +1</option>
                             <option value="+44">🇬🇧 +44</option>
                         </select>
-                        <input type="tel" name="mobileNumber" id="mobileNumber" placeholder="Mobile Number" class="flex-1 p-3 border border-amber-300 rounded-r-lg focus:outline-none focus:border-amber-500" pattern="[0-9]{10}" required>
+                        <input type="tel" id="mobileNumber" placeholder="Mobile Number" class="flex-1 p-3 border border-amber-300 rounded-r-lg focus:outline-none focus:border-amber-500" pattern="[0-9]{10}" required>
                     </div>
                     <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg mb-4">Send OTP</button>
                 </form>
@@ -765,6 +807,7 @@
     <script>
         // Welcome Animation
         function startWelcomeAnimation() {
+            // After all animations complete, wait then fade out
             setTimeout(() => {
                 const welcomeScreen = document.getElementById('welcomeScreen');
                 const mainContent = document.getElementById('mainContent');
@@ -774,15 +817,16 @@
                 setTimeout(() => {
                     welcomeScreen.style.display = 'none';
                     mainContent.classList.add('show');
-                }, 1000);
-            }, 4000);
+                }, 1000); // Wait for fade out animation
+            }, 4000); // Total wait time for all animations to complete
         }
         
+        // Start welcome animation when page loads
         window.addEventListener('load', () => {
             startWelcomeAnimation();
         });
 
-        // Mobile menu toggle
+        // Mobile menu toggle with hamburger animation
         function toggleMenu() {
             const menu = document.getElementById('mobileMenu');
             const hamburger = document.querySelector('.hamburger');
@@ -906,20 +950,23 @@
             isLoggedIn = false;
             cart = [];
             
+            // Hide logged-in elements
             document.getElementById('cartButton').classList.add('hidden');
             document.getElementById('accountInfo').classList.add('hidden');
             document.getElementById('logoutButton').classList.add('hidden');
             
+            // Show login button
             document.getElementById('loginButton').classList.remove('hidden');
             
             updateCartDisplay();
             alert('You have been logged out successfully!');
         }
 
-        // Mobile verification
+        // Mobile verification variables
         let currentMobileNumber = '';
         let generatedOTP = '';
 
+        // Form handlers
         function sendOTP(event) {
             event.preventDefault();
             const countryCode = event.target.querySelector('select').value;
@@ -933,8 +980,10 @@
             currentMobileNumber = countryCode + mobileNumber;
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
             
+            // Show the number in OTP form
             document.getElementById('sentToNumber').textContent = currentMobileNumber;
             
+            // In a real app, you would send SMS here
             alert(`Demo: Your OTP is ${generatedOTP}\n(In production, this would be sent via SMS)`);
             
             showOTPForm();
@@ -953,18 +1002,22 @@
             if (enteredOTP === generatedOTP) {
                 isLoggedIn = true;
                 
+                // Show logged-in elements
                 document.getElementById('cartButton').classList.remove('hidden');
                 document.getElementById('accountInfo').classList.remove('hidden');
                 document.getElementById('logoutButton').classList.remove('hidden');
                 
+                // Hide login button
                 document.getElementById('loginButton').classList.add('hidden');
                 
+                // Update account info
                 document.getElementById('userName').textContent = `Welcome User!`;
                 document.getElementById('userEmail').textContent = currentMobileNumber;
                 
                 closeAuthModal();
                 alert('Welcome to Iyal! You are now logged in.');
                 
+                // Reset forms
                 showMobileForm();
                 otpInputs.forEach(input => input.value = '');
                 document.getElementById('mobileNumber').value = '';
@@ -980,7 +1033,40 @@
             alert(`Demo: Your new OTP is ${generatedOTP}\n(In production, this would be sent via SMS)`);
         }
 
-        // Account functions
+        // Image upload functions
+        function handleAboutImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const aboutImage = document.getElementById('aboutImage');
+                    const placeholder = document.getElementById('aboutImagePlaceholder');
+                    
+                    aboutImage.src = e.target.result;
+                    aboutImage.classList.remove('hidden');
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleProductImageUpload(event, productType) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageElement = document.getElementById(productType + 'Image');
+                    const placeholder = document.getElementById(productType + 'Placeholder');
+                    
+                    imageElement.src = e.target.result;
+                    imageElement.classList.remove('hidden');
+                    placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Account section functions
         function showOrderHistory() {
             alert('📦 Order History\n\nYour recent orders:\n\n• Premium Hair Oil - ₹299 (Delivered)\n• Natural Face Pack - ₹199 (In Transit)\n• Wellness Health Mix - ₹399 (Processing)\n\nTotal Orders: 3\nTotal Spent: ₹897');
         }
@@ -1000,6 +1086,7 @@
             alert('📍 Address Book\n\nSaved Addresses:\n\n🏠 Home\n123 Main Street\nMumbai, Maharashtra 400001\n\n🏢 Office\n456 Business Park\nMumbai, Maharashtra 400002\n\nClick "Add New Address" to add more addresses.');
         }
 
+        // Enhanced add to cart function
         function addToCart(productId) {
             if (!isLoggedIn) {
                 alert('Please login to add items to your cart!');
@@ -1044,7 +1131,7 @@
             }, 3000);
         }
 
-        // Scroll animations
+        // Enhanced scroll animations
         function handleScrollAnimations() {
             const elements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right');
             
@@ -1058,6 +1145,7 @@
             });
         }
 
+        // Parallax effect
         function handleParallax() {
             const parallaxElements = document.querySelectorAll('.parallax');
             const scrolled = window.pageYOffset;
@@ -1068,6 +1156,7 @@
             });
         }
 
+        // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1105,6 +1194,7 @@
             });
         });
 
+        // Initialize animations and effects
         window.addEventListener('scroll', () => {
             handleScrollAnimations();
             handleParallax();
@@ -1112,6 +1202,7 @@
         
         window.addEventListener('load', () => {
             handleScrollAnimations();
+            // Add staggered animation to product cards
             const productCards = document.querySelectorAll('.product-card');
             productCards.forEach((card, index) => {
                 setTimeout(() => {
@@ -1121,6 +1212,7 @@
             });
         });
 
+        // Close mobile menu when clicking outside or on links
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('mobileMenu');
             const hamburger = document.querySelector('.hamburger');
@@ -1130,12 +1222,14 @@
             }
         });
 
+        // Close modal when clicking outside
         document.getElementById('authModal').addEventListener('click', function(event) {
             if (event.target === this) {
                 closeAuthModal();
             }
         });
 
+        // Keyboard navigation
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 const menu = document.getElementById('mobileMenu');
@@ -1149,6 +1243,217 @@
                 }
             }
         });
+
+        // Policy Modal Functions
+        const policyData = {
+            terms: {
+                title: 'Terms & Conditions',
+                content: `
+                    <div class="prose max-w-none">
+                        <p class="mb-4">This document is an electronic record in terms of Information Technology Act, 2000 and rules there under as applicable and the amended provisions pertaining to electronic records in various statutes as amended by the Information Technology Act, 2000. This electronic record is generated by a computer system and does not require any physical or digital signatures.</p>
+
+                        <p class="mb-4">This document is published in accordance with the provisions of Rule 3 (1) of the Information Technology (Intermediaries guidelines) Rules, 2011 that require publishing the rules and regulations, privacy policy and Terms of Use for access or usage of domain name https://iyal-lilac.vercel.app/ ('Website'), including the related mobile site and mobile application (hereinafter referred to as 'Platform').</p>
+
+                        <p class="mb-4">The Platform is owned by <strong>Iyalhealthcare</strong>, a company incorporated under the Companies Act, 1956 with its registered office at <strong>54g, 4th cross street, marakkanam road, anna nagar, tindivanam, Tindivanam, India</strong> (hereinafter referred to as 'Platform Owner', 'we', 'us', 'our').</p>
+
+                        <p class="mb-4">Your use of the Platform and services and tools are governed by the following terms and conditions ("Terms of Use") as applicable to the Platform including the applicable policies which are incorporated herein by way of reference.</p>
+
+                        <p class="mb-4 font-bold text-lg">ACCESSING, BROWSING OR OTHERWISE USING THE PLATFORM INDICATES YOUR AGREEMENT TO ALL THE TERMS AND CONDITIONS UNDER THESE TERMS OF USE, SO PLEASE READ THE TERMS OF USE CAREFULLY BEFORE PROCEEDING.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">The use of Platform and/or availing of our Services is subject to the following Terms of Use:</h3>
+
+                        <ol class="list-decimal pl-6 space-y-3">
+                            <li>To access and use the Services, you agree to provide true, accurate and complete information to us during and after registration, and you shall be responsible for all acts done through the use of your registered account on the Platform.</li>
+
+                            <li>Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials offered on this website or through the Services, for any specific purpose. You acknowledge that such information and materials may contain inaccuracies or errors and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.</li>
+
+                            <li>Your use of our Services and the Platform is solely and entirely at your own risk and discretion for which we shall not be liable to you in any manner. You are required to independently assess and ensure that the Services meet your requirements.</li>
+
+                            <li>The contents of the Platform and the Services are proprietary to us and are licensed to us. You will not have any authority to claim any intellectual property rights, title, or interest in its contents. The contents includes and is not limited to the design, layout, look and graphics.</li>
+
+                            <li>You acknowledge that unauthorized use of the Platform and/or the Services may lead to action against you as per these Terms of Use and/or applicable laws.</li>
+
+                            <li>You agree to pay us the charges associated with availing the Services.</li>
+
+                            <li>You agree not to use the Platform and/or Services for any purpose that is unlawful, illegal or forbidden by these Terms, or Indian or local laws that might apply to you.</li>
+
+                            <li>You agree and acknowledge that website and the Services may contain links to other third party websites. On accessing these links, you will be governed by the terms of use, privacy policy and such other policies of such third party websites.</li>
+
+                            <li>You understand that upon initiating a transaction for availing the Services you are entering into a legally binding and enforceable contract with the Platform Owner for the Services.</li>
+
+                            <li>You shall indemnify and hold harmless Platform Owner, its affiliates, group companies (as applicable) and their respective officers, directors, agents, and employees, from any claim or demand, or actions including reasonable attorney's fees, made by any third party or penalty imposed due to or arising out of Your breach of this Terms of Use, privacy Policy and other Policies.</li>
+
+                            <li>Notwithstanding anything contained in these Terms of Use, the parties shall not be liable for any failure to perform an obligation under these Terms if performance is prevented or delayed by a force majeure event.</li>
+
+                            <li>These Terms and any dispute or claim relating to it, or its enforceability, shall be governed by and construed in accordance with the laws of India.</li>
+
+                            <li>All disputes arising out of or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts in <strong>Tindivanam</strong> and <strong>Tamil Nadu</strong>.</li>
+
+                            <li>All concerns or communications relating to these Terms must be communicated to us using the contact information provided on this website.</li>
+                        </ol>
+                    </div>
+                `
+            },
+            privacy: {
+                title: 'Privacy Policy',
+                content: `
+                    <div class="prose max-w-none">
+                        <h3 class="text-xl font-bold mb-3">Introduction</h3>
+                        <p class="mb-4">This Privacy Policy describes how <strong>Iyalhealthcare</strong> and its affiliates (collectively "Iyalhealthcare, we, our, us") collect, use, share, protect or otherwise process your information/personal data through our website https://iyal-lilac.vercel.app/ (hereinafter referred to as Platform).</p>
+
+                        <p class="mb-4">We do not offer any product/service under this Platform outside India and your personal data will primarily be stored and processed in India. By visiting this Platform, providing your information or availing any product/service offered on the Platform, you expressly agree to be bound by the terms and conditions of this Privacy Policy.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Collection</h3>
+                        <p class="mb-4">We collect your personal data when you use our Platform, services or otherwise interact with us during the course of our relationship. Some of the information that we may collect includes but is not limited to:</p>
+                        <ul class="list-disc pl-6 mb-4 space-y-2">
+                            <li>Personal data/information provided during sign-up/registering such as name, date of birth, address, telephone/mobile number, email ID</li>
+                            <li>Proof of identity or address</li>
+                            <li>Bank account, credit/debit card or other payment instrument information</li>
+                            <li>Biometric information such as facial features (when opted for certain features)</li>
+                            <li>Transaction information on Platform and third-party business partner platforms</li>
+                        </ul>
+
+                        <p class="mb-4">You always have the option to not provide information, by choosing not to use a particular service or feature on the Platform.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Usage</h3>
+                        <p class="mb-4">We use personal data to:</p>
+                        <ul class="list-disc pl-6 mb-4 space-y-2">
+                            <li>Provide the services you request</li>
+                            <li>Assist sellers and business partners in handling and fulfilling orders</li>
+                            <li>Enhance customer experience</li>
+                            <li>Resolve disputes and troubleshoot problems</li>
+                            <li>Inform you about offers, products, services, and updates</li>
+                            <li>Detect and protect against error, fraud and other criminal activity</li>
+                            <li>Enforce our terms and conditions</li>
+                            <li>Conduct marketing research, analysis and surveys</li>
+                        </ul>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Sharing</h3>
+                        <p class="mb-4">We may share your personal data:</p>
+                        <ul class="list-disc pl-6 mb-4 space-y-2">
+                            <li>Internally within our group entities and affiliates</li>
+                            <li>With third parties such as sellers, business partners, logistics partners</li>
+                            <li>With government agencies or law enforcement if required by law</li>
+                            <li>To protect rights, property or personal safety of our users</li>
+                        </ul>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Security Precautions</h3>
+                        <p class="mb-4">To protect your personal data from unauthorized access or disclosure, loss or misuse we adopt reasonable security practices and procedures. We adhere to security guidelines to protect it against unauthorized access and offer the use of a secure server.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Data Deletion and Retention</h3>
+                        <p class="mb-4">You have an option to delete your account by visiting your profile and settings on our Platform. We retain your personal data for a period no longer than is required for the purpose for which it was collected or as required under any applicable law.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Your Rights</h3>
+                        <p class="mb-4">You may access, rectify, and update your personal data directly through the functionalities provided on the Platform.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Consent</h3>
+                        <p class="mb-4">By visiting our Platform or by providing your information, you consent to the collection, use, storage, disclosure and otherwise processing of your information on the Platform in accordance with this Privacy Policy. You consent to us contacting you through SMS, instant messaging apps, call and/or e-mail for the purposes specified in this Privacy Policy.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Changes to Privacy Policy</h3>
+                        <p class="mb-4">Please check our Privacy Policy periodically for changes. We may update this Privacy Policy to reflect changes to our information practices.</p>
+                    </div>
+                `
+            },
+            refund: {
+                title: 'Refund & Cancellation Policy',
+                content: `
+                    <div class="prose max-w-none">
+                        <p class="mb-4">This refund and cancellation policy outlines how you can cancel or seek a refund for a product/service that you have purchased through the Platform.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Cancellation Policy</h3>
+                        <ol class="list-decimal pl-6 space-y-3 mb-6">
+                            <li><strong>Cancellation Window:</strong> Cancellations will only be considered if the request is made within <strong>5 days</strong> of placing the order. However, cancellation requests may not be entertained if the orders have been communicated to sellers/merchants and they have initiated the shipping process, or the product is out for delivery. In such cases, you may choose to reject the product at the doorstep.</li>
+
+                            <li><strong>Perishable Items:</strong> Iyalhealthcare does not accept cancellation requests for perishable items like flowers, eatables, etc. However, refund/replacement can be made if you establish that the quality of the product delivered is not good.</li>
+
+                            <li><strong>Damaged or Defective Items:</strong> In case of receipt of damaged or defective items, please report to our customer service team within <strong>5 days</strong> of receipt of products. The request would be entertained once the seller/merchant has checked and determined the same.</li>
+
+                            <li><strong>Product Not as Expected:</strong> If you feel that the product received is not as shown on the site or as per your expectations, you must bring it to the notice of our customer service within <strong>5 days</strong> of receiving the product.</li>
+
+                            <li><strong>Warranty Products:</strong> In case of complaints regarding products that come with a warranty from manufacturers, please refer the issue to them directly.</li>
+                        </ol>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Refund Policy</h3>
+                        <p class="mb-4">In case of any refunds approved by Iyalhealthcare, it will take <strong>3 days</strong> for the refund to be processed to you.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Return Policy</h3>
+                        <p class="mb-4">We offer refund/exchange within first <strong>5 days</strong> from the date of your purchase. If 5 days have passed since your purchase, you will not be offered a return, exchange or refund of any kind.</p>
+
+                        <p class="mb-4">To become eligible for a return or exchange:</p>
+                        <ul class="list-disc pl-6 mb-4 space-y-2">
+                            <li>The purchased item should be unused and in the same condition as you received it</li>
+                            <li>The item must have original packaging</li>
+                            <li>Items purchased on sale may not be eligible for return/exchange</li>
+                        </ul>
+
+                        <p class="mb-4">Only items found defective or damaged will be replaced based on an exchange request. Certain categories of products/items may be exempted from returns or refunds, which will be identified at the time of purchase.</p>
+                    </div>
+                `
+            },
+            shipping: {
+                title: 'Shipping Policy',
+                content: `
+                    <div class="prose max-w-none">
+                        <h3 class="text-xl font-bold mb-3">Shipping Information</h3>
+
+                        <p class="mb-4">The orders for users are shipped through registered domestic courier companies and/or speed post only.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Shipping Timeline</h3>
+                        <p class="mb-4">Orders are shipped within <strong>3 days</strong> from the date of the order and/or payment or as per the delivery date agreed at the time of order confirmation, subject to courier company/post office norms.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Delivery Address</h3>
+                        <p class="mb-4">Delivery of all orders will be made to the address provided by the buyer at the time of purchase. Delivery confirmation will be sent to your email ID as specified at the time of registration.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Shipping Costs</h3>
+                        <p class="mb-4">If there are any shipping costs levied by the seller or the Platform Owner, the same is not refundable.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Liability</h3>
+                        <p class="mb-4">Platform Owner shall not be liable for any delay in delivery by the courier company/postal authority.</p>
+
+                        <h3 class="text-xl font-bold mt-6 mb-3">Contact Information</h3>
+                        <p class="mb-4">For any shipping-related queries, please contact our customer service team using the contact information provided on this website.</p>
+                    </div>
+                `
+            }
+        };
+
+        function openPolicyModal(policyType) {
+            const modal = document.getElementById('policyModal');
+            const title = document.getElementById('policyTitle');
+            const content = document.getElementById('policyContent');
+
+            if (policyData[policyType]) {
+                title.textContent = policyData[policyType].title;
+                content.innerHTML = policyData[policyType].content;
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closePolicyModal() {
+            const modal = document.getElementById('policyModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close policy modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('policyModal');
+            if (event.target === modal) {
+                closePolicyModal();
+            }
+        });
+
+        // Close policy modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('policyModal');
+                if (!modal.classList.contains('hidden')) {
+                    closePolicyModal();
+                }
+            }
+        });
+
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98d4322412087f3a',t:'MTc2MDI0NjkyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
