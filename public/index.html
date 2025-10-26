@@ -356,7 +356,6 @@
     </style>
 </head>
 <body class="bg-amber-50 text-amber-900">
-    <!-- Welcome Animation Screen -->
     <div id="welcomeScreen" class="welcome-screen">
         <div class="logo-container">
             <div class="logo-text">IYAL</div>
@@ -371,19 +370,15 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div id="mainContent" class="main-content">
-    <!-- Navigation -->
     <nav class="coffee-gradient shadow-2xl sticky top-0 z-50 coffee-texture">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
                 <div class="flex items-center pulse-animation">
                     <h1 class="text-3xl font-bold text-amber-900 tracking-wider">IYAL</h1>
                     <span class="ml-3 text-sm text-amber-900 font-medium">Premium Health Products</span>
                 </div>
                 
-                <!-- Cart Button (hidden by default, shown after login) -->
                 <button id="cartButton" onclick="openCart()" class="hidden mr-4 relative bg-amber-200 hover:bg-amber-300 text-amber-900 p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M7 4V2C7 1.45 7.45 1 8 1H16C16.55 1 17 1.45 17 2V4H20C20.55 4 21 4.45 21 5S20.55 6 20 6H19V19C19 20.1 18.1 21 17 21H7C5.9 21 5 20.1 5 19V6H4C3.45 6 3 5.55 3 5S3.45 4 4 4H7ZM9 3V4H15V3H9ZM7 6V19H17V6H7Z"/>
@@ -391,7 +386,6 @@
                     <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
                 </button>
                 
-                <!-- Hamburger Menu Button -->
                 <button onclick="toggleMenu()" class="hamburger focus:outline-none">
                     <span></span>
                     <span></span>
@@ -400,7 +394,6 @@
             </div>
         </div>
         
-        <!-- Full Screen Menu -->
         <div id="mobileMenu" class="nav-menu fixed top-0 right-0 w-full h-full coffee-gradient z-40">
             <div class="flex flex-col items-center justify-center h-full space-y-12">
                 <a href="#home" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">Home</a>
@@ -408,7 +401,6 @@
                 <a href="#products" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">Products</a>
                 <a href="#contact" onclick="toggleMenu()" class="nav-item text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110">Contact Us</a>
                 
-                <!-- Account Info (hidden by default, shown after login) -->
                 <button id="accountInfo" onclick="openAccountModal(); toggleMenu();" class="nav-item hidden text-amber-100 text-4xl font-light hover:text-amber-300 transition-all duration-500 hover:scale-110 flex items-center space-x-3">
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -418,15 +410,12 @@
                 
                 <button id="loginButton" onclick="openAuthModal(); toggleMenu();" class="nav-item btn-primary text-amber-100 px-8 py-4 rounded-full text-xl font-medium hover:scale-110 transition-all duration-500">Login / Signup</button>
                 
-                <!-- Logout Button (hidden by default, shown after login) -->
                 <button id="logoutButton" onclick="handleLogout(); toggleMenu();" class="nav-item hidden border-2 border-amber-300 text-amber-100 px-8 py-4 rounded-full text-xl font-medium hover:scale-110 transition-all duration-500 hover:bg-amber-300 hover:text-amber-900">Logout</button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section id="home" class="hero-bg min-h-screen flex items-center coffee-texture relative overflow-hidden">
-        <!-- Floating Decorative Balls -->
         <div class="absolute inset-0 overflow-hidden">
             <div class="floating-ball absolute w-32 h-32 bg-gradient-to-br from-amber-300 to-amber-500 rounded-full opacity-20" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
             <div class="floating-ball absolute w-24 h-24 bg-gradient-to-br from-orange-300 to-orange-500 rounded-full opacity-25" style="top: 60%; right: 20%; animation-delay: -2s;"></div>
@@ -447,7 +436,6 @@
         </div>
     </section>
 
-    <!-- About Section -->
     <section id="about" class="py-24 coffee-light coffee-texture section-transition">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -485,7 +473,6 @@
         </div>
     </section>
 
-    <!-- Products Section -->
     <section id="products" class="py-24 bg-gradient-to-b from-amber-50 to-amber-100 coffee-texture section-transition">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16 scroll-animate">
@@ -494,7 +481,6 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-                <!-- Hair Oil -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-40 sm:h-48 md:h-56 lg:h-64 bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
@@ -516,7 +502,6 @@
                     </div>
                 </div>
 
-                <!-- Face Pack -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-40 sm:h-48 md:h-56 lg:h-64 bg-gradient-to-br from-green-200 to-green-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
@@ -538,7 +523,6 @@
                     </div>
                 </div>
 
-                <!-- Health Mix -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-40 sm:h-48 md:h-56 lg:h-64 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
@@ -560,7 +544,6 @@
                     </div>
                 </div>
 
-                <!-- Pain Relief Oil -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-40 sm:h-48 md:h-56 lg:h-64 bg-gradient-to-br from-red-200 to-red-400 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 shimmer"></div>
@@ -574,9 +557,9 @@
                     </div>
                     <div class="p-8">
                         <h4 class="text-2xl font-bold text-amber-900 mb-3">Pain Relief Oil</h4>
-                        <p class="text-amber-700 mb-6 leading-relaxed">Soothing relief for aches and pains with therapeutic oils</p>
+                        <p class="text-amber-700 mb-6 leading-relaxed">Ayurvedic formula for quick and effective muscle and joint relief</p>
                         <div class="flex justify-between items-center">
-                            <span class="text-3xl font-bold text-amber-900">₹249</span>
+                            <span class="text-3xl font-bold text-amber-900">₹499</span>
                             <button onclick="addToCart('pain-relief')" class="btn-primary text-amber-100 px-6 py-3 rounded-full hover:scale-105 transition-all duration-300">Add to Cart</button>
                         </div>
                     </div>
@@ -584,773 +567,552 @@
             </div>
         </div>
     </section>
-
-    <!-- Features Section -->
-    <section class="py-16 coffee-gradient">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="scroll-animate">
-                    <div class="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-amber-900" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-bold text-amber-100 mb-2">Premium Quality</h4>
-                    <p class="text-amber-200">100% natural ingredients sourced from trusted suppliers</p>
+    
+    <section id="why-choose-us" class="py-24 coffee-gradient coffee-texture section-transition">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h3 class="text-5xl md:text-6xl font-bold text-amber-100 mb-16 scroll-animate tracking-wide">Why Choose IYAL?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="p-8 bg-amber-50 bg-opacity-10 rounded-3xl shadow-xl scroll-animate-left">
+                    <svg class="w-16 h-16 text-amber-300 mx-auto mb-6 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: 0s;">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93h2c0 2.21 1.79 4 4 4s4-1.79 4-4h2c0 4.08-3.05 7.44-7 7.93zM12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                    </svg>
+                    <h4 class="text-3xl font-bold text-amber-200 mb-4">Pure & Natural</h4>
+                    <p class="text-amber-300 text-lg">We use only 100% natural, ethically sourced ingredients with no artificial additives.</p>
                 </div>
-                
-                <div class="scroll-animate">
-                    <div class="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-amber-900" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-bold text-amber-100 mb-2">Fast Delivery</h4>
-                    <p class="text-amber-200">Quick and secure delivery to your doorstep</p>
+                <div class="p-8 bg-amber-50 bg-opacity-10 rounded-3xl shadow-xl scroll-animate" style="transition-delay: 0.2s;">
+                    <svg class="w-16 h-16 text-amber-300 mx-auto mb-6 pulse-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -1s;">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                    <h4 class="text-3xl font-bold text-amber-200 mb-4">Quality Assured</h4>
+                    <p class="text-amber-300 text-lg">Every batch is rigorously tested to meet the highest standards of purity and efficacy.</p>
                 </div>
-                
-                <div class="scroll-animate">
-                    <div class="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-amber-900" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                        </svg>
-                    </div>
-                    <h4 class="text-xl font-bold text-amber-100 mb-2">Customer Care</h4>
-                    <p class="text-amber-200">24/7 support for all your health needs</p>
+                <div class="p-8 bg-amber-50 bg-opacity-10 rounded-3xl shadow-xl scroll-animate-right">
+                    <svg class="w-16 h-16 text-amber-300 mx-auto mb-6 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: -2s;">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-6h-2v6zm0-8h2V7h-2v2z"/>
+                    </svg>
+                    <h4 class="text-3xl font-bold text-amber-200 mb-4">Customer Support</h4>
+                    <p class="text-amber-300 text-lg">Dedicated team ready to assist you on your journey to better health and wellness.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-16 bg-amber-100">
-        <div class="max-w-4xl mx-auto px-4 text-center scroll-animate">
-            <h3 class="text-4xl font-bold text-amber-900 mb-8">Get In Touch</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h4 class="text-xl font-bold text-amber-900 mb-4">Contact Info</h4>
-                    <p class="text-amber-700 mb-2">📧 info@iyal.com</p>
-                    <p class="text-amber-700 mb-2">📞 +91 98765 43210</p>
-                    <p class="text-amber-700">📍 Mumbai, Maharashtra</p>
+    <section class="py-20 bg-amber-100 coffee-light coffee-texture section-transition">
+        <div class="max-w-7xl mx-auto px-6 text-center scroll-animate">
+            <h3 class="text-4xl md:text-5xl font-bold text-amber-900 mb-6">Ready to Start Your Wellness Journey?</h3>
+            <p class="text-xl text-amber-800 mb-10 max-w-3xl mx-auto">Shop our premium selection today and experience the difference natural healing can make.</p>
+            <button onclick="smoothScrollTo('products')" class="btn-primary text-amber-100 px-10 py-4 rounded-full text-xl font-semibold shimmer hover:scale-110 transition-all duration-500 shadow-xl">Explore All Products</button>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 coffee-gradient coffee-texture section-transition">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div class="scroll-animate-left">
+                    <h3 class="text-5xl md:text-6xl font-bold text-amber-100 mb-8 leading-tight">Get In Touch</h3>
+                    <p class="text-xl text-amber-300 mb-8 leading-relaxed">We'd love to hear from you. Fill out the form or use the contact details provided.</p>
+                    
+                    <div class="space-y-6 text-amber-300">
+                        <div class="flex items-center space-x-4">
+                            <svg class="w-6 h-6 text-amber-200" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            <p class="text-lg">123 Health Lane, Wellness City, 600001, India</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <svg class="w-6 h-6 text-amber-200" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            <p class="text-lg">support@iyalhealth.com</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <svg class="w-6 h-6 text-amber-200" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.86 5.25 6.69 6.69l1.41-1.41c.22-.22.51-.31.87-.25 1.06.31 2.22.48 3.4.48.55 0 1 .45 1 1v3c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3c.55 0 1 .45 1 1 0 1.18.17 2.34.48 3.4.06.36-.03.65-.25.87l-1.41 1.41z"/></svg>
+                            <p class="text-lg">+91 98765 43210</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h4 class="text-xl font-bold text-amber-900 mb-4">Business Hours</h4>
-                    <p class="text-amber-700 mb-2">Monday - Friday: 9AM - 6PM</p>
-                    <p class="text-amber-700 mb-2">Saturday: 10AM - 4PM</p>
-                    <p class="text-amber-700">Sunday: Closed</p>
+                <div class="scroll-animate-right">
+                    <form class="bg-amber-50 p-8 md:p-12 rounded-3xl shadow-2xl space-y-6">
+                        <div>
+                            <label for="name" class="block text-lg font-medium text-amber-900 mb-2">Name</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:ring-amber-500 focus:border-amber-500" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-lg font-medium text-amber-900 mb-2">Email</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:ring-amber-500 focus:border-amber-500" required>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-lg font-medium text-amber-900 mb-2">Message</label>
+                            <textarea id="message" name="message" rows="4" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:ring-amber-500 focus:border-amber-500" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary text-amber-100 px-8 py-3 rounded-full text-lg font-semibold w-full hover:scale-[1.02] transition-all duration-300">Send Message</button>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="coffee-gradient py-8 sm:py-12">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8">
-                <!-- Company Info -->
-                <div class="text-center sm:text-left">
-                    <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-amber-100 mb-2 sm:mb-4">IYAL</h2>
-                    <p class="text-xs sm:text-sm text-amber-200 mb-2 sm:mb-4">Your trusted partner in natural health and wellness</p>
-                    <p class="text-xs text-amber-300">54g, 4th Cross Street</p>
-                    <p class="text-xs text-amber-300">Marakkanam Road, Anna Nagar</p>
-                    <p class="text-xs text-amber-300">Tindivanam, India</p>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="text-center">
-                    <h3 class="text-sm sm:text-base md:text-lg font-bold text-amber-100 mb-2 sm:mb-4">Quick Links</h3>
-                    <ul class="space-y-1 sm:space-y-2">
-                        <li><a href="#home" class="text-xs text-amber-200 hover:text-amber-100 transition-colors">Home</a></li>
-                        <li><a href="#about" class="text-xs text-amber-200 hover:text-amber-100 transition-colors">About</a></li>
-                        <li><a href="#products" class="text-xs text-amber-200 hover:text-amber-100 transition-colors">Products</a></li>
-                        <li><a href="#contact" class="text-xs text-amber-200 hover:text-amber-100 transition-colors">Contact</a></li>
-                    </ul>
-                </div>
-
-                <!-- Policies -->
-                <div class="text-center sm:text-right">
-                    <h3 class="text-sm sm:text-base md:text-lg font-bold text-amber-100 mb-2 sm:mb-4">Policies</h3>
-                    <ul class="space-y-1 sm:space-y-2">
-                        <li><button onclick="openPolicyModal('terms')" class="text-xs text-amber-200 hover:text-amber-100 transition-colors">Terms & Conditions</button></li>
-                        <li><button onclick="openPolicyModal('privacy')" class="text-xs text-amber-200 hover:text-amber-100 transition-colors">Privacy Policy</button></li>
-                        <li><button onclick="openPolicyModal('refund')" class="text-xs text-amber-200 hover:text-amber-100 transition-colors">Refund & Cancellation</button></li>
-                        <li><button onclick="openPolicyModal('shipping')" class="text-xs text-amber-200 hover:text-amber-100 transition-colors">Shipping Policy</button></li>
-                    </ul>
-                </div>
+    <footer class="bg-amber-900 py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center text-amber-300">
+            <h4 class="text-3xl font-bold mb-4">IYAL</h4>
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="#home" class="hover:text-amber-100 transition duration-300">Home</a>
+                <a href="#products" class="hover:text-amber-100 transition duration-300">Products</a>
+                <a href="#" onclick="openPolicyModal('privacy')" class="hover:text-amber-100 transition duration-300">Privacy Policy</a>
+                <a href="#" onclick="openPolicyModal('terms')" class="hover:text-amber-100 transition duration-300">Terms of Service</a>
             </div>
-
-            <div class="border-t border-amber-700 pt-4 sm:pt-6">
-                <p class="text-xs text-amber-300 text-center">&copy; 2024 Iyal. All rights reserved.</p>
-            </div>
+            <p class="text-sm border-t border-amber-800 pt-6">&copy; <span id="currentYear"></span> Iyal Health Products. All rights reserved.</p>
         </div>
     </footer>
-
-    <!-- Policy Modal -->
-    <div id="policyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div class="flex justify-between items-center p-3 sm:p-4 md:p-6 border-b border-amber-200">
-                <h3 id="policyTitle" class="text-base sm:text-lg md:text-2xl font-bold text-amber-900 pr-4"></h3>
-                <button onclick="closePolicyModal()" class="text-amber-600 hover:text-amber-800 text-2xl flex-shrink-0">&times;</button>
-            </div>
-            <div id="policyContent" class="p-3 sm:p-4 md:p-6 overflow-y-auto max-h-[calc(90vh-80px)] text-xs sm:text-sm text-amber-900 space-y-3">
-                <!-- Policy content inserted here -->
-            </div>
-        </div>
-    </div>
-    </div>
-    <!-- End Main Content -->
-
-    <!-- Auth Modal -->
-    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-amber-900">Welcome to Iyal</h3>
-                <button onclick="closeAuthModal()" class="text-amber-600 hover:text-amber-800">✕</button>
-            </div>
-            
-            <div id="mobileForm">
-                <h4 class="text-xl font-semibold text-amber-900 mb-4">Enter Mobile Number</h4>
-                <form onsubmit="sendOTP(event)">
-                    <div class="flex mb-4">
-                        <select class="p-3 border border-amber-300 rounded-l-lg focus:outline-none focus:border-amber-500 bg-amber-50">
-                            <option value="+91">🇮🇳 +91</option>
-                            <option value="+1">🇺🇸 +1</option>
-                            <option value="+44">🇬🇧 +44</option>
-                        </select>
-                        <input type="tel" id="mobileNumber" placeholder="Mobile Number" class="flex-1 p-3 border border-amber-300 rounded-r-lg focus:outline-none focus:border-amber-500" pattern="[0-9]{10}" required>
-                    </div>
-                    <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg mb-4">Send OTP</button>
-                </form>
-                <p class="text-center text-amber-700 text-sm">We'll send you a verification code via SMS</p>
-            </div>
-            
-            <div id="otpForm" class="hidden">
-                <h4 class="text-xl font-semibold text-amber-900 mb-4">Verify OTP</h4>
-                <p class="text-amber-700 mb-4 text-center">Enter the 6-digit code sent to <span id="sentToNumber" class="font-semibold"></span></p>
-                <form onsubmit="verifyOTP(event)">
-                    <div class="flex justify-center space-x-2 mb-6">
-                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
-                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
-                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
-                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
-                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
-                        <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl border border-amber-300 rounded-lg focus:outline-none focus:border-amber-500 otp-input" required>
-                    </div>
-                    <button type="submit" class="w-full btn-primary text-white py-3 rounded-lg mb-4">Verify & Login</button>
-                </form>
-                <div class="text-center">
-                    <button onclick="resendOTP()" class="text-amber-900 font-semibold hover:underline">Resend OTP</button>
-                    <span class="mx-2 text-amber-600">|</span>
-                    <button onclick="showMobileForm()" class="text-amber-900 font-semibold hover:underline">Change Number</button>
+    
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[100] hidden backdrop-blur-sm" onclick="closeAuthModal()">
+        <div class="bg-amber-50 rounded-3xl p-8 md:p-12 shadow-2xl max-w-lg w-11/12 transform transition-all duration-500 scale-90 opacity-0" onclick="event.stopPropagation()">
+            <h3 class="text-3xl font-bold text-amber-900 mb-6 text-center" id="authModalTitle">Login to IYAL</h3>
+            <form id="authForm" class="space-y-4">
+                <div id="nameField" class="hidden">
+                    <label for="authName" class="block text-lg font-medium text-amber-900 mb-2">Name</label>
+                    <input type="text" id="authName" name="name" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:ring-amber-500 focus:border-amber-500">
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Cart Modal -->
-    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-amber-900">Shopping Cart</h3>
-                <button onclick="closeCart()" class="text-amber-600 hover:text-amber-800 text-2xl">✕</button>
-            </div>
-            
-            <div id="cartItems" class="space-y-4 mb-6">
-                <p class="text-amber-700 text-center py-8">Your cart is empty. Start shopping to add items!</p>
-            </div>
-            
-            <div class="border-t pt-4">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-xl font-bold text-amber-900">Total: ₹<span id="cartTotal">0</span></span>
-                    <button onclick="checkout()" class="btn-primary text-white px-6 py-3 rounded-lg">Checkout</button>
+                <div>
+                    <label for="authEmail" class="block text-lg font-medium text-amber-900 mb-2">Email</label>
+                    <input type="email" id="authEmail" name="email" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:ring-amber-500 focus:border-amber-500" required>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Account Modal -->
-    <div id="accountModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold text-amber-900">My Account</h3>
-                <button onclick="closeAccountModal()" class="text-amber-600 hover:text-amber-800 text-2xl">✕</button>
-            </div>
-            
-            <div class="text-center mb-6">
-                <div class="w-20 h-20 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-10 h-10 text-amber-800" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                    </svg>
+                <div>
+                    <label for="authPassword" class="block text-lg font-medium text-amber-900 mb-2">Password</label>
+                    <input type="password" id="authPassword" name="password" class="w-full px-4 py-3 border border-amber-300 rounded-xl focus:ring-amber-500 focus:border-amber-500" required>
                 </div>
-                <h4 class="text-xl font-bold text-amber-900" id="userName">Welcome User!</h4>
-                <p class="text-amber-700" id="userEmail">user@example.com</p>
-            </div>
-            
-            <div class="space-y-4">
-                <button onclick="showOrderHistory()" class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
-                    <span class="font-semibold text-amber-900">📦 Order History</span>
+                <button type="submit" id="authSubmitButton" class="btn-primary text-amber-100 px-8 py-3 rounded-full text-lg font-semibold w-full hover:scale-[1.02] transition-all duration-300">Login</button>
+            </form>
+            <p class="mt-4 text-center text-amber-800">
+                <span id="authSwitchText">Don't have an account?</span>
+                <button onclick="toggleAuthMode()" class="text-amber-900 font-bold hover:text-amber-700 ml-1 transition duration-300">
+                    <span id="authSwitchLink">Signup</span>
                 </button>
-                <button onclick="showProfileSettings()" class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
-                    <span class="font-semibold text-amber-900">⚙️ Profile Settings</span>
-                </button>
-                <button onclick="showAddressBook()" class="w-full text-left p-4 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors">
-                    <span class="font-semibold text-amber-900">📍 Address Book</span>
+            </p>
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-amber-900 hover:text-red-600 transition duration-300">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-75 flex justify-end z-[100] hidden backdrop-blur-sm" onclick="closeCart()">
+        <div class="bg-amber-50 h-full w-full max-w-md p-6 md:p-8 shadow-2xl transform transition-all duration-500 translate-x-full" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center border-b border-amber-300 pb-4 mb-6">
+                <h3 class="text-3xl font-bold text-amber-900">Your Cart</h3>
+                <button onclick="closeCart()" class="text-amber-900 hover:text-red-600 transition duration-300">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
+            
+            <div id="cartItems" class="space-y-4 h-[calc(100vh-200px)] overflow-y-auto pr-2">
+                <p class="text-center text-amber-700 font-medium pt-12">Your cart is empty.</p>
+            </div>
+
+            <div class="border-t border-amber-300 pt-6 mt-6">
+                <div class="flex justify-between items-center text-2xl font-bold text-amber-900 mb-4">
+                    <span>Total:</span>
+                    <span id="cartTotal">₹0</span>
+                </div>
+                <button onclick="checkout()" class="btn-primary text-amber-100 px-8 py-3 rounded-full text-lg font-semibold w-full hover:scale-[1.02] transition-all duration-300">Proceed to Checkout</button>
+            </div>
         </div>
     </div>
 
-    <!-- Cart Notification -->
-    <div id="cartNotification" class="fixed top-24 right-6 coffee-gradient text-amber-100 px-8 py-4 rounded-full shadow-2xl transform translate-x-full transition-all duration-500 z-50 border border-amber-300">
-        <p class="font-semibold">✨ Product added to cart!</p>
+    <div id="accountModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[100] hidden backdrop-blur-sm" onclick="closeAccountModal()">
+        <div class="bg-amber-50 rounded-3xl p-8 md:p-12 shadow-2xl max-w-lg w-11/12 transform transition-all duration-500 scale-90 opacity-0" onclick="event.stopPropagation()">
+            <h3 class="text-3xl font-bold text-amber-900 mb-6 text-center">My Account</h3>
+            <div class="space-y-4 text-amber-900">
+                <p class="text-xl">Welcome, <span id="accountName" class="font-semibold">User</span>!</p>
+                <p class="text-lg">Email: <span id="accountEmail" class="font-medium">user@example.com</span></p>
+                
+                <h4 class="text-2xl font-bold pt-4">Order History</h4>
+                <ul id="orderHistory" class="space-y-2 text-amber-800 h-32 overflow-y-auto border border-amber-300 p-4 rounded-xl">
+                    <li class="text-sm">No recent orders.</li>
+                </ul>
+            </div>
+            <button onclick="handleLogout(); closeAccountModal();" class="mt-8 border-2 border-red-500 text-red-500 px-8 py-3 rounded-full text-lg font-semibold w-full hover:bg-red-500 hover:text-white transition-all duration-300">Logout</button>
+            <button onclick="closeAccountModal()" class="absolute top-4 right-4 text-amber-900 hover:text-red-600 transition duration-300">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
     </div>
+
+    <div id="policyModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-[100] hidden backdrop-blur-sm" onclick="closePolicyModal()">
+        <div class="bg-amber-50 rounded-3xl p-8 md:p-12 shadow-2xl max-w-3xl w-11/12 h-5/6 overflow-hidden transform transition-all duration-500 scale-90 opacity-0" onclick="event.stopPropagation()">
+            <h3 class="text-3xl font-bold text-amber-900 mb-6 border-b border-amber-300 pb-4" id="policyModalTitle">Privacy Policy</h3>
+            <div id="policyContent" class="overflow-y-auto h-[calc(100%-80px)] pr-4 text-amber-800 space-y-4">
+                </div>
+            <button onclick="closePolicyModal()" class="absolute top-4 right-4 text-amber-900 hover:text-red-600 transition duration-300">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
+
 
     <script>
-        // Welcome Animation
-        function startWelcomeAnimation() {
-            // After all animations complete, wait then fade out
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const mainContent = document.getElementById('mainContent');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const hamburger = document.querySelector('.hamburger');
+        const authModal = document.getElementById('authModal');
+        const cartModal = document.getElementById('cartModal');
+        const accountModal = document.getElementById('accountModal');
+        const policyModal = document.getElementById('policyModal');
+
+        // State variables (to be replaced by actual backend/firebase logic)
+        let cartItems = [];
+        let isLoggedIn = false;
+        let isSignupMode = false;
+        let currentUser = { name: "User", email: "user@example.com" };
+
+        /* ==========================================================
+           1. WELCOME SCREEN FIX (Primary Fix for Mobile Resolution)
+           ========================================================== */
+        window.addEventListener('load', function() {
+            // Disable scrolling initially while welcome screen is active
+            document.body.style.overflowY = 'hidden'; 
+
             setTimeout(() => {
-                const welcomeScreen = document.getElementById('welcomeScreen');
-                const mainContent = document.getElementById('mainContent');
-                
                 welcomeScreen.classList.add('fade-out');
+                mainContent.classList.add('show');
                 
+                // CRITICAL FIX: Wait for the 1s CSS transition to complete, then remove
+                // the element from the DOM flow so the browser correctly calculates the viewport height.
                 setTimeout(() => {
                     welcomeScreen.style.display = 'none';
-                    mainContent.classList.add('show');
-                }, 1000); // Wait for fade out animation
-            }, 4000); // Total wait time for all animations to complete
-        }
-        
-        // Start welcome animation when page loads
-        window.addEventListener('load', () => {
-            startWelcomeAnimation();
+                    document.body.style.overflowY = 'auto'; // Re-enable scrolling
+                }, 1000); // 1000ms is the duration of the transition
+                
+            }, 3000); // Welcome screen display time
         });
 
-        // Mobile menu toggle with hamburger animation
+        /* ==========================================================
+           2. NAVIGATION & SMOOTH SCROLL
+           ========================================================== */
+
         function toggleMenu() {
-            const menu = document.getElementById('mobileMenu');
-            const hamburger = document.querySelector('.hamburger');
-            
-            menu.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
             hamburger.classList.toggle('active');
-        }
-
-        // Smooth scroll function
-        function smoothScrollTo(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }
-
-        // Auth modal functions
-        function openAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-
-        function showMobileForm() {
-            document.getElementById('otpForm').classList.add('hidden');
-            document.getElementById('mobileForm').classList.remove('hidden');
-        }
-
-        function showOTPForm() {
-            document.getElementById('mobileForm').classList.add('hidden');
-            document.getElementById('otpForm').classList.remove('hidden');
-        }
-
-        // Cart functionality
-        let cart = [];
-        let isLoggedIn = false;
-
-        function openCart() {
-            document.getElementById('cartModal').classList.remove('hidden');
-            updateCartDisplay();
-        }
-
-        function closeCart() {
-            document.getElementById('cartModal').classList.add('hidden');
-        }
-
-        function openAccountModal() {
-            document.getElementById('accountModal').classList.remove('hidden');
-        }
-
-        function closeAccountModal() {
-            document.getElementById('accountModal').classList.add('hidden');
-        }
-
-        function updateCartDisplay() {
-            const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
-            const cartCount = document.getElementById('cartCount');
             
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<p class="text-amber-700 text-center py-8">Your cart is empty. Start shopping to add items!</p>';
-                cartTotal.textContent = '0';
-                cartCount.textContent = '0';
+            if (mobileMenu.classList.contains('active')) {
+                document.body.style.overflowY = 'hidden'; // Lock scroll when menu is open
             } else {
-                let total = 0;
-                cartItems.innerHTML = cart.map(item => {
-                    total += item.price * item.quantity;
-                    return `
-                        <div class="flex justify-between items-center p-4 bg-amber-50 rounded-lg">
-                            <div>
-                                <h4 class="font-semibold text-amber-900">${item.name}</h4>
-                                <p class="text-amber-700">₹${item.price} x ${item.quantity}</p>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <button onclick="updateQuantity('${item.id}', -1)" class="bg-amber-200 text-amber-900 w-8 h-8 rounded-full hover:bg-amber-300">-</button>
-                                <span class="font-semibold">${item.quantity}</span>
-                                <button onclick="updateQuantity('${item.id}', 1)" class="bg-amber-200 text-amber-900 w-8 h-8 rounded-full hover:bg-amber-300">+</button>
-                                <button onclick="removeFromCart('${item.id}')" class="text-red-500 hover:text-red-700 ml-2">🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                cartTotal.textContent = total;
-                cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+                document.body.style.overflowY = 'auto'; // Restore scroll
             }
         }
 
-        function updateQuantity(productId, change) {
-            const item = cart.find(item => item.id === productId);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    removeFromCart(productId);
-                } else {
-                    updateCartDisplay();
+        function smoothScrollTo(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                if (mobileMenu.classList.contains('active')) {
+                    toggleMenu(); // Close mobile menu if open
                 }
             }
         }
+        
+        // Add scroll animation observers
+        const scrollElements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right');
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
 
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            updateCartDisplay();
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        scrollElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        /* ==========================================================
+           3. AUTHENTICATION (Modal & Logic)
+           ========================================================== */
+
+        function openAuthModal() {
+            authModal.classList.remove('hidden');
+            setTimeout(() => {
+                authModal.querySelector('div').classList.remove('scale-90', 'opacity-0');
+                authModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+            }, 10);
         }
 
-        function checkout() {
-            if (cart.length === 0) {
-                alert('Your cart is empty!');
-                return;
-            }
-            alert('Checkout functionality would connect to your payment processor here!');
+        function closeAuthModal() {
+            authModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+            authModal.querySelector('div').classList.add('scale-90', 'opacity-0');
+            setTimeout(() => {
+                authModal.classList.add('hidden');
+                // Reset to login mode after closing
+                isSignupMode = false;
+                updateAuthModalUI();
+            }, 500); 
+        }
+
+        function toggleAuthMode() {
+            isSignupMode = !isSignupMode;
+            updateAuthModalUI();
+        }
+
+        function updateAuthModalUI() {
+            document.getElementById('authModalTitle').textContent = isSignupMode ? 'Create an Account' : 'Login to IYAL';
+            document.getElementById('authSubmitButton').textContent = isSignupMode ? 'Signup' : 'Login';
+            document.getElementById('authSwitchText').textContent = isSignupMode ? 'Already have an account?' : "Don't have an account?";
+            document.getElementById('authSwitchLink').textContent = isSignupMode ? 'Login' : 'Signup';
+            document.getElementById('nameField').classList.toggle('hidden', !isSignupMode);
+            document.getElementById('authName').required = isSignupMode;
+        }
+
+        function handleLoginSuccess(user) {
+            isLoggedIn = true;
+            currentUser = user;
+            closeAuthModal();
+            updateHeaderUI();
+            alert(`Welcome, ${currentUser.name}! You are now logged in.`);
         }
 
         function handleLogout() {
             isLoggedIn = false;
-            cart = [];
-            
-            // Hide logged-in elements
-            document.getElementById('cartButton').classList.add('hidden');
-            document.getElementById('accountInfo').classList.add('hidden');
-            document.getElementById('logoutButton').classList.add('hidden');
-            
-            // Show login button
-            document.getElementById('loginButton').classList.remove('hidden');
-            
-            updateCartDisplay();
-            alert('You have been logged out successfully!');
+            currentUser = { name: "User", email: "user@example.com" };
+            updateHeaderUI();
+            alert("You have been logged out.");
         }
 
-        // Mobile verification variables
-        let currentMobileNumber = '';
-        let generatedOTP = '';
+        function updateHeaderUI() {
+            document.getElementById('cartButton').classList.toggle('hidden', !isLoggedIn);
+            document.getElementById('accountInfo').classList.toggle('hidden', !isLoggedIn);
+            document.getElementById('logoutButton').classList.toggle('hidden', !isLoggedIn);
+            document.getElementById('loginButton').classList.toggle('hidden', isLoggedIn);
 
-        // Form handlers
-        function sendOTP(event) {
-            event.preventDefault();
-            const countryCode = event.target.querySelector('select').value;
-            const mobileNumber = event.target.querySelector('#mobileNumber').value;
-            
-            if (mobileNumber.length !== 10) {
-                alert('Please enter a valid 10-digit mobile number');
-                return;
-            }
-            
-            currentMobileNumber = countryCode + mobileNumber;
-            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            // Show the number in OTP form
-            document.getElementById('sentToNumber').textContent = currentMobileNumber;
-            
-            // In a real app, you would send SMS here
-            alert(`Demo: Your OTP is ${generatedOTP}\n(In production, this would be sent via SMS)`);
-            
-            showOTPForm();
+            // Update Account Modal details
+            document.getElementById('accountName').textContent = currentUser.name;
+            document.getElementById('accountEmail').textContent = currentUser.email;
+            // Placeholder for real order history
+            document.getElementById('orderHistory').innerHTML = '<li class="text-sm">Order #202301: ₹499 - Delivered</li><li class="text-sm">Order #202302: ₹798 - Shipped</li>';
         }
 
-        function verifyOTP(event) {
+        document.getElementById('authForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            const otpInputs = document.querySelectorAll('.otp-input');
-            const enteredOTP = Array.from(otpInputs).map(input => input.value).join('');
-            
-            if (enteredOTP.length !== 6) {
-                alert('Please enter the complete 6-digit OTP');
-                return;
-            }
-            
-            if (enteredOTP === generatedOTP) {
-                isLoggedIn = true;
-                
-                // Show logged-in elements
-                document.getElementById('cartButton').classList.remove('hidden');
-                document.getElementById('accountInfo').classList.remove('hidden');
-                document.getElementById('logoutButton').classList.remove('hidden');
-                
-                // Hide login button
-                document.getElementById('loginButton').classList.add('hidden');
-                
-                // Update account info
-                document.getElementById('userName').textContent = `Welcome User!`;
-                document.getElementById('userEmail').textContent = currentMobileNumber;
-                
-                closeAuthModal();
-                alert('Welcome to Iyal! You are now logged in.');
-                
-                // Reset forms
-                showMobileForm();
-                otpInputs.forEach(input => input.value = '');
-                document.getElementById('mobileNumber').value = '';
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const name = document.getElementById('authName').value || "Customer";
+
+            if (isSignupMode) {
+                // Mock Signup Logic
+                if (password.length < 6) {
+                    alert("Password must be at least 6 characters.");
+                    return;
+                }
+                handleLoginSuccess({ name: name, email: email });
             } else {
-                alert('Invalid OTP. Please try again.');
-                otpInputs.forEach(input => input.value = '');
-                otpInputs[0].focus();
+                // Mock Login Logic
+                if (email === "user@test.com" && password === "password") {
+                    handleLoginSuccess({ name: "Test User", email: email });
+                } else if (email && password) {
+                    handleLoginSuccess({ name: "Customer", email: email }); // Assume success for demo
+                } else {
+                    alert("Invalid email or password.");
+                }
             }
+        });
+        
+        /* ==========================================================
+           4. CART (Modal & Logic)
+           ========================================================== */
+
+        function openCart() {
+            cartModal.classList.remove('hidden');
+            setTimeout(() => {
+                cartModal.querySelector('div').classList.remove('translate-x-full');
+            }, 10);
+            renderCart();
         }
 
-        function resendOTP() {
-            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            alert(`Demo: Your new OTP is ${generatedOTP}\n(In production, this would be sent via SMS)`);
+        function closeCart() {
+            cartModal.querySelector('div').classList.add('translate-x-full');
+            setTimeout(() => {
+                cartModal.classList.add('hidden');
+            }, 500); 
         }
 
-        // Image upload functions
-        function handleAboutImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const aboutImage = document.getElementById('aboutImage');
-                    const placeholder = document.getElementById('aboutImagePlaceholder');
-                    
-                    aboutImage.src = e.target.result;
-                    aboutImage.classList.remove('hidden');
-                    placeholder.style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function handleProductImageUpload(event, productType) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageElement = document.getElementById(productType + 'Image');
-                    const placeholder = document.getElementById(productType + 'Placeholder');
-                    
-                    imageElement.src = e.target.result;
-                    imageElement.classList.remove('hidden');
-                    placeholder.style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Account section functions
-        function showOrderHistory() {
-            alert('📦 Order History\n\nYour recent orders:\n\n• Premium Hair Oil - ₹299 (Delivered)\n• Natural Face Pack - ₹199 (In Transit)\n• Wellness Health Mix - ₹399 (Processing)\n\nTotal Orders: 3\nTotal Spent: ₹897');
-        }
-
-        function showProfileSettings() {
-            const newName = prompt('Enter your name:', 'User Name');
-            const newEmail = prompt('Enter your email:', 'user@example.com');
-            
-            if (newName && newEmail) {
-                document.getElementById('userName').textContent = `Welcome ${newName}!`;
-                document.getElementById('userEmail').textContent = newEmail;
-                alert('✅ Profile updated successfully!');
-            }
-        }
-
-        function showAddressBook() {
-            alert('📍 Address Book\n\nSaved Addresses:\n\n🏠 Home\n123 Main Street\nMumbai, Maharashtra 400001\n\n🏢 Office\n456 Business Park\nMumbai, Maharashtra 400002\n\nClick "Add New Address" to add more addresses.');
-        }
-
-        // Enhanced add to cart function
         function addToCart(productId) {
             if (!isLoggedIn) {
-                alert('Please login to add items to your cart!');
+                alert("Please login to add items to your cart.");
                 openAuthModal();
                 return;
             }
 
-            const products = {
+            const productMap = {
                 'hair-oil': { name: 'Premium Hair Oil', price: 299 },
                 'face-pack': { name: 'Natural Face Pack', price: 199 },
                 'health-mix': { name: 'Wellness Health Mix', price: 399 },
-                'pain-relief': { name: 'Pain Relief Oil', price: 249 }
+                'pain-relief': { name: 'Pain Relief Oil', price: 499 }
             };
 
-            const product = products[productId];
-            if (!product) return;
+            const product = productMap[productId];
+            const existingItem = cartItems.find(item => item.id === productId);
 
-            const existingItem = cart.find(item => item.id === productId);
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                cart.push({
-                    id: productId,
-                    name: product.name,
-                    price: product.price,
-                    quantity: 1
-                });
+                cartItems.push({ id: productId, ...product, quantity: 1 });
             }
 
-            updateCartDisplay();
-
-            const notification = document.getElementById('cartNotification');
-            notification.classList.remove('translate-x-full');
-            notification.style.transform = 'translateX(0) scale(1.1)';
-            
-            setTimeout(() => {
-                notification.style.transform = 'translateX(0) scale(1)';
-            }, 200);
-            
-            setTimeout(() => {
-                notification.classList.add('translate-x-full');
-            }, 3000);
+            updateCartCount();
+            alert(`${product.name} added to cart!`);
         }
-
-        // Enhanced scroll animations
-        function handleScrollAnimations() {
-            const elements = document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right');
-            
-            elements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 100;
-                
-                if (elementTop < window.innerHeight - elementVisible) {
-                    element.classList.add('visible');
-                }
-            });
-        }
-
-        // Parallax effect
-        function handleParallax() {
-            const parallaxElements = document.querySelectorAll('.parallax');
-            const scrolled = window.pageYOffset;
-            
-            parallaxElements.forEach(element => {
-                const rate = scrolled * -0.5;
-                element.style.transform = `translateY(${rate}px)`;
-            });
-        }
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                smoothScrollTo(targetId);
-            });
-        });
-
-        // OTP Input Navigation
-        document.addEventListener('DOMContentLoaded', function() {
-            const otpInputs = document.querySelectorAll('.otp-input');
-            
-            otpInputs.forEach((input, index) => {
-                input.addEventListener('input', function() {
-                    if (this.value.length === 1 && index < otpInputs.length - 1) {
-                        otpInputs[index + 1].focus();
-                    }
-                });
-                
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
-                        otpInputs[index - 1].focus();
-                    }
-                });
-                
-                input.addEventListener('paste', function(e) {
-                    e.preventDefault();
-                    const pastedData = e.clipboardData.getData('text');
-                    if (pastedData.length === 6 && /^\d+$/.test(pastedData)) {
-                        otpInputs.forEach((inp, i) => {
-                            inp.value = pastedData[i] || '';
-                        });
-                    }
-                });
-            });
-        });
-
-        // Initialize animations and effects
-        window.addEventListener('scroll', () => {
-            handleScrollAnimations();
-            handleParallax();
-        });
         
-        window.addEventListener('load', () => {
-            handleScrollAnimations();
-            // Add staggered animation to product cards
-            const productCards = document.querySelectorAll('.product-card');
-            productCards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0) scale(1)';
-                }, index * 200);
-            });
-        });
+        function updateCartCount() {
+            const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+            document.getElementById('cartCount').classList.toggle('hidden', count === 0);
+        }
 
-        // Close mobile menu when clicking outside or on links
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('mobileMenu');
-            const hamburger = document.querySelector('.hamburger');
+        function calculateCartTotal() {
+            return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            cartItemsContainer.innerHTML = '';
             
-            if (!hamburger.contains(event.target) && !menu.contains(event.target) && menu.classList.contains('active')) {
-                toggleMenu();
+            if (cartItems.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-center text-amber-700 font-medium pt-12">Your cart is empty.</p>';
+            } else {
+                cartItems.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'flex justify-between items-center p-4 bg-white rounded-xl shadow-md';
+                    itemElement.innerHTML = `
+                        <div>
+                            <p class="text-lg font-semibold text-amber-900">${item.name}</p>
+                            <p class="text-amber-700">₹${item.price} x ${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateCartQuantity('${item.id}', -1)" class="bg-amber-200 text-amber-900 w-8 h-8 rounded-full hover:bg-amber-300 transition">-</button>
+                            <span class="font-bold">${item.quantity}</span>
+                            <button onclick="updateCartQuantity('${item.id}', 1)" class="bg-amber-200 text-amber-900 w-8 h-8 rounded-full hover:bg-amber-300 transition">+</button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                });
             }
-        });
 
-        // Close modal when clicking outside
-        document.getElementById('authModal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeAuthModal();
-            }
-        });
+            document.getElementById('cartTotal').textContent = `₹${calculateCartTotal()}`;
+        }
 
-        // Keyboard navigation
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                const menu = document.getElementById('mobileMenu');
-                const modal = document.getElementById('authModal');
-                
-                if (menu.classList.contains('active')) {
-                    toggleMenu();
+        function updateCartQuantity(productId, change) {
+            const itemIndex = cartItems.findIndex(item => item.id === productId);
+            if (itemIndex > -1) {
+                cartItems[itemIndex].quantity += change;
+                if (cartItems[itemIndex].quantity <= 0) {
+                    cartItems.splice(itemIndex, 1); // Remove item if quantity is zero
                 }
-                if (!modal.classList.contains('hidden')) {
-                    closeAuthModal();
-                }
+                updateCartCount();
+                renderCart();
             }
-        });
+        }
 
-
-        // POLICY MODAL FUNCTIONS
-        const policyData = {
-            terms: {
-                title: 'Terms & Conditions',
-                content: `
-                    <p class="font-bold">Electronic Record - Information Technology Act, 2000</p>
-                    <p>Published per Rule 3(1) of IT (Intermediaries guidelines) Rules, 2011 for https://iyal-lilac.vercel.app/</p>
-                    <p class="font-bold mt-3">Platform Owner: Iyalhealthcare</p>
-                    <p class="text-xs">Registered Office: 54g, 4th cross street, marakkanam road, anna nagar, tindivanam, India</p>
-                    <p class="font-bold mt-3">KEY TERMS:</p>
-                    <ol class="list-decimal pl-4 space-y-1 text-xs">
-                        <li>Provide true, accurate information. Responsible for all account activities.</li>
-                        <li>No warranty on information offered.</li>
-                        <li>Use entirely at your own risk.</li>
-                        <li>Contents are proprietary.</li>
-                        <li>Unauthorized use leads to legal action.</li>
-                        <li>Agree to pay for services.</li>
-                        <li>Don't use for unlawful purposes.</li>
-                        <li>Enter legally binding contract upon transaction.</li>
-                        <li>Governed by laws of India.</li>
-                        <li>Disputes subject to courts in Tindivanam and Tamil Nadu.</li>
-                    </ol>
-                `
-            },
-            privacy: {
-                title: 'Privacy Policy',
-                content: `
-                    <p class="font-bold">Data Collection</p>
-                    <p class="text-xs">We collect: name, email, phone, address, payment info, transaction data.</p>
-                    <p class="font-bold mt-2">Usage</p>
-                    <p class="text-xs">Provide services, enhance experience, prevent fraud, send updates.</p>
-                    <p class="font-bold mt-2">Sharing</p>
-                    <p class="text-xs">With trusted partners for order fulfillment.</p>
-                    <p class="font-bold mt-2">Security</p>
-                    <p class="text-xs">Reasonable security practices implemented.</p>
-                    <p class="font-bold mt-2">Your Rights</p>
-                    <p class="text-xs">Access, update, delete personal data anytime.</p>
-                `
-            },
-            refund: {
-                title: 'Refund & Cancellation Policy',
-                content: `
-                    <p class="font-bold text-xs">Cancellation</p>
-                    <p class="text-xs">Within 5 days of order. Not after shipping initiated.</p>
-                    <p class="font-bold text-xs mt-2">Damaged/Defective</p>
-                    <p class="text-xs">Report within 5 days for refund/replacement.</p>
-                    <p class="font-bold text-xs mt-2">Perishable Items</p>
-                    <p class="text-xs">No cancellation. Refund only if quality poor.</p>
-                    <p class="font-bold text-xs mt-2">Refund Timeline</p>
-                    <p class="text-xs">Approved refunds within 3 days.</p>
-                    <p class="font-bold text-xs mt-2">Returns</p>
-                    <p class="text-xs">5-day window. Must be unused with original packaging.</p>
-                `
-            },
-            shipping: {
-                title: 'Shipping Policy',
-                content: `
-                    <p class="font-bold text-xs">Shipping</p>
-                    <p class="text-xs">Via registered courier and speed post only.</p>
-                    <p class="font-bold text-xs mt-2">Timeline</p>
-                    <p class="text-xs">Orders ship within 3 days from order/payment date.</p>
-                    <p class="font-bold text-xs mt-2">Delivery</p>
-                    <p class="text-xs">To address provided at purchase. Email confirmation sent.</p>
-                    <p class="font-bold text-xs mt-2">Shipping Costs</p>
-                    <p class="text-xs">Non-refundable.</p>
-                    <p class="font-bold text-xs mt-2">Liability</p>
-                    <p class="text-xs">Not liable for courier delays.</p>
-                `
+        function checkout() {
+            if (cartItems.length === 0) {
+                alert("Your cart is empty. Please add some products before checking out.");
+                return;
             }
-        };
+            alert(`Proceeding to checkout with a total of ₹${calculateCartTotal()}. (Payment gateway integration goes here)`);
+            // In a real application, you would redirect to a payment page or initiate a payment API call.
+            // For now, let's empty the cart as if the transaction was successful.
+            cartItems = [];
+            updateCartCount();
+            closeCart();
+        }
 
-        function openPolicyModal(policyType) {
-            const modal = document.getElementById('policyModal');
-            const title = document.getElementById('policyTitle');
-            const content = document.getElementById('policyContent');
-            if (policyData[policyType]) {
-                title.textContent = policyData[policyType].title;
-                content.innerHTML = policyData[policyType].content;
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
+        /* ==========================================================
+           5. ACCOUNT AND POLICY MODALS
+           ========================================================== */
+
+        function openAccountModal() {
+            accountModal.classList.remove('hidden');
+            setTimeout(() => {
+                accountModal.querySelector('div').classList.remove('scale-90', 'opacity-0');
+                accountModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeAccountModal() {
+            accountModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+            accountModal.querySelector('div').classList.add('scale-90', 'opacity-0');
+            setTimeout(() => {
+                accountModal.classList.add('hidden');
+            }, 500); 
+        }
+
+        function openPolicyModal(type) {
+            policyModal.classList.remove('hidden');
+            setTimeout(() => {
+                policyModal.querySelector('div').classList.remove('scale-90', 'opacity-0');
+                policyModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            const titleElement = document.getElementById('policyModalTitle');
+            const contentElement = document.getElementById('policyContent');
+            
+            if (type === 'privacy') {
+                titleElement.textContent = 'Privacy Policy';
+                contentElement.innerHTML = `
+                    <p class="text-xl font-bold">1. Information We Collect</p>
+                    <p>We collect personal information you provide directly to us, such as your name, email address, phone number, and shipping address when you make a purchase or register for an account.</p>
+                    <p class="text-xl font-bold pt-4">2. How We Use Your Information</p>
+                    <p>We use your information to process and fulfill your orders, communicate with you about your account, and improve our website and marketing efforts.</p>
+                    <p class="text-xl font-bold pt-4">3. Data Security</p>
+                    <p>We implement a variety of security measures to maintain the safety of your personal information. All payment transactions are processed through a gateway provider and are not stored or processed on our servers.</p>
+                `;
+            } else if (type === 'terms') {
+                titleElement.textContent = 'Terms of Service';
+                contentElement.innerHTML = `
+                    <p class="text-xl font-bold">1. Acceptance of Terms</p>
+                    <p>By accessing and using this website, you accept and agree to be bound by the terms and provisions of this agreement.</p>
+                    <p class="text-xl font-bold pt-4">2. Products</p>
+                    <p>All products listed on this website are subject to availability. We reserve the right to limit the quantity of any product we offer.</p>
+                    <p class="text-xl font-bold pt-4">3. Governing Law</p>
+                    <p>These Terms of Service and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of India.</p>
+                `;
             }
         }
 
         function closePolicyModal() {
-            const modal = document.getElementById('policyModal');
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
+            policyModal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+            policyModal.querySelector('div').classList.add('scale-90', 'opacity-0');
+            setTimeout(() => {
+                policyModal.classList.add('hidden');
+            }, 500); 
         }
 
+
+        // Global listeners for closing modals with ESC or clicking outside
         document.addEventListener('click', function(event) {
-            const modal = document.getElementById('policyModal');
-            if (event.target === modal) {
-                closePolicyModal();
-            }
+            if (event.target === authModal) closeAuthModal();
+            if (event.target === cartModal) closeCart();
+            if (event.target === accountModal) closeAccountModal();
+            if (event.target === policyModal) closePolicyModal();
         });
 
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
-                const modal = document.getElementById('policyModal');
-                if (!modal.classList.contains('hidden')) {
-                    closePolicyModal();
-                }
+                if (!authModal.classList.contains('hidden')) closeAuthModal();
+                if (!cartModal.classList.contains('hidden')) closeCart();
+                if (!accountModal.classList.contains('hidden')) closeAccountModal();
+                if (!policyModal.classList.contains('hidden')) closePolicyModal();
+                if (mobileMenu.classList.contains('active')) toggleMenu();
             }
         });
 
+        // Initialize UI State
+        updateHeaderUI();
+        updateCartCount();
+
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98d4322412087f3a',t:'MTc2MDI0NjkyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
