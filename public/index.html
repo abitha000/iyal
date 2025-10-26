@@ -9,6 +9,14 @@
         body {
             box-sizing: border-box;
             scroll-behavior: smooth;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            width: 100%;
+            overflow-x: hidden;
         }
         
         /* Welcome Animation Styles */
@@ -437,11 +445,11 @@
         </div>
         <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
             <div class="scroll-animate">
-                <h2 class="text-6xl md:text-8xl font-black text-amber-900 mb-8 tracking-wide drop-shadow-2xl">Natural Health Solutions</h2>
-                <p class="text-2xl md:text-3xl text-amber-800 mb-12 max-w-4xl mx-auto font-semibold leading-relaxed drop-shadow-lg">Discover the power of nature with our premium collection of health products crafted for your wellness journey</p>
-                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                    <button onclick="smoothScrollTo('products')" class="btn-primary text-amber-100 px-12 py-6 rounded-full text-xl font-semibold shimmer hover:scale-110 transition-all duration-500">Shop Now</button>
-                    <button onclick="smoothScrollTo('about')" class="border-2 border-amber-900 text-amber-900 px-12 py-6 rounded-full text-xl font-bold hover:bg-amber-900 hover:text-white transition-all duration-500 drop-shadow-lg">Learn More</button>
+                <h2 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-amber-900 mb-6 sm:mb-8 tracking-wide drop-shadow-2xl">Natural Health Solutions</h2>
+                <p class="text-base sm:text-lg md:text-2xl lg:text-3xl text-amber-800 mb-8 sm:mb-12 max-w-4xl mx-auto font-semibold leading-relaxed drop-shadow-lg px-4">Discover the power of nature with our premium collection of health products crafted for your wellness journey</p>
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center px-4">
+                    <button onclick="smoothScrollTo('products')" class="btn-primary text-amber-100 px-8 sm:px-12 py-4 sm:py-6 rounded-full text-base sm:text-xl font-semibold shimmer hover:scale-110 transition-all duration-500 w-full sm:w-auto">Shop Now</button>
+                    <button onclick="smoothScrollTo('about')" class="border-2 border-amber-900 text-amber-900 px-8 sm:px-12 py-4 sm:py-6 rounded-full text-base sm:text-xl font-bold hover:bg-amber-900 hover:text-white transition-all duration-500 drop-shadow-lg w-full sm:w-auto">Learn More</button>
                 </div>
             </div>
         </div>
@@ -450,9 +458,9 @@
     <!-- About Section -->
     <section id="about" class="py-24 coffee-light coffee-texture section-transition">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-center px-4 sm:px-6">
                 <div class="scroll-animate-left">
-                    <h3 class="text-5xl md:text-6xl font-bold text-amber-900 mb-8 leading-tight">Our Story</h3>
+                    <h3 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-amber-900 mb-6 sm:mb-8 leading-tight">Our Story</h3>
                     <p class="text-xl text-amber-800 mb-6 leading-relaxed">At Iyal, we believe in the ancient wisdom of natural healing. Our journey began with a simple mission: to bring you the purest, most effective health products derived from nature's bounty.</p>
                     <p class="text-xl text-amber-800 mb-8 leading-relaxed">Each product is carefully crafted using traditional methods combined with modern quality standards, ensuring you receive the best of both worlds.</p>
                     <div class="grid grid-cols-2 gap-6">
@@ -468,7 +476,7 @@
                 </div>
                 <div class="scroll-animate-right">
                     <div class="relative">
-                        <div class="w-full h-96 bg-gradient-to-br from-amber-300 to-amber-500 rounded-3xl flex items-center justify-center float-animation overflow-hidden relative">
+                        <div class="w-full h-64 sm:h-80 md:h-96 bg-gradient-to-br from-amber-300 to-amber-500 rounded-3xl flex items-center justify-center float-animation overflow-hidden relative">
                             <img src="https://i.imgur.com/3xfUdKT.jpeg" alt="Natural Health Products - Our Story" class="w-full h-full object-cover rounded-3xl" onerror="this.style.display='none'; document.getElementById('aboutImagePlaceholder').style.display='flex';">
                             <div id="aboutImagePlaceholder" class="hidden flex flex-col items-center justify-center text-amber-800">
                                 <svg class="w-32 h-32 mb-4" fill="currentColor" viewBox="0 0 24 24">
@@ -489,11 +497,11 @@
     <section id="products" class="py-24 bg-gradient-to-b from-amber-50 to-amber-100 coffee-texture section-transition">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16 scroll-animate">
-                <h3 class="text-5xl md:text-6xl font-bold text-amber-900 mb-6 tracking-wide">Our Premium Products</h3>
-                <p class="text-2xl text-amber-700 font-light max-w-3xl mx-auto">Handcrafted with natural ingredients for your health and wellness journey</p>
+                <h3 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-amber-900 mb-4 sm:mb-6 tracking-wide px-4">Our Premium Products</h3>
+                <p class="text-base sm:text-lg md:text-2xl text-amber-700 font-light max-w-3xl mx-auto px-4">Handcrafted with natural ingredients for your health and wellness journey</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 px-4">
                 <!-- Hair Oil -->
                 <div class="product-card bg-white rounded-3xl shadow-2xl overflow-hidden scroll-animate">
                     <div class="h-64 bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center relative overflow-hidden">
@@ -624,9 +632,9 @@
 
     <!-- Contact Section -->
     <section id="contact" class="py-16 bg-amber-100">
-        <div class="max-w-4xl mx-auto px-4 text-center scroll-animate">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center scroll-animate">
             <h3 class="text-4xl font-bold text-amber-900 mb-8">Get In Touch</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                 <div class="bg-white p-8 rounded-xl shadow-lg">
                     <h4 class="text-xl font-bold text-amber-900 mb-4">Contact Info</h4>
                     <p class="text-amber-700 mb-2">📧 info@iyal.com</p>
@@ -644,42 +652,42 @@
     </section>
 
     <!-- Footer -->
-    <footer class="coffee-gradient py-12">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    <footer class="coffee-gradient py-8 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8">
                 <!-- Company Info -->
-                <div class="text-center md:text-left">
-                    <h2 class="text-2xl font-bold text-amber-100 mb-4">IYAL</h2>
-                    <p class="text-amber-200 mb-4">Your trusted partner in natural health and wellness</p>
-                    <p class="text-amber-300 text-sm">54g, 4th Cross Street, Marakkanam Road</p>
-                    <p class="text-amber-300 text-sm">Anna Nagar, Tindivanam, India</p>
+                <div class="text-center sm:text-left">
+                    <h2 class="text-xl sm:text-2xl font-bold text-amber-100 mb-3 sm:mb-4">IYAL</h2>
+                    <p class="text-sm sm:text-base text-amber-200 mb-3 sm:mb-4">Your trusted partner in natural health and wellness</p>
+                    <p class="text-xs sm:text-sm text-amber-300">54g, 4th Cross Street, Marakkanam Road</p>
+                    <p class="text-xs sm:text-sm text-amber-300">Anna Nagar, Tindivanam, India</p>
                 </div>
 
                 <!-- Quick Links -->
                 <div class="text-center">
-                    <h3 class="text-xl font-bold text-amber-100 mb-4">Quick Links</h3>
+                    <h3 class="text-lg sm:text-xl font-bold text-amber-100 mb-3 sm:mb-4">Quick Links</h3>
                     <ul class="space-y-2">
-                        <li><a href="#home" class="text-amber-200 hover:text-amber-100 transition-colors">Home</a></li>
-                        <li><a href="#about" class="text-amber-200 hover:text-amber-100 transition-colors">About Us</a></li>
-                        <li><a href="#products" class="text-amber-200 hover:text-amber-100 transition-colors">Products</a></li>
-                        <li><a href="#contact" class="text-amber-200 hover:text-amber-100 transition-colors">Contact</a></li>
+                        <li><a href="#home" class="text-xs sm:text-sm text-amber-200 hover:text-amber-100 transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-xs sm:text-sm text-amber-200 hover:text-amber-100 transition-colors">About Us</a></li>
+                        <li><a href="#products" class="text-xs sm:text-sm text-amber-200 hover:text-amber-100 transition-colors">Products</a></li>
+                        <li><a href="#contact" class="text-xs sm:text-sm text-amber-200 hover:text-amber-100 transition-colors">Contact</a></li>
                     </ul>
                 </div>
 
                 <!-- Policies -->
-                <div class="text-center md:text-right">
-                    <h3 class="text-xl font-bold text-amber-100 mb-4">Policies</h3>
+                <div class="text-center sm:text-right">
+                    <h3 class="text-lg sm:text-xl font-bold text-amber-100 mb-3 sm:mb-4">Policies</h3>
                     <ul class="space-y-2">
-                        <li><button onclick="openPolicyModal('terms')" class="text-amber-200 hover:text-amber-100 transition-colors">Terms & Conditions</button></li>
-                        <li><button onclick="openPolicyModal('privacy')" class="text-amber-200 hover:text-amber-100 transition-colors">Privacy Policy</button></li>
-                        <li><button onclick="openPolicyModal('refund')" class="text-amber-200 hover:text-amber-100 transition-colors">Refund & Cancellation</button></li>
-                        <li><button onclick="openPolicyModal('shipping')" class="text-amber-200 hover:text-amber-100 transition-colors">Shipping Policy</button></li>
+                        <li><button onclick="openPolicyModal('terms')" class="text-xs sm:text-sm text-amber-200 hover:text-amber-100 transition-colors">Terms & Conditions</button></li>
+                        <li><button onclick="openPolicyModal('privacy')" class="text-xs sm:text-sm text-amber-200 hover:text-amber-100 transition-colors">Privacy Policy</button></li>
+                        <li><button onclick="openPolicyModal('refund')" class="text-xs sm:text-sm text-amber-200 hover:text-amber-100 transition-colors">Refund & Cancellation</button></li>
+                        <li><button onclick="openPolicyModal('shipping')" class="text-xs sm:text-sm text-amber-200 hover:text-amber-100 transition-colors">Shipping Policy</button></li>
                     </ul>
                 </div>
             </div>
 
-            <div class="border-t border-amber-700 pt-6 text-center">
-                <p class="text-amber-300 text-sm">&copy; 2024 Iyal. All rights reserved.</p>
+            <div class="border-t border-amber-700 pt-6">
+                <p class="text-xs sm:text-sm text-amber-300 text-center">&copy; 2024 Iyal. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -687,11 +695,11 @@
     <!-- Policy Modal -->
     <div id="policyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
-            <div class="flex justify-between items-center p-6 border-b border-amber-200">
-                <h3 id="policyTitle" class="text-2xl font-bold text-amber-900"></h3>
-                <button onclick="closePolicyModal()" class="text-amber-600 hover:text-amber-800 text-2xl">&times;</button>
+            <div class="flex justify-between items-center p-4 sm:p-6 border-b border-amber-200">
+                <h3 id="policyTitle" class="text-lg sm:text-2xl font-bold text-amber-900 pr-4"></h3>
+                <button onclick="closePolicyModal()" class="text-amber-600 hover:text-amber-800 text-2xl flex-shrink-0">&times;</button>
             </div>
-            <div id="policyContent" class="p-6 overflow-y-auto max-h-[calc(90vh-100px)] text-amber-900">
+            <div id="policyContent" class="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-100px)] text-sm sm:text-base text-amber-900">
                 <!-- Policy content will be inserted here -->
             </div>
         </div>
@@ -1244,52 +1252,35 @@
             }
         });
 
-        // Policy Modal Functions
+        // ===== POLICY MODAL FUNCTIONS =====
         const policyData = {
             terms: {
                 title: 'Terms & Conditions',
                 content: `
-                    <div class="prose max-w-none">
-                        <p class="mb-4">This document is an electronic record in terms of Information Technology Act, 2000 and rules there under as applicable and the amended provisions pertaining to electronic records in various statutes as amended by the Information Technology Act, 2000. This electronic record is generated by a computer system and does not require any physical or digital signatures.</p>
+                    <div class="space-y-4">
+                        <p class="font-bold">This document is an electronic record in terms of Information Technology Act, 2000.</p>
 
-                        <p class="mb-4">This document is published in accordance with the provisions of Rule 3 (1) of the Information Technology (Intermediaries guidelines) Rules, 2011 that require publishing the rules and regulations, privacy policy and Terms of Use for access or usage of domain name https://iyal-lilac.vercel.app/ ('Website'), including the related mobile site and mobile application (hereinafter referred to as 'Platform').</p>
+                        <p>This document is published in accordance with the provisions of Rule 3 (1) of the Information Technology (Intermediaries guidelines) Rules, 2011 that require publishing the rules and regulations, privacy policy and Terms of Use for access or usage of domain name https://iyal-lilac.vercel.app/ ('Website'), including the related mobile site and mobile application (hereinafter referred to as 'Platform').</p>
 
-                        <p class="mb-4">The Platform is owned by <strong>Iyalhealthcare</strong>, a company incorporated under the Companies Act, 1956 with its registered office at <strong>54g, 4th cross street, marakkanam road, anna nagar, tindivanam, Tindivanam, India</strong> (hereinafter referred to as 'Platform Owner', 'we', 'us', 'our').</p>
+                        <p><strong>The Platform is owned by Iyalhealthcare</strong>, a company incorporated under the Companies Act, 1956 with its registered office at <strong>54g, 4th cross street, marakkanam road, anna nagar, tindivanam, Tindivanam, India</strong>.</p>
 
-                        <p class="mb-4">Your use of the Platform and services and tools are governed by the following terms and conditions ("Terms of Use") as applicable to the Platform including the applicable policies which are incorporated herein by way of reference.</p>
+                        <p class="font-bold text-lg">ACCESSING, BROWSING OR OTHERWISE USING THE PLATFORM INDICATES YOUR AGREEMENT TO ALL THE TERMS AND CONDITIONS UNDER THESE TERMS OF USE.</p>
 
-                        <p class="mb-4 font-bold text-lg">ACCESSING, BROWSING OR OTHERWISE USING THE PLATFORM INDICATES YOUR AGREEMENT TO ALL THE TERMS AND CONDITIONS UNDER THESE TERMS OF USE, SO PLEASE READ THE TERMS OF USE CAREFULLY BEFORE PROCEEDING.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">The use of Platform and/or availing of our Services is subject to the following Terms of Use:</h3>
-
-                        <ol class="list-decimal pl-6 space-y-3">
-                            <li>To access and use the Services, you agree to provide true, accurate and complete information to us during and after registration, and you shall be responsible for all acts done through the use of your registered account on the Platform.</li>
-
-                            <li>Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials offered on this website or through the Services, for any specific purpose. You acknowledge that such information and materials may contain inaccuracies or errors and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law.</li>
-
-                            <li>Your use of our Services and the Platform is solely and entirely at your own risk and discretion for which we shall not be liable to you in any manner. You are required to independently assess and ensure that the Services meet your requirements.</li>
-
-                            <li>The contents of the Platform and the Services are proprietary to us and are licensed to us. You will not have any authority to claim any intellectual property rights, title, or interest in its contents. The contents includes and is not limited to the design, layout, look and graphics.</li>
-
-                            <li>You acknowledge that unauthorized use of the Platform and/or the Services may lead to action against you as per these Terms of Use and/or applicable laws.</li>
-
+                        <h4 class="font-bold mt-4 text-lg">Terms of Use:</h4>
+                        <ol class="list-decimal pl-5 space-y-2 text-sm">
+                            <li>To access and use the Services, you agree to provide true, accurate and complete information during registration, and you shall be responsible for all acts done through the use of your registered account.</li>
+                            <li>Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials offered on this website.</li>
+                            <li>Your use of our Services and the Platform is solely and entirely at your own risk and discretion for which we shall not be liable to you in any manner.</li>
+                            <li>The contents of the Platform are proprietary to us and are licensed to us. You will not have any authority to claim any intellectual property rights, title, or interest in its contents.</li>
+                            <li>You acknowledge that unauthorized use of the Platform may lead to action against you as per these Terms of Use and/or applicable laws.</li>
                             <li>You agree to pay us the charges associated with availing the Services.</li>
-
-                            <li>You agree not to use the Platform and/or Services for any purpose that is unlawful, illegal or forbidden by these Terms, or Indian or local laws that might apply to you.</li>
-
-                            <li>You agree and acknowledge that website and the Services may contain links to other third party websites. On accessing these links, you will be governed by the terms of use, privacy policy and such other policies of such third party websites.</li>
-
-                            <li>You understand that upon initiating a transaction for availing the Services you are entering into a legally binding and enforceable contract with the Platform Owner for the Services.</li>
-
-                            <li>You shall indemnify and hold harmless Platform Owner, its affiliates, group companies (as applicable) and their respective officers, directors, agents, and employees, from any claim or demand, or actions including reasonable attorney's fees, made by any third party or penalty imposed due to or arising out of Your breach of this Terms of Use, privacy Policy and other Policies.</li>
-
-                            <li>Notwithstanding anything contained in these Terms of Use, the parties shall not be liable for any failure to perform an obligation under these Terms if performance is prevented or delayed by a force majeure event.</li>
-
-                            <li>These Terms and any dispute or claim relating to it, or its enforceability, shall be governed by and construed in accordance with the laws of India.</li>
-
-                            <li>All disputes arising out of or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts in <strong>Tindivanam</strong> and <strong>Tamil Nadu</strong>.</li>
-
-                            <li>All concerns or communications relating to these Terms must be communicated to us using the contact information provided on this website.</li>
+                            <li>You agree not to use the Platform for any purpose that is unlawful, illegal or forbidden by these Terms.</li>
+                            <li>You agree and acknowledge that website may contain links to other third party websites which are governed by their own terms.</li>
+                            <li>You understand that upon initiating a transaction you are entering into a legally binding and enforceable contract with the Platform Owner.</li>
+                            <li>You shall indemnify and hold harmless Platform Owner from any claim or demand made by any third party.</li>
+                            <li>These Terms shall be governed by and construed in accordance with the laws of India.</li>
+                            <li>All disputes shall be subject to the exclusive jurisdiction of the courts in Tindivanam and Tamil Nadu.</li>
+                            <li>All concerns or communications relating to these Terms must be communicated using the contact information provided on this website.</li>
                         </ol>
                     </div>
                 `
@@ -1297,121 +1288,82 @@
             privacy: {
                 title: 'Privacy Policy',
                 content: `
-                    <div class="prose max-w-none">
-                        <h3 class="text-xl font-bold mb-3">Introduction</h3>
-                        <p class="mb-4">This Privacy Policy describes how <strong>Iyalhealthcare</strong> and its affiliates (collectively "Iyalhealthcare, we, our, us") collect, use, share, protect or otherwise process your information/personal data through our website https://iyal-lilac.vercel.app/ (hereinafter referred to as Platform).</p>
+                    <div class="space-y-4 text-sm">
+                        <h4 class="font-bold text-lg">Introduction</h4>
+                        <p>This Privacy Policy describes how <strong>Iyalhealthcare</strong> and its affiliates collect, use, share, protect or otherwise process your information through our website https://iyal-lilac.vercel.app/.</p>
 
-                        <p class="mb-4">We do not offer any product/service under this Platform outside India and your personal data will primarily be stored and processed in India. By visiting this Platform, providing your information or availing any product/service offered on the Platform, you expressly agree to be bound by the terms and conditions of this Privacy Policy.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">Collection</h3>
-                        <p class="mb-4">We collect your personal data when you use our Platform, services or otherwise interact with us during the course of our relationship. Some of the information that we may collect includes but is not limited to:</p>
-                        <ul class="list-disc pl-6 mb-4 space-y-2">
-                            <li>Personal data/information provided during sign-up/registering such as name, date of birth, address, telephone/mobile number, email ID</li>
+                        <h4 class="font-bold text-lg mt-4">Collection</h4>
+                        <p>We collect your personal data when you use our Platform, including:</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Personal information: name, date of birth, address, phone number, email ID</li>
                             <li>Proof of identity or address</li>
-                            <li>Bank account, credit/debit card or other payment instrument information</li>
-                            <li>Biometric information such as facial features (when opted for certain features)</li>
-                            <li>Transaction information on Platform and third-party business partner platforms</li>
+                            <li>Bank account and payment instrument information</li>
+                            <li>Biometric information (when opted)</li>
+                            <li>Transaction information on Platform</li>
                         </ul>
 
-                        <p class="mb-4">You always have the option to not provide information, by choosing not to use a particular service or feature on the Platform.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">Usage</h3>
-                        <p class="mb-4">We use personal data to:</p>
-                        <ul class="list-disc pl-6 mb-4 space-y-2">
+                        <h4 class="font-bold text-lg mt-4">Usage</h4>
+                        <p>We use personal data to:</p>
+                        <ul class="list-disc pl-5 space-y-1">
                             <li>Provide the services you request</li>
-                            <li>Assist sellers and business partners in handling and fulfilling orders</li>
+                            <li>Assist with order handling and fulfillment</li>
                             <li>Enhance customer experience</li>
                             <li>Resolve disputes and troubleshoot problems</li>
-                            <li>Inform you about offers, products, services, and updates</li>
-                            <li>Detect and protect against error, fraud and other criminal activity</li>
-                            <li>Enforce our terms and conditions</li>
-                            <li>Conduct marketing research, analysis and surveys</li>
+                            <li>Detect and protect against fraud and criminal activity</li>
+                            <li>Inform you about offers and updates</li>
                         </ul>
 
-                        <h3 class="text-xl font-bold mt-6 mb-3">Sharing</h3>
-                        <p class="mb-4">We may share your personal data:</p>
-                        <ul class="list-disc pl-6 mb-4 space-y-2">
-                            <li>Internally within our group entities and affiliates</li>
-                            <li>With third parties such as sellers, business partners, logistics partners</li>
-                            <li>With government agencies or law enforcement if required by law</li>
-                            <li>To protect rights, property or personal safety of our users</li>
-                        </ul>
+                        <h4 class="font-bold text-lg mt-4">Sharing & Security</h4>
+                        <p>We share data with trusted third parties and adopt reasonable security practices to protect your information from unauthorized access.</p>
 
-                        <h3 class="text-xl font-bold mt-6 mb-3">Security Precautions</h3>
-                        <p class="mb-4">To protect your personal data from unauthorized access or disclosure, loss or misuse we adopt reasonable security practices and procedures. We adhere to security guidelines to protect it against unauthorized access and offer the use of a secure server.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">Data Deletion and Retention</h3>
-                        <p class="mb-4">You have an option to delete your account by visiting your profile and settings on our Platform. We retain your personal data for a period no longer than is required for the purpose for which it was collected or as required under any applicable law.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">Your Rights</h3>
-                        <p class="mb-4">You may access, rectify, and update your personal data directly through the functionalities provided on the Platform.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">Consent</h3>
-                        <p class="mb-4">By visiting our Platform or by providing your information, you consent to the collection, use, storage, disclosure and otherwise processing of your information on the Platform in accordance with this Privacy Policy. You consent to us contacting you through SMS, instant messaging apps, call and/or e-mail for the purposes specified in this Privacy Policy.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">Changes to Privacy Policy</h3>
-                        <p class="mb-4">Please check our Privacy Policy periodically for changes. We may update this Privacy Policy to reflect changes to our information practices.</p>
+                        <h4 class="font-bold text-lg mt-4">Your Rights</h4>
+                        <p>You have the right to access, rectify, and update your personal data through the Platform functionalities.</p>
                     </div>
                 `
             },
             refund: {
                 title: 'Refund & Cancellation Policy',
                 content: `
-                    <div class="prose max-w-none">
-                        <p class="mb-4">This refund and cancellation policy outlines how you can cancel or seek a refund for a product/service that you have purchased through the Platform.</p>
+                    <div class="space-y-4 text-sm">
+                        <h4 class="font-bold text-lg">Cancellation Policy</h4>
+                        <ol class="list-decimal pl-5 space-y-2">
+                            <li><strong>Cancellation Window:</strong> Cancellations will only be considered if the request is made within <strong>5 days</strong> of placing the order. Cancellations may not be entertained if orders have been communicated to sellers and they have initiated shipping.</li>
 
-                        <h3 class="text-xl font-bold mt-6 mb-3">Cancellation Policy</h3>
-                        <ol class="list-decimal pl-6 space-y-3 mb-6">
-                            <li><strong>Cancellation Window:</strong> Cancellations will only be considered if the request is made within <strong>5 days</strong> of placing the order. However, cancellation requests may not be entertained if the orders have been communicated to sellers/merchants and they have initiated the shipping process, or the product is out for delivery. In such cases, you may choose to reject the product at the doorstep.</li>
+                            <li><strong>Perishable Items:</strong> We do not accept cancellation requests for perishable items like flowers or eatables. However, refund/replacement can be made if quality is not good.</li>
 
-                            <li><strong>Perishable Items:</strong> Iyalhealthcare does not accept cancellation requests for perishable items like flowers, eatables, etc. However, refund/replacement can be made if you establish that the quality of the product delivered is not good.</li>
+                            <li><strong>Damaged Items:</strong> Report damaged or defective items within <strong>5 days</strong> of receipt for refund/replacement.</li>
 
-                            <li><strong>Damaged or Defective Items:</strong> In case of receipt of damaged or defective items, please report to our customer service team within <strong>5 days</strong> of receipt of products. The request would be entertained once the seller/merchant has checked and determined the same.</li>
+                            <li><strong>Product Mismatch:</strong> If the product received is not as shown or as expected, report within <strong>5 days</strong> of receiving the product.</li>
 
-                            <li><strong>Product Not as Expected:</strong> If you feel that the product received is not as shown on the site or as per your expectations, you must bring it to the notice of our customer service within <strong>5 days</strong> of receiving the product.</li>
-
-                            <li><strong>Warranty Products:</strong> In case of complaints regarding products that come with a warranty from manufacturers, please refer the issue to them directly.</li>
+                            <li><strong>Warranty Products:</strong> For products with manufacturer warranty, please refer the issue to them directly.</li>
                         </ol>
 
-                        <h3 class="text-xl font-bold mt-6 mb-3">Refund Policy</h3>
-                        <p class="mb-4">In case of any refunds approved by Iyalhealthcare, it will take <strong>3 days</strong> for the refund to be processed to you.</p>
+                        <h4 class="font-bold text-lg mt-4">Refund Processing</h4>
+                        <p>Approved refunds will be processed within <strong>3 days</strong>.</p>
 
-                        <h3 class="text-xl font-bold mt-6 mb-3">Return Policy</h3>
-                        <p class="mb-4">We offer refund/exchange within first <strong>5 days</strong> from the date of your purchase. If 5 days have passed since your purchase, you will not be offered a return, exchange or refund of any kind.</p>
-
-                        <p class="mb-4">To become eligible for a return or exchange:</p>
-                        <ul class="list-disc pl-6 mb-4 space-y-2">
-                            <li>The purchased item should be unused and in the same condition as you received it</li>
-                            <li>The item must have original packaging</li>
-                            <li>Items purchased on sale may not be eligible for return/exchange</li>
-                        </ul>
-
-                        <p class="mb-4">Only items found defective or damaged will be replaced based on an exchange request. Certain categories of products/items may be exempted from returns or refunds, which will be identified at the time of purchase.</p>
+                        <h4 class="font-bold text-lg mt-4">Return Policy</h4>
+                        <p>We offer refund/exchange within first <strong>5 days</strong> from the date of purchase. Requirements: Unused condition, original packaging, not on sale items.</p>
                     </div>
                 `
             },
             shipping: {
                 title: 'Shipping Policy',
                 content: `
-                    <div class="prose max-w-none">
-                        <h3 class="text-xl font-bold mb-3">Shipping Information</h3>
+                    <div class="space-y-4 text-sm">
+                        <h4 class="font-bold text-lg">Shipping Information</h4>
+                        <p>Orders are shipped through registered domestic courier companies and speed post only.</p>
 
-                        <p class="mb-4">The orders for users are shipped through registered domestic courier companies and/or speed post only.</p>
+                        <h4 class="font-bold text-lg mt-4">Shipping Timeline</h4>
+                        <p>Orders are shipped within <strong>3 days</strong> from the date of order and/or payment, subject to courier company/post office norms.</p>
 
-                        <h3 class="text-xl font-bold mt-6 mb-3">Shipping Timeline</h3>
-                        <p class="mb-4">Orders are shipped within <strong>3 days</strong> from the date of the order and/or payment or as per the delivery date agreed at the time of order confirmation, subject to courier company/post office norms.</p>
+                        <h4 class="font-bold text-lg mt-4">Delivery Address</h4>
+                        <p>Delivery will be made to the address provided by the buyer at the time of purchase. Confirmation will be sent to your registered email ID.</p>
 
-                        <h3 class="text-xl font-bold mt-6 mb-3">Delivery Address</h3>
-                        <p class="mb-4">Delivery of all orders will be made to the address provided by the buyer at the time of purchase. Delivery confirmation will be sent to your email ID as specified at the time of registration.</p>
+                        <h4 class="font-bold text-lg mt-4">Shipping Costs</h4>
+                        <p>Any shipping costs levied by the seller or Platform Owner are not refundable.</p>
 
-                        <h3 class="text-xl font-bold mt-6 mb-3">Shipping Costs</h3>
-                        <p class="mb-4">If there are any shipping costs levied by the seller or the Platform Owner, the same is not refundable.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">Liability</h3>
-                        <p class="mb-4">Platform Owner shall not be liable for any delay in delivery by the courier company/postal authority.</p>
-
-                        <h3 class="text-xl font-bold mt-6 mb-3">Contact Information</h3>
-                        <p class="mb-4">For any shipping-related queries, please contact our customer service team using the contact information provided on this website.</p>
+                        <h4 class="font-bold text-lg mt-4">Liability</h4>
+                        <p>Platform Owner shall not be liable for any delay in delivery by the courier company or postal authority.</p>
                     </div>
                 `
             }
